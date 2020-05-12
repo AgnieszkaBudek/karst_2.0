@@ -1,0 +1,21 @@
+
+srcdir      = ./src
+
+all: src_all
+	cp ./bin/karst example_net
+	
+
+
+ifneq ("$(wildcard /Users/agnieszka/Desktop/STUDIA/KARST/symulacja/test)","") 
+	bash -c "cp ./bin/karst /Users/agnieszka/Desktop/STUDIA/KARST/symulacja/test"
+else ifneq ("$(wildcard ~/KARST/symulacja/test)","")
+	bash -c "cp ./bin/karst ~/KARST/symulacja/test"
+else  
+	bash -c "echo "Warning: Directory ./KARST/symulacja/test does not exists.""
+endif		 
+
+src_all:
+	$(MAKE) all -C $(srcdir)
+	
+clean:
+	$(MAKE) clean  -C $(srcdir)
