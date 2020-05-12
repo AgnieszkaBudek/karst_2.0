@@ -310,6 +310,15 @@ class Network
 		double find_minimal_tree_length();
 		double distance_to_root(Node *);  ///< Returns distance to the root of the tree, if node does't belongs to the tree -1 is returned.
 
+//other output generation (for Rishabh)
+		void write_vtk_data();
+		void write_point_data(string file_name);
+		void write_line_data(string file_name);
+		void write_cell_data(string file_name);
+		void write_diameter(string file_name);
+		void write_flow_rate(string file_name);
+		void write_concentration(string file_name);
+
 
 };
 

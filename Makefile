@@ -2,8 +2,6 @@
 srcdir      = ./src
 
 all: src_all
-	cp ./bin/karst example_net
-	
 
 
 ifneq ("$(wildcard /Users/agnieszka/Desktop/STUDIA/KARST/symulacja/test)","") 

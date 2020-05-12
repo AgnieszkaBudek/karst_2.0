@@ -29,7 +29,7 @@ TMP      = -fno-rtti -ggdb -D_GLIBCXX_DEBUG -lsfml-graphics -lsfml-window -lsfml
 
 OBJ	= network.o main.o printing.o printing_net.o node.o pore.o grain.o merging.o initial_modifications.o\
 evolution.o network_maintenance.o setup.o dissolution.o control_and_verification.o import_export.o network_generation.o\
-tests.o analysis.o pattern_analysis.o
+tests.o analysis.o pattern_analysis.o save_in_VTK.o
 INC	= network.h node.h pore.h grain.h printing.h constants.h algorithms_cc.h
 
 
