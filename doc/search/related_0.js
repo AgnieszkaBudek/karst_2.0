@@ -1,0 +1,4 @@
+var searchData=
+[
+  ['operator_3c_3c_788',['operator&lt;&lt;',['../class_kolor.html#abf19e831dd0193e1919ab6dc5e5edb44',1,'Kolor::operator&lt;&lt;()'],['../class_point.html#a53033a5ef01c82cf08b13e7b3573f4e0',1,'Point::operator&lt;&lt;()'],['../class_point.html#acf976ceb45908680e9ea371803734160',1,'Point::operator&lt;&lt;()'],['../class_linia.html#ac40f1fe24dfb5d58dd9b6014bf94b013',1,'Linia::operator&lt;&lt;()'],['../class_porek.html#aa1dc134e7603057b724a636d9dfcc181',1,'Porek::operator&lt;&lt;()'],['../class_kropka.html#a3c9b7b63a60f91f7f4270de7256caa78',1,'Kropka::operator&lt;&lt;()'],['../class_kropa.html#ad176e8c476ce89b59d094de6a2745267',1,'Kropa::operator&lt;&lt;()'],['../class_trojkacik.html#a46b1a1923fbb46c2a040281b35e8acf4',1,'Trojkacik::operator&lt;&lt;()'],['../class_wielobok.html#ac1a6ed364a511f1e20ee6ce3bf09c588',1,'Wielobok::operator&lt;&lt;()']]]
+];
