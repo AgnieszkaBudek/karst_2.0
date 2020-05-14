@@ -422,7 +422,7 @@ double Network::outlet_c_c_2 (Pore *p0){
 	if(p0->q==0 || p0->d ==0) 				   return 0;      //pore with no flow
 	if(p0->l==l_min)          				   return 1;	  //no reactions in tiny grain
 	if(p0->d<=d_min && (!(p0->is_Va_left())))  return 1;
-	if(!p0->is_connected_to_nucleus(d_min))    return 1;
+	if(if_precipitation_on_nucleus && !p0->is_connected_to_nucleus(d_min))    return 1;
 
 
 	double f2       = p0->local_Da_eff_2  (this);
