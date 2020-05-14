@@ -241,6 +241,7 @@ double Pore::default_dd_minus(Network*S){
 	if(d==0 || q ==0)  return 0;   //pore with no flow
 	if(l==S->l_min)    return 0;   //no reaction in tiny grain
 	if(d<=S->d_min && (!is_Va_left())) return 0;
+	if(S->if_precipitation_on_nucleus) if(!is_connected_to_nucleus(S->d_min)) return 0;
 
 	//dissolution parameters
 	double f1      = local_Da_eff(S);
@@ -266,6 +267,20 @@ double Pore::default_dd_minus(Network*S){
 
 	return dd_minus;
 }
+
+bool Pore::is_connected_to_nucleus(double d_min){
+
+	bool is_connected = false;
+
+	for(int i=0;i<2;i++){
+		for(int s=0; s<n[i]->b;  s++) if(n[i]->p[s]->d < 10*d_min && n[i]->p[s]->d > 0) return true;
+		for(int s=0; s<n[i]->bG; s++) if(n[i]->g[s]->Va==0        && n[i]->g[s]->Ve>0)  return true;
+	}
+
+	return is_connected;
+}
+
+
 
 /**
 * This function removes the pore form the list of neighboring nodes.

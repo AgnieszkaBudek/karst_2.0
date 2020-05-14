@@ -39,10 +39,15 @@ void Network::create_an_inlet_cut(int cut_w, int cut_l, double factor){
 */
 void Network::create_an_initial_pattern(){
 
-//	cerr<<"Adding an initial pattern..."<<endl;
-//
-//	for (int i=0; i<NN; i++) if( i==7 || i == 13) p[2*i+0]->d=3*d0;
-//	p[2*8+1]->d=3*d0;
-//	p[2*7+1]->d=0.1*d0;
+	cerr<<"Adding an initial pattern..."<<endl;
+
+	for (int i=0; i<N_wo; i++) for (int s=0; s<wo[i]->bG; s++){
+		bool if_nucleus = true;
+		for (int ss=0; ss<N_wi; ss++) if(wo[i]->g[s]->do_contain_Node(wi[ss])) if_nucleus = false;
+		if(if_nucleus){
+			wo[i]->g[s]->Ve = wo[i]->g[s]->Va;
+			wo[i]->g[s]->Va =0;
+		}
+	}
 
 }

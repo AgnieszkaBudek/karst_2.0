@@ -123,6 +123,16 @@ void Network::check_precipitating_balance(){
 	double Va_delta = Va_tot - Va_tot_tmp;
 	VC_in = Va_delta*gamma; //cerr<<"VC_in = "<<VC_in<<endl;
 
+	//calculate total input of acid
+	for(int i=0;i<N_wi;i++){
+		for (int j=0; j<wi[i]->b;j++){
+			Pore * pp = wi[i]->p[j];
+			if(pp->d>0) VC_in+=fabs(pp->q)*pp->calculate_inlet_cc()*dt/dt_unit;
+		}
+	}
+
+
+
 	//calculate total output of acid
 	for(int i=0;i<N_wo;i++){
 		Node* n_tmp = wo[i];

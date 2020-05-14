@@ -89,7 +89,7 @@ void Network::write_pattern_properties(){
 	for(int i=3; i<2*int(pow(NN,0.25)); i++) cluster_size_out<<setw(5)<<i<<setw(12)<<find_cluster_size(i);
 	cluster_size_out <<endl<<flush;
 
-	if(printing_mode=="debugging"||true){//for debugging only
+	if(printing_mode=="debugging"){//for debugging only
 				description_note = "At the end of write pattern properties: s = " + to_string(tot_steps);
 				for (int i=0;i<NP;i++) p[i]->tmp = 666;
 				printing_mode = "debugging";

@@ -48,8 +48,8 @@ Network::Network (string input_file_name) {
 	Sh  = 4;			//Sherwood number for pipe
 	gamma_1	= 1;		//capacity number for dissolution   (c_sol = 1 by default)
 	gamma_2 = 1;		//capacity number for precipitation (c_sol = 1 by default)
-	Cb_0 	= 1;		//acid inlet concentration 
-	Cc_0	= 0;		//precipitating species inlet concentration
+	Cb_0 	= 0;		//acid inlet concentration
+	Cc_0	= 1;		//precipitating species inlet concentration
 	mu_0    = M_PI*pow(d0,4)/(128*l0);		//viscosity  always set to M_PI*pow(d0,4)/(128*l0)
 	dt_unit = 2*k1 * gamma_1/d0;            //(in dimensionless units [2 k1 * gamma_1/d0])
 
@@ -107,7 +107,8 @@ Network::Network (string input_file_name) {
 	if_smarter_calculation_of_pressure   = true;         //if true pressure and flow is calculate in two steps
 	if_precipitation				     = false;		 //if true apart form dissolution the precipitation in on
 	if_dynamical_length				     = true;		 //if true length of pore is changing according to dissolution and precipitation
-	if_streamtube_mixing                 = false;        // if true the stream-tube mixing is perform while calculation the concentration (works only for dissolution now)
+	if_streamtube_mixing                 = false;        //if true the stream-tube mixing is perform while calculation the concentration (works only for dissolution now)
+	if_precipitation_on_nucleus          = true;         //if true precipitation can occur only next to nucleus, e.i. grains with enough amount of E species
 
 	//output
 	if_save_ps            = true;     //if true ps pictures are created
@@ -209,6 +210,7 @@ Network::Network (string input_file_name) {
 		calculate_initial_total_Va();
 		calculate_initial_total_Ve();}
 
+	if(if_precipitation_on_nucleus) create_an_initial_pattern();
 
 //updating pore lengths
 	if(if_dynamical_length) for(int i=0; i<NP;i++) p[i]->calculate_actual_length(this);

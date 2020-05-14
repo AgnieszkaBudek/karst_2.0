@@ -92,8 +92,7 @@ class Pore{
 		bool   is_contain_Grain (Grain *g_tmp);				///< check if node n_tmp belongs to the neighbors of this pore
 		Node*  find_common_node (Pore *p1);					///< check if node n_tmp belongs to the neighbors of this pore
 		Node*  find_closest_node(Node *n1);					///< check if node n_tmp belongs to the neighbors of this pore
-
-
+		bool   is_connected_to_nucleus(double);             ///< returns true if pore is connected to the nucleus, important if if_precipitation_on_nucleus is turned on
 };
 
 ofstream_txt & operator << (ofstream_txt & stream, Pore &p); ///< print info about pore p in one line

@@ -203,7 +203,7 @@ void Network::check_if_dissolved(){
 
 	//condition for clogging
 	int nr_of_red_grains=0;
-	if(if_precipitation) for(int i=0;i<N_wo;i++){
+	if(if_precipitation && !if_precipitation_on_nucleus) for(int i=0;i<N_wo;i++){
 		Node* nn = wo[i];
 		for (int j=0; j<nn->bG;j++) if(nn->g[j]->Va == 0 && nn->g[j]->bP>2 && nn->g[j]->Ve>l0*l0/10) nr_of_red_grains++;
 

@@ -158,7 +158,7 @@ class Network
 		bool if_precipitation;					 	///< if true apart form dissolution the precipitation in on
 		bool if_dynamical_length;					///< if true length of pore is changing according to dissolution and precipitation
 		bool if_streamtube_mixing;					///< if true and we have square lattice  stream-tube mixing is performed while calculating the species B concentration
-
+		bool if_precipitation_on_nucleus;		    ///< if true precipitation can occur only on pores in vicinity of nucleus (grains in non zero of E specis)
 
 		// output
 		bool if_save_ps;                          ///< if true ps pictures are created
