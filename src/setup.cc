@@ -172,6 +172,14 @@ void::Network::read_setup_file(ifstream& fp_setup){
 			l_min = stod(value);
 			cerr<< "Setting l_min = "<<l_min<<endl;}
 
+		else if(name == "Cb_0"){
+			Cb_0 = stod(value);
+			cerr<< "Setting Cb_0 = "<<Cb_0<<endl;}
+
+		else if(name == "Cc_0"){
+			Cc_0 = stod(value);
+			cerr<< "Setting Cc_0 = "<<Cc_0<<endl;}
+
 		else if(name == "T_max"){
 			T_max = stod(value);
 			cerr<< "Setting T_max = "<<T_max<<endl;}
