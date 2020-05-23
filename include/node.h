@@ -42,11 +42,12 @@ class Node{
 	public:
 
 		double u;		///< pressure in this node
-		double cb;		///< concentration of acid (dissolving species) in this node
-		double cc;		///< concentration of precipitating species in this node
 		
+		double *c;		///< table with concentration of soluble species in this node
+
 		int b;			///< number of neighbors
 		int bG;			///< number of attached grains
+		int bS;         ///< number of soluble species that can enter the node
 
 		Node  **n;		///< list of neighboring nodes
 		Pore  **p;		///< list of neighboring pores
@@ -62,7 +63,7 @@ class Node{
 
 		Node  (int bb, float tt = 0);
 		Node  (int name, int b_tmp, int t_tmp, Point point);
-		~Node (){delete[] n; n=NULL; delete[] p; p=NULL; if(bG>0) delete[] g; g=NULL;}
+		~Node (){delete[] n; n=NULL; delete[] p; p=NULL; if(bG>0) delete[] g; g=NULL; delete []c; c=NULL;}
 
 
 

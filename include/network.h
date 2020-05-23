@@ -43,6 +43,7 @@
 using namespace std;
 
 class Punkt;
+class Reactions;
 
 /// main class, represents the simulated network and includes all physical properties and  simulation parameters
 class Network  
@@ -71,25 +72,13 @@ class Network
 		int N_wo;			///< number of outlet nodes
 
 		// physical parameters
+		Reactions R;        ///< class with all reactions and info about all soluble and solid species
+
 		double P_in;		///< pressure at the inlet (by default equal to N_y, don't change when Q_tot!=0) (must by positive)
 		double P_out;		///< pressure at the outlet (by default equal to N_y, don't change when Q_tot!=0) (should be set to zero)
 		double Q_tot;		///< total flow through the system
-		double Va_tot;		///< total amount of volume of dissolving species
-		double Ve_tot;		///< total amount of volume of precipitating species
-
 		double q_in_0;      ///< initial mean flow through pores (by definition initial flow through inlet pores)
-
-		double k1;			///< reaction rate of dissolution
-		double k2;			///< reaction rate of precipitation
-		double D1;			///< diffusion coefficient for dissolution (not implemented yet, we assume that flow is faster then diffusion along pore)
-		double D2;			///< diffusion coefficient for precipitation (not implemented yet)
-		double DD1;			///< transversal diffusion coefficient for dissolution
-		double DD2;			///< transversal diffusion coefficient for precipitation
 		double Sh;			///< Sherwood number for pipe
-		double gamma_1;		///< capacity number for dissolution (important only for unit of dt, generally should be set to 1)
-		double gamma_2;		///< capacity number for precipitation
-		double Cb_0;		///< acid inlet concentration
-		double Cc_0;		///< inlet concentration of precipitating species
 		double mu_0;        ///< viscosity  (by default set to M_PI*pow(d0,4)/(128*l0))
 		double dt_unit;     ///< unit of time step (in dimensionless units [2 k1 * gamma_1/d0] or in diffusion limited case 2 DD1*Sh*gamma/d0^2)
 
@@ -155,9 +144,7 @@ class Network
 		bool if_adaptive_dt;			///< adapting dt according to d_d_max and d_d_min;
 		bool if_recalculate_physical_parameters;    ///< if true, recalculate physical parameters according to dimensionless one, by now must be true
 		bool if_smarter_calculation_of_pressure;    ///< if true pressure and flow is calculate in two steps
-		bool if_precipitation;					 	///< if true apart form dissolution the precipitation in on
 		bool if_dynamical_length;					///< if true length of pore is changing according to dissolution and precipitation
-		bool if_streamtube_mixing;					///< if true and we have square lattice  stream-tube mixing is performed while calculating the species B concentration
 
 
 		// output
@@ -200,9 +187,6 @@ class Network
 		void calculate_pressures();					///< calculate pressure field for the whose network
 		void calculate_flows();						///< calculate flow field for the whole network
 		void calculate_concentrations();			///< calculate concentration profile for species b
-		void calculate_concentrations_c();			///< calculate concentration profile for species c
-		void calculate_concentrations_streamtube_mixing(); 		     ///< new fancy mixing method where particles prefer to go straight through the crossing
- 		void dissolve();											 ///< change the pore sizes due to the dissolution
 		void dissolve_and_precipitate();							 ///< change the pore sizes due to both dissolution and precipitation
 		void calculate_pressures_and_flows_smarter(double d_max);    ///< alternative way of calculating pressure and flow field, using d_max: pores larger then d_max do not consume pressure drop but can consume acid :)
 		void calculate_pressures_for_small_d(double d_max);			 ///< part of an alternative way of calculating pressure and flow field, WARNING: must be tested more carefully
@@ -216,9 +200,7 @@ class Network
 		void check_if_dissolved();										///< checks if the system is dissolved, if yes the simulation stops
 
 		//Properties of particular pores
-		double outlet_c_b       (Pore* p);    	///< returns the outlet concentration of species b in the pore p as a function of c0_b
-		double outlet_c_c_1     (Pore* p);		///< returns the outlet concentration of species c in the pore p as a function of c0_b
-		double outlet_c_c_2     (Pore* p);		///< returns the outlet concentration of species c in the pore p as a function of c0_c
+		double outlet_c         (Pore* p, int i);    	///< returns the outlet concentration of species i in the pore p as a function of c0_b
 		double k_eff_in_pore    (Pore* p);		///< returns the value of k_eff in the pore p
 		double k_eff_2_in_pore  (Pore* p);		///< returns the value of k_eff_2 (see precipitation) in the pore p
 		double G_in_pore        (Pore* p);		///< returns the value of G in the pore p
@@ -232,8 +214,7 @@ class Network
 // calculating initial properties of the system
 		void calculate_initial_mean_flow();		///< calculate initial mean flow through the system, important for setting Da_eff and G correctly
 		void calculate_initial_d0_and_l0 ();    ///< calculate initial mean pore length and diameter, important for setting Da_eff and G correctly
-		void calculate_initial_total_Va();		///< calculate initial amount of species A, important for mass balance
-		void calculate_initial_total_Ve();		///< calculate initial amount of species E, important for mass balance
+		void calculate_initial_total_V(int i);  ///< calculate initial amount of species i, important for mass balance
 		void recalculate_k1 ();					///< recalculate reaction rate, k, has no impact on the simulation, just for potential curiosity
 		void recalculate_DD1();					///< recalculate diffusion coefficient, has no impact on the simulation, just for potential curiosity
 		void recalculate_k2 ();					///< recalculate reaction rate for second reaction, has no impact on the simulation, just for potential curiosity
@@ -290,8 +271,7 @@ class Network
 
 // verification
 		void check_flow_balance();		  	///< Checks if the flow through the system is conserve (if not the pressure field is not calculated precisely enough)
-		void check_acid_balance();			///< Checks if the amount of all species is conserved, if not some problem with merging occurs
-		void check_precipitating_balance(); ///< Checks if the amount of all species is conserved, when both dissolution and precipitation occures
+		void check_material_balance();		///< Checks if the amount of all species is conserved, if not some problem with merging occurs
 		void check_network_connections();   ///< Checks consistency of network connections, if false the initial network is badly defined or there is a problem with merging
 		void check_GMash_connections();		///< FOr checking GMash only
 		void print_network_for_debugging (string text = "Network",string type_n = "name", string type_p="name", string type_g = "name"); ///< Print all information about network in large pdf (WARNING: not to be used for large networks and large no of time steps)
@@ -306,7 +286,7 @@ class Network
 		void find_forks();
 		double find_reverse_forks();
 		double find_cluster_size (int n);
-		int* find_fork_distribution();
+		int*   find_fork_distribution();
 		double find_minimal_tree_length();
 		double distance_to_root(Node *);  ///< Returns distance to the root of the tree, if node does't belongs to the tree -1 is returned.
 

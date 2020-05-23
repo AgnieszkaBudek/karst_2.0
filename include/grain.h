@@ -51,8 +51,8 @@ class Grain{
 
 	public:
 
-		double Va;		 ///< volume of material A
-		double Ve;		 ///< volume of material E
+		int bS;          ///< number of solid species building a grain
+		double *V;		 ///< table with volume of particular species
 
 		double tmp;		 ///< temporal information (name or type of grain)///
 		double tmp2;	 ///< temporal information (for precipitation only)///

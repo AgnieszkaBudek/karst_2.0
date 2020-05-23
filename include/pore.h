@@ -46,7 +46,6 @@ class Pore{
 		double d;		///< pore diameter
 		double l;		///< pore length
 		double q;		///< flow through the pore
-		double c_in;	///< concentration at the pore inlet
 		int    a;       ///< pore number (name)
 
 		int bG;		    ///< number of grains in vicinity
@@ -66,11 +65,9 @@ class Pore{
 		~Pore ()						{if(bG>0) delete[] g; g=NULL; }
 
 		double perm(double mu_0){return M_PI*pow(d,4)/(128*mu_0*l);}	///< permeability of a particular pore
-		//void   diss (double Va, double Ve);							///< precipitation and dissolution of the material: calculate change of d and l
-		double calculate_inlet_cb();									///< calculate inlet concentration of the species B
-		double calculate_outlet_cb();									///< calculate outlet concentration of the species B
-		double calculate_inlet_cc();									///< calculate inlet concentration of the species C
-		double calculate_outlet_cc();									///< calculate outlet concentration of the species C
+
+		double calculate_inlet_c(int i);							    ///< calculate inlet concentration of the species i
+		double calculate_outlet_c(int i);								///< calculate outlet concentration of the species i
 
 		void   calculate_maximal_length(Network *S = NULL, double l_max=10, double l_0=1);	///< calculate maximal pore length
 		void   calculate_actual_length (Network *S = NULL, double l_max=10, double l_0=1);	///< calculate initial pore length
@@ -78,9 +75,7 @@ class Pore{
 		double local_Da_eff   (Network* S); 		///< dissolution parameter
 		double local_G_2      (Network* S);      	///< precipitation parameter
 		double local_Da_eff_2 (Network* S);      	///< precipitation parameter
-		bool   is_Va_left();						///< return false if there is no Va material left
-		double default_dd_plus(Network*S);		///< change in diameter as a result of dissolution
-		double default_dd_minus(Network*S);    ///< default change in diameter as a result of precipitation (no space condition is checked)
+		bool   is_V_left(int i);				    ///< return false if there is no material i left
 
 
 		void   remove_info_from_attached_nodes(); 			///< remove this pore from the list of connected nodes
