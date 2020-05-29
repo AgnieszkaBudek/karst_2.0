@@ -19,10 +19,12 @@
 
 #include "soluble.h"
 #include "solid.h"
+#include "network.h"
 
 class Soluble;
 class Solid;
 class Pore;
+class Network;
 
 class Reactions {
 
@@ -39,8 +41,8 @@ public:
 	double* D;     		///< table with diffusion coefficient (not used now)
 	double* DD;    		///< table with transversal diffusion coefficient (not used now)
 	double* gamma; 		///< table with capacity number for all solid materials
-	double* C;			///< inlet concentration of all soluble materials
-	double* V;		    ///< table with total amount of volume for all species
+	double* C0;			///< inlet concentration of all soluble materials
+	double* V_tot;		///< table with total amount of volume for all species
 
 
 public:
@@ -51,6 +53,12 @@ public:
 
 	Reactions(string model_name);
 	virtual ~Reactions();
+
+	//Functions connected with network evolution
+	double default_diameter_change (Pore *, Network*);
+	void   final_geometry_change   (Pore *, Network*);
+	void   update_volumes          (Grain*, Network*);
+
 
 
 

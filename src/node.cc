@@ -1,26 +1,29 @@
 #include "node.h"
 #include "network.h"
 
-Node::Node (int bb, float name)	{
+Node::Node (int bb, float name, int bbw)	{
 	b=bb; a=name; tmp=name; t=0; x=1;
-	cb=0; cc=0; u=0;
+	u=0; bw=bbw;
 	bG = 0; g=NULL;
 	n = new Node*[b];
 	p = new Pore*[b];
 	for(int i=0;i<b;i++){ n[i]=NULL; p[i]=NULL;}
-	//if(b!=6) cerr<<"Problem with hexagonal network!"<<endl;
-	//	cerr<<"Creation of node nr: "<<int(tt)<<" b = "<<(int) b<<" tmp= "<<int(tmp)<<endl;
+	c = new double[bw];
+	for(int i=0; i<bw;i++) c[i]=0;
 }
 
 
-Node::Node  (int name, int b_tmp, int t_tmp, Point point){
+Node::Node  (int name, int b_tmp, int t_tmp, Point point, int bbw){
 	b=b_tmp; a=name; tmp=name; t=t_tmp; x=1;
-	cb=0; cc=0; u=0;
+	u=0; bw=bbw;
 	bG = 0; g=NULL;
 	xy = point;
 	n = new Node*[b];
 	p = new Pore*[b];
 	for(int i=0;i<b;i++){ n[i]=NULL; p[i]=NULL;}
+	c = new double[bw];
+	for(int i=0; i<bw;i++) c[i]=0;
+
 }
 
 /**
@@ -305,7 +308,9 @@ ostream & operator << (ostream & stream, Node &n){
 
 ofstream_txt & operator << (ofstream_txt & stream, Node &n){
 
-	stream <<setw(12)<<n.a<<setw(12)<<setw(6)<<n.t<<n.u<<setw(12)<<n.cb<<setw(12)<<n.cc<<endl;
+	stream <<setw(12)<<n.a<<setw(12)<<setw(6)<<n.t<<n.u<<n.bw<<setw(12);
+	for(int i=0;i<n.bw;i++) stream<<setw(12)<<n.c[i];
+	stream<<endl;
 	return stream;
 }	
 

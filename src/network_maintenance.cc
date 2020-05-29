@@ -26,7 +26,7 @@ double Network::Da_eff_in_pore(Pore* p){   //currently not used
 * @author Agnieszka Budek
 * @date 25/09/2019
 */
-void Network::recalculate_k1(){
+void Network::recalculate_k(){
 	if (G1 < 0) k1  = -1; 		// diffusion limited case
 	else        k1  = (Da*q_in_0 + Da*G1*q_in_0)/(d0*l0*M_PI);
 	cerr<<"Reaction rate has been calculated: k1 = "<<k1<<endl;

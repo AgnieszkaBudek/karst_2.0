@@ -43,10 +43,10 @@ class Pore{
 
 	public:
 
-		double d;		///< pore diameter
-		double l;		///< pore length
-		double q;		///< flow through the pore
-		int    a;       ///< pore number (name)
+		double  d;		///< pore diameter
+		double  l;		///< pore length
+		double  q;		///< flow through the pore
+		int     a;      ///< pore number (name)
 
 		int bG;		    ///< number of grains in vicinity
 
@@ -61,7 +61,7 @@ class Pore{
 	public:
 
 		
-		Pore (double dd = 0.02, double ll = 1, float name=0, int bb=2);
+		Pore  (double dd = 0.02, double ll = 1, float name=0, int bb=2);
 		~Pore ()						{if(bG>0) delete[] g; g=NULL; }
 
 		double perm(double mu_0){return M_PI*pow(d,4)/(128*mu_0*l);}	///< permeability of a particular pore

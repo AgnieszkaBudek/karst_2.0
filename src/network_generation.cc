@@ -119,7 +119,7 @@ void Network::createHexagonalNetwork(int N, int M){
 	normal_distribution<double> N_dist(d0,d0/1); //distribution of initial diameters
 
 	//pore and node generation
-	for(int j=0;j<M;j++) for(int i=0;i<N;i++) 						n[N*j+i] 		= new Node(6,N*j+i);
+	for(int j=0;j<M;j++) for(int i=0;i<N;i++) 						n[N*j+i] 		= new Node(6,N*j+i,R->bw);
 	for(int j=0;j<M;j++) for(int i=0;i<N;i++) for(int k=0;k<3;k++) 	p[(N*j+i)*3+k] 	= new Pore(d0,l0,(N*j+i)*3+k);
 	//for(int j=0;j<M;j++) for(int i=0;i<N;i++) for(int k=0;k<3;k++) 	p[(N*j+i)*3+k] 	= new Pore(N_dist(gen),l0,(N*j+i)*3+k);
 
@@ -144,8 +144,8 @@ void Network::createHexagonalNetwork(int N, int M){
 	//grain generation
 	for(int i=0;i<N;i++) for(int j=0;j<M;j++){
 		Node* nn = n[N*j+i];
-		g[(N*j+i)*2+0] = new Grain((N*j+i)*2+0,nn,nn->n[0],nn->n[1]);
-		g[(N*j+i)*2+1] = new Grain((N*j+i)*2+1,nn,nn->n[1],nn->n[2]);
+		g[(N*j+i)*2+0] = new Grain((N*j+i)*2+0,nn,nn->n[0],nn->n[1],R->bm);
+		g[(N*j+i)*2+1] = new Grain((N*j+i)*2+1,nn,nn->n[1],nn->n[2],R->bm);
 	}
 
 
@@ -343,7 +343,7 @@ void Network:: createRandomTrianglesNetwork(int N_x, int N_y){
 		int i=p.a;
 		int b =tmp1[i];
 		NP+=b;
-		n[i] = new Node(i,int(b),0,Point(p.x,p.y,0));   //creating a node
+		n[i] = new Node(i,int(b),0,Point(p.x,p.y,0,R->bw));   //creating a node
 	}
 
 
@@ -384,7 +384,7 @@ void Network:: createRandomTrianglesNetwork(int N_x, int N_y){
 	NG = int(NP*2./3. + 0.9);
 	g = new Grain*[NG];
 	cerr<<"Numbers of grain "<<NG<<endl;
-	for(int i=0;i<NG;i++) g[i] = new Grain(i,0,0,3,3);
+	for(int i=0;i<NG;i++) g[i] = new Grain(i,0,0,3,3,R->bm);
 	int i=0;
 	for (const auto &t : triangles) if(t.p1.a >=0 && t.p2.a >=0 && t.p3.a >=0){
 			if((t.p1.a < NN )||(t.p2.a < NN )||(t.p3.a < NN))
@@ -524,7 +524,7 @@ void Network::createCubicNetwork(int N, int M, int O){
 	normal_distribution<double> N_dist(d0,d0/1); //distribution of initial diameters
 
 	//pore and node generation
-	for(int i=0;i<NN;i++) n[i] 	= new Node(6,i);
+	for(int i=0;i<NN;i++) n[i] 	= new Node(6,i,R->bw);
 	for(int i=0;i<NP;i++) p[i] 	= new Pore(d0,1,i,0);
 
 	//pore and node connections
@@ -552,7 +552,7 @@ void Network::createCubicNetwork(int N, int M, int O){
 		Pore * p_list [] = {nn->p[0],nn->p[2],nn->p[4],\
 				          n1->p[1],n1->p[3],n1->p[5],\
 						  nn->n[0]->p[2],nn->n[0]->p[4],nn->n[2]->p[4],nn->n[2]->p[0],nn->n[4]->p[2],nn->n[4]->p[0]};
-		g[M*N*k + N*j + i] = new Grain (M*N*k + N*j + i, 12, 8, n_list, p_list);
+		g[M*N*k + N*j + i] = new Grain (M*N*k + N*j + i, 12, 8, n_list, p_list,R->bm);
 	}
 
 
@@ -670,7 +670,7 @@ void Network::createSquareNetwork(int N, int M){
 
 	//pore and node generation
 	double tmp_do  = 0;
-	for(int i=0;i<NN;i++) n[i] 	= new Node (4,i);
+	for(int i=0;i<NN;i++) n[i] 	= new Node (4,i,R->bw);
 	for(int i=0;i<NP;i++) p[i] 	= new Pore (d0,l0,i,2);
 
 
@@ -693,7 +693,7 @@ void Network::createSquareNetwork(int N, int M){
 	//grain generation
 	for(int i=0;i<N;i++) for(int j=0;j<M;j++){
 		Node* nn = n[N*j+i];
-		g[N*j+i] = new Grain(N*j+i,nn,nn->n[0],nn->n[0]->n[2],nn->n[2]);
+		g[N*j+i] = new Grain(N*j+i,nn,nn->n[0],nn->n[0]->n[2],nn->n[2],R->bm);
 	}
 
 
@@ -818,7 +818,7 @@ void Network::createDiamondNetwork(int N, int M){
 	normal_distribution<double> N_dist(d0,d0/1.); //distribution of initial diameters
 
 	//pore and node generation
-	for(int j=0;j<M;j++) for(int i=0;i<N;i++) 						n[N*j+i] 		= new Node(4,N*j+i);
+	for(int j=0;j<M;j++) for(int i=0;i<N;i++) 						n[N*j+i] 		= new Node(4,N*j+i,R->bw);
 	for(int j=0;j<M;j++) for(int i=0;i<N;i++) for(int k=0;k<2;k++) 	p[(N*j+i)*2+k] 	= new Pore(d0,l0,(N*j+i)*2+k);
 
 
@@ -840,7 +840,7 @@ void Network::createDiamondNetwork(int N, int M){
 	//grain generation
 	for(int i=0;i<N;i++) for(int j=0;j<M;j++){
 		Node* nn = n[N*j+i];
-		g[N*j+i] = new Grain(N*j+i,nn,nn->n[0],nn->n[0]->n[1],nn->n[1]);
+		g[N*j+i] = new Grain(N*j+i,nn,nn->n[0],nn->n[0]->n[1],nn->n[1],R->bm);
 	}
 
 

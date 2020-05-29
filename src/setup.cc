@@ -72,49 +72,25 @@ void::Network::read_setup_file(ifstream& fp_setup){
 			q_in_0 = stod(value);
 			cerr<< "Setting q_in_0 = "<<q_in_0<<endl;}
 
-		else if(name == "k1"){
-			k1 = stod(value);
-			cerr<< "Setting k1 = "<<k1<<endl;}
-
-		else if(name == "k2"){
-			k2 = stod(value);
-			cerr<< "Setting k2 = "<<k2<<endl;}
-
-		else if(name == "D1"){
-			D1 = stod(value);
-			cerr<< "Setting D1 = "<<D1<<endl;}
-
-		else if(name == "D2"){
-			D2 = stod(value);
-			cerr<< "Setting D2 = "<<D2<<endl;}
-
-		else if(name == "DD1"){
-			DD1 = stod(value);
-			cerr<< "Setting DD1 = "<<DD1<<endl;}
-
-		else if(name == "DD2"){
-			DD2 = stod(value);
-			cerr<< "Setting DD2 = "<<DD2<<endl;}
-
 		else if(name == "Sh"){
 			Sh = stod(value);
 			cerr<< "Setting Sh = "<<Sh<<endl;}
 
-		else if(name == "gamma_1"){
-			gamma_1 = stod(value);
-			cerr<< "Setting gamma_1 = "<<gamma_1<<endl;}
+		else if(name == "C0[0]") if(R->bw>=1){
+			R->C0[0] = stod(value);
+			cerr<< "Setting C0[0] = "<<R->C0[0]<<endl;}
 
-		else if(name == "gamma_2"){
-			gamma_2 = stod(value);
-			cerr<< "Setting gamma_2 = "<<gamma_2<<endl;}
+		else if(name == "C0[1]") if(R->bw>=2){
+			R->C0[1] = stod(value);
+			cerr<< "Setting C0[1] = "<<R->C0[1]<<endl;}
 
-		else if(name == "Cb_0"){
-			Cb_0 = stod(value);
-			cerr<< "Setting Cb_0 = "<<Cb_0<<endl;}
+		else if(name == "C0[2]") if(R->bw>=3){
+			R->C0[2] = stod(value);
+			cerr<< "Setting C0[2] = "<<R->C0[2]<<endl;}
 
-		else if(name == "Cc_0"){
-			Cc_0 = stod(value);
-			cerr<< "Setting Cc_0 = "<<Cc_0<<endl;}
+		else if(name == "C0[3]") if(R->bw>=4){
+			R->C0[3] = stod(value);
+			cerr<< "Setting C0[3] = "<<R->C0[3]<<endl;}
 
 		else if(name == "mu_0"){
 			mu_0 = stod(value);
@@ -172,14 +148,6 @@ void::Network::read_setup_file(ifstream& fp_setup){
 			l_min = stod(value);
 			cerr<< "Setting l_min = "<<l_min<<endl;}
 
-		else if(name == "Cb_0"){
-			Cb_0 = stod(value);
-			cerr<< "Setting Cb_0 = "<<Cb_0<<endl;}
-
-		else if(name == "Cc_0"){
-			Cc_0 = stod(value);
-			cerr<< "Setting Cc_0 = "<<Cc_0<<endl;}
-
 		else if(name == "T_max"){
 			T_max = stod(value);
 			cerr<< "Setting T_max = "<<T_max<<endl;}
@@ -231,6 +199,12 @@ void::Network::read_setup_file(ifstream& fp_setup){
 		else if(name == "type_of_topology"){
 			type_of_topology =   value;
 			cerr<< "Setting type_of_topology = "<<type_of_topology<<endl;}
+
+		else if(name == "reation_model"){
+			reaction_model =   value;
+			cerr<< "Setting reaction_mode = "<<reaction_model<<endl;
+			delete R;
+			R = new Reactions("reaction_model");}
 
 		else if(name == "type_of_merging"){
 			type_of_merging =   value;
@@ -297,23 +271,12 @@ void::Network::read_setup_file(ifstream& fp_setup){
 			else                     cerr<<"WARNING: Wrong value of variable if_smarter_calculation_of_pressure. Set true or false."<<endl;
 			cerr<< "Setting if_smarter_calculation_of_pressure = "<<if_smarter_calculation_of_pressure<<endl;}
 
-		else if(name == "if_precipitation"){
-			if      (value == "true" )   if_precipitation  = true;
-			else if (value == "false")   if_precipitation  = false;
-			else                     cerr<<"WARNING: Wrong value of variable if_precipitation. Set true or false."<<endl;
-			cerr<< "Setting if_precipitation = "<<if_precipitation<<endl;}
 
 		else if(name == "if_dynamical_length"){
 			if      (value == "true" )   if_dynamical_length  = true;
 			else if (value == "false")   if_dynamical_length  = false;
 			else                     cerr<<"WARNING: Wrong value of variable if_dynamical_length. Set true or false."<<endl;
 			cerr<< "Setting if_dynamical_length = "<<if_dynamical_length<<endl;}
-
-		else if(name == "if_streamtube_mixing"){
-			if      (value == "true" )   if_streamtube_mixing  = true;
-			else if (value == "false")   if_streamtube_mixing  = false;
-			else                     cerr<<"WARNING: Wrong value of variable if_streamtube_mixing. Set true or false."<<endl;
-			cerr<< "Setting if_streamtube_mixing = "<<if_streamtube_mixing<<endl;}
 
 		else if(name == "if_save_ps"){
 			if      (value == "true" )   if_save_ps  = true;
@@ -444,21 +407,6 @@ void::Network::read_setup_file(ifstream& fp_setup){
 			if_clear_unused_pores = false;
 		}
 	}
-
-	if(if_streamtube_mixing == true) {
-		if(type_of_topology!="square" && type_of_topology!="diamond") {
-			cerr<<"WARNING: Stream-tube mixing works only for square topology. "<<endl;
-			if_streamtube_mixing = false;
-			cerr<<"if_streamtube_mixing = " <<if_streamtube_mixing<<endl;
-		}
-		if(if_precipitation) {
-			cerr<<"WARNING: Stream-tube mixing works only for pure dissolution."<<endl;
-			if_streamtube_mixing = false;
-			cerr<<"if_streamtube_mixing = " <<if_streamtube_mixing<<endl;
-		}
-
-	}
-	if(!if_precipitation) {d_V_min = 0; d_V_max = 0;}
 
 
 //adjust additional parameters that depends on above

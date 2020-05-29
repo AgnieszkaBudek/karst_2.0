@@ -87,7 +87,9 @@ void Network::export_topology_file_with_grains (string out_file_name){
 
 	for (int i=0;i<NG;i++) {
 		Grain * gg = g[i];
-		os<<setw(8)<<gg->a<<setw(14)<<setprecision(5)<<gg->Va<<setw(14)<<setprecision(5)<<gg->Ve<<setw(14)<<gg->bN<<setw(7)<<gg->bP;
+		os<<setw(8)<<gg->a<<setw(14);
+		for(int i=0;i<R->bm;i++) os<<setprecision(5)<<gg->V[i];
+		os<<setw(14)<<gg->bN<<setw(7)<<gg->bP;
 		os << "  (";
 		for(int bb=0;bb<gg->bN;bb++)   os<<setw(w_tmp_n)<< gg->n[bb]->a;
 		os << ")\t\t(";
@@ -181,6 +183,12 @@ void Network::import_topology_from_file(string in_file_name){
 				N_y = value;
 				cerr<<"Setting N_y = "<<N_y<<endl;}
 
+			else if(name == "reaction_model"){
+				reaction_model = value;
+				delete R;
+				R = new Reactions("reaction_model");
+				cerr<<"Setting reaction_model = "<<reaction_model<<endl;}
+
 
 			else  {cerr<<"WARNING: Problem with parsing line nr "<<i<<" in file "<<in_file_name <<"."<<endl; continue;}
 		}
@@ -195,7 +203,7 @@ void Network::import_topology_from_file(string in_file_name){
 
 			if(line >> name >> x_tmp >> y_tmp >> z_tmp >> t_tmp >>b_tmp){
 				if (b_tmp>b_max) b_max = b_tmp;  //updating maximal nr of neighbors
-				n[j] = new Node(name,b_tmp,t_tmp,Point(x_tmp,y_tmp,z_tmp));
+				n[j] = new Node(name,b_tmp,t_tmp,Point(x_tmp,y_tmp,z_tmp),R->bw);
 				n_tmp[j] = new int[b_tmp]; p_tmp[j] = new int[b_tmp];
 				//adding inlet/outlet nodes
 				if(t_tmp == 1 ) { //setting inlet nodes
@@ -287,13 +295,33 @@ void Network::import_grains_from_file (string in_file_name){
 		istringstream line(s);
 
 		int name, bN_tmp, bP_tmp;
-		double Va_tmp, Ve_tmp;
+		double Va_tmp, Ve_tmp, Vf_tmp;
 
-		if(line >> name >> Va_tmp >> Ve_tmp >> bN_tmp >> bP_tmp) {
-			g[j] = new Grain(name,Va_tmp,Ve_tmp,bN_tmp, bP_tmp);
-			line.clear();
+		if(R->bm==2){
+			if(line >> name >> Va_tmp >> Ve_tmp >> bN_tmp >> bP_tmp) {
+				g[j] = new Grain(name,Va_tmp,Ve_tmp,Vf_tmp,bN_tmp, bP_tmp,R->bm);
+				line.clear();
+			}
+			else {cerr<<"ERROR: Problem with parsing beginning of line "<<i<< " in file "<<in_file_name<<"."<<endl<<flush; exit(1); continue;}
 		}
-		else {cerr<<"ERROR: Problem with parsing beginning of line "<<i<< " in file "<<in_file_name<<"."<<endl<<flush; exit(1); continue;}
+		else if(R->bm==3){
+			if(line >> name >> Va_tmp >> Ve_tmp >> Vf_tmp >> bN_tmp >> bP_tmp) {
+							g[j] = new Grain(name,Va_tmp,Ve_tmp,Vf_tmp,bN_tmp, bP_tmp,R->bm);
+							line.clear();
+			}
+			else {cerr<<"ERROR: Problem with parsing beginning of line "<<i<< " in file "<<in_file_name<<"."<<endl<<flush; exit(1); continue;}
+		}
+		else if(R->bm==1){
+			if(line >> name >> Va_tmp  >> bN_tmp >> bP_tmp) {
+							g[j] = new Grain(name,Va_tmp,Ve_tmp,Vf_tmp,bN_tmp, bP_tmp,R->bm);
+							line.clear();
+			}
+			else {cerr<<"ERROR: Problem with parsing beginning of line "<<i<< " in file "<<in_file_name<<"."<<endl<<flush; exit(1); continue;}
+		}
+
+		else { cerr<<"WARNING: This type of reaction is not implemented yet. R->bm > 3"<<endl; exit(666);}
+
+
 		//reading info about nodes
 		char c;
 		line >> c;
@@ -459,10 +487,10 @@ void Network::print_tables_txt(){
 			for(int b=0; b<3;b++) flow_out       <<setprecision(7)<<setw(12)<<p[i*3+b]->q;
 			for(int b=0; b<3;b++) lengths_out    <<setprecision(7)<<setw(12)<<p[i*3+b]->l;
 			pressure_out       <<setprecision(7)<<setw(20)<<n[i]->u;
-			concentration_out  <<setprecision(7)<<setw(12)<<n[i]->cb;
-			concentration2_out <<setprecision(7)<<setw(12)<<n[i]->cc;
-			for(int b=0; b<2;b++)VA_out  <<setprecision(7)<<setw(12)<<g[2*i+b]->Va;
-			for(int b=0; b<2;b++)VE_out  <<setprecision(7)<<setw(12)<<g[2*i+b]->Ve;
+			if(R->bw>0) concentration_out  <<setprecision(7)<<setw(12)<<n[i]->c[0];
+			if(R->bw>1) concentration2_out <<setprecision(7)<<setw(12)<<n[i]->c[1];
+			if(R->bm>0) for(int b=0; b<2;b++) VA_out  <<setprecision(7)<<setw(12)<<g[2*i+b]->V[0];
+			if(R->bm>0) for(int b=0; b<2;b++) VE_out  <<setprecision(7)<<setw(12)<<g[2*i+b]->V[1];
 			if(i%N_x ==N_x-1){
 				diameters_out       <<endl;
 				flow_out            <<endl;
@@ -482,10 +510,10 @@ void Network::print_tables_txt(){
 				for(int b=0; b<2;b++) flow_out       <<setprecision(7)<<setw(12)<<p[i*2+b]->q;
 				for(int b=0; b<2;b++) lengths_out    <<setprecision(7)<<setw(12)<<p[i*2+b]->l;
 				pressure_out       <<setprecision(7)<<setw(20)<<n[i]->u;
-				concentration_out  <<setprecision(7)<<setw(12)<<n[i]->cb;
-				concentration2_out <<setprecision(7)<<setw(12)<<n[i]->cc;
-				VA_out  <<setprecision(7)<<setw(12)<<g[i]->Va;
-				VE_out  <<setprecision(7)<<setw(12)<<g[i]->Ve;
+				if(R->bw>0) concentration_out  <<setprecision(7)<<setw(12)<<n[i]->c[0];
+				if(R->bw>1) concentration2_out <<setprecision(7)<<setw(12)<<n[i]->c[1];
+				if(R->bm>0) VA_out  <<setprecision(7)<<setw(12)<<g[i]->V[0];
+				if(R->bm>0) VE_out  <<setprecision(7)<<setw(12)<<g[i]->V[1];
 				if(i%N_x ==N_x-1){
 					diameters_out       <<endl;
 					flow_out            <<endl;
@@ -519,9 +547,8 @@ void Network::print_tables_txt(){
 			flow_out           <<setprecision(5)<<setw(10)<<q_mean/n[i]->b;
 			pressure_out       <<setprecision(5)<<setw(12)<<n[i]->u;
 			lengths_out        <<setprecision(7)<<setw(12)<<l_mean/n[i]->b;
-			if (if_streamtube_mixing)   concentration_out  <<setprecision(5)<<setw(12)<<p[i]->c_in<<"\t"<<setprecision(5)<<setw(12)<<p[NN+i]->c_in;
-			else						concentration_out  <<setprecision(5)<<setw(12)<<n[i]->cb;
-			concentration2_out <<setprecision(5)<<setw(12)<<n[i]->cc;
+			if(R->bw>0) concentration_out  <<setprecision(7)<<setw(12)<<n[i]->c[0];
+			if(R->bw>1) concentration2_out <<setprecision(7)<<setw(12)<<n[i]->c[1];
 		}
 	}
 }
@@ -542,10 +569,10 @@ void Network::save_all_data(bool if_save_now){
 	else if(s_save_data>=1 && tot_steps%int(s_save_data)==0) if_save_now = true;
 	else if(s_save_data>0 && s_save_data<1){
 //check the volume condition!!!
-		if(tot_steps==0) Va_old = Va_tot;
-		if((Va_old-Va_tot)/Va_tot>s_save_data){
+		if(tot_steps==0) Va_old = R->V_tot[0];
+		if((Va_old-R->V_tot[0])/R->V_tot[0]>s_save_data){
 			if_save_now = true;
-			Va_old = Va_tot;
+			Va_old = R->V_tot[0];
 		}
 	}
 

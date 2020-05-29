@@ -48,6 +48,7 @@ void Network::evolution(long int T){
 	analyze_diss_pattern(true);
 }
 
+
 /**
 * This function do one euler time step.
 * The order of calculations is as follows:
@@ -71,6 +72,51 @@ void Network::evolution(long int T){
 */
 void Network::do_one_euler_step(){
 	
+
+	if(if_smarter_calculation_of_pressure)	{calculate_pressures_and_flows_smarter(d_max_for_u);}
+	else 									{calculate_pressures();           calculate_flows();}
+
+	for(int i=0;i<R->bw;i++) calculate_concentrations(i);
+
+	//checking acid and flow balance
+	check_flow_balance();
+	if(if_track_grains) check_material_balance();
+
+	//check_GMash_connections();  //additional checking for G_Mash network
+
+	//topology changes
+	do_merging();
+
+
+	if(if_adaptive_dt)      adapt_dt();           //adapt dt
+	if(if_full_dissolution) check_if_dissolved(); //check if the system is dissolved
+
+}
+
+
+/**
+* This function do one euler time step.
+* The order of calculations is as follows:
+*
+* 1. Calculate pressure field
+*
+* 2. Calculate flow field
+*
+* 3. Calculate the concentration profiles.
+*
+* 4. Change pore sizes according to the dissolution (and precipitation).
+*
+* 5. Check the flow and mass balance.
+*
+* 6. Do merging (optionally).
+*
+* This is the simplest method for integrating of differential equations describing the system dynamics.
+*
+* @author Agnieszka Budek
+* @date 25/09/2019
+*/
+void Network::do_one_euler_step_old(){
+
 
 	if(if_smarter_calculation_of_pressure)	{calculate_pressures_and_flows_smarter(d_max_for_u);}
 	else 									{calculate_pressures();           calculate_flows();}

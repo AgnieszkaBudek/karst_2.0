@@ -438,6 +438,102 @@ double Network::outlet_c_c_2 (Pore *p0){
 }
 
 
+
+
+/**
+* This function calculates the concentration field for all soluble species in the entire network.
+*
+* @author Agnieszka Budek
+* @date 25/05/2019
+*/
+void Network::calculate_all_concentrations(){
+
+	for(int i=0;i<R->bw;i++)
+		calculate_concentrations(i);
+
+}
+
+
+
+/**
+* This function calculates the concentration field for  species i.
+*
+* @author Agnieszka Budek
+* @date 25/05/2019
+*/
+void Network::calculate_concentrations(int iw){
+
+	cerr<<"Calculating concentrations for species "<<iw<<" ..."<<endl;
+
+	for(int i=0;i<NN;i++) n[i]->tmp=i;
+
+	//calculating nr of non zero elements of linear equations
+	int R_no = 0;
+	for(int i=0;i<NN;i++)
+		if(n[i]->t==0) R_no+=n[i]->b+1;
+		else           R_no++;
+
+
+	int R_m  = NN;						    //rank of the matrix to be solved
+
+	//for matrix containing linear equations for concentration to be solved
+	int* ww_r = new int [R_no];		//raw indexes
+	int* ww_c = new int [R_no];		//column indexes
+	double* B = new double [R_no];	//non zero elements
+	double* y = new double [NN];	//rhs
+
+
+	int r_no=0;
+	//filing matrix of eqs for each node
+	for(int i=0;i<NN;i++){
+		double S_q=0;
+		if(n[i]->t==1) 	y[i] = R->C0[iw];
+		else 			y[i] = 0;
+
+		if(n[i]->t==1) S_q=-1;					//if node is an inlet node
+		else for(int s=0; s<n[i]->b; s++){		//eqs for normal and outlet nodes
+			Pore *pp = findPore(n[i],n[i]->n[s]);
+			double qq;
+			if(n[i]==pp->n[0]) qq = -pp->q;
+			else               qq =  pp->q;
+
+			if(qq > 0){
+				ww_r[r_no] 	= i;
+				ww_c[r_no] 	= n[i]->n[s]->tmp;
+				B[r_no]		= R->w[iw]->c1(pp,this);
+				S_q+=qq;
+				y[i]-= R->w[iw]->c0(pp,this);
+				r_no++;}}
+		ww_r[r_no] 		= i;
+		ww_c[r_no] 		= i;
+		B[r_no]			= -S_q;
+
+		if(S_q==0) B[r_no]=1;		//nothing is flowing into the pore
+		r_no++;
+	}
+
+	//if(r_no!=R_no) {cerr<<"Problem with filling linear equations for concentration! R_no = "<<R_no<<" r_no = "<<r_no<<endl; exit(666);}
+	cerr<<"Calculating concentrations: solving matrix..."<<endl;
+	int M_out = solve_matrix(R_m, r_no, ww_r, ww_c, B, y);
+	if(M_out!=0) cerr<<"Problem with solving linear equations; M_out = "<<M_out<<endl;
+
+	cerr<<"Filling solution..."<<endl;
+	for(int i=0;i<NN;i++) n[i]->c[iw] = y[i];     //filling the solution
+
+
+	//additional printing for debugging
+	print_network_for_debugging ("After calculating concentration C field ","concentration C", "flow");
+
+	delete[] ww_r;
+	delete[] ww_c;
+	delete[] B;
+	delete[] y;
+
+
+}
+
+
+
 /**
 * This function calculates the concentration field for species B in the entire network.
 * First linear equation for concentration in each node are created and
@@ -591,148 +687,6 @@ void Network::calculate_concentrations_c(){
 }
 
 
-
-/**
-* This function calculates the concentration field for species B in using more sophisticated mixing method.
-* The B species do not fully mix in each node, as in previous case, but follow the stream.
-* First linear equation for concentration in each node are created and
-* then there are solved using function Network::solve_matrix().
-*
-* @author Agnieszka Budek
-* @date 13/03/2020
-*/
-void Network::calculate_concentrations_streamtube_mixing(){
-
-	cerr<<"Calculating concentrations for species B using fancy stream tube mixing rules..."<<endl;
-
-	int N_streamtube_mixing =0;
-
-	for(int i=0;i<NN;i++) n[i]->tmp=i;
-	for(int i=0;i<NP;i++) p[i]->tmp=i;
-	int R_no = 0;
-	for(int i=0;i<NP;i++) R_no += 5; // we put here to much but can be reduced later if memory is a problem...
-
-
-	int R_m  = NP;						    //rank of the matrix to be solved
-
-
-	//for matrix containing linear equations for concentration to be solved
-	int* ww_r = new int [R_no];		//raw indexes
-	int* ww_c = new int [R_no];		//column indexes
-	double* B = new double [R_no];	//non zero elements
-	double* y = new double [NP];	//RHS
-
-
-	int r_no=0;
-	for(int j = 0; j<NP; j++) y[j] = 0;
-
-
-	for (int i = 0; i<NP; i++){
-
-		//the pore we write equation for concentration
-		Pore *pp = p[i]; Node *nn; Node *nn2;
-
-		//looking for node, where the mixing is being done (nn) and the second one (nn2)
-		if(pp->n[0]->u > pp->n[1]->u) { nn = pp->n[0];  nn2 = pp->n[1];}
-		else 						  { nn = pp->n[1];  nn2 = pp->n[0];}
-
-		/// for nodes connected to inlet to the system
-		if (nn->t == 1) {
-			y[i] = Cb_0;
-			ww_r[r_no] 		= i;
-			ww_c[r_no] 		= i;
-			B[r_no]			= 1;
-			r_no++;
-			continue;  //thats all we need for inlet pore
-		}
-
-
-
-		//calculate the nr of inlets to the node and fond neighbors
-		int nr_in =0; //counting nr of inlets to the pores
-		Pore * pp3 = NULL;  //first  inlet pore, the parallel to the pp
-		Pore * pp4 = NULL;  //second inlet pore, perpendicular to the pp
-		double del_xy_1 = -1;  //temporary distance between pore pp and inlet pore to determine which inlet pore is a parallel and which is the perpendicular
-		double del_xy_2 = -1;  //temporary distance between pore pp and inlet pore to determine which inlet pore is a parallel and which is the perpendicular
-		double del_xy_3 = -1;  //temporary distance between pore pp and second outlet pore
-
-		for(int s=0; s<nn->b; s++) if(nn->n[s]->u < nn->u && findPore(nn->n[s],nn)!=pp) del_xy_3 = nn->n[s]->xy - nn2->xy;
-
-		//deciding which inlet pore is "parallel" and which is "perpendicular" to pore pp
-		for(int s=0; s<nn->b; s++) if(nn->n[s]->u > nn->u){
-			nr_in++;
-			if(del_xy_1<0){
-				del_xy_1 = nn->n[s]->xy - nn2->xy;
-				pp3 = findPore(nn,nn->n[s]); //first guess for a parallel pore
-			}
-			else{
-				del_xy_2 =  nn->n[s]->xy - nn2->xy;
-				if(del_xy_2<del_xy_1){
-					pp4 = findPore(nn,nn->n[s]); //first guess for a perpendicular one
-					if(del_xy_1<del_xy_3)  nr_in = 666; //the crossing with two parallel inlet and two parallel outlet, we don't want this kind of crossing to have new mixing
-				}
-				else{						//the first guess was not correct
-					pp4 = pp3;
-					pp3 = findPore(nn,nn->n[s]);
-					if(del_xy_2<del_xy_3)  nr_in = 666; //the crossing with two parallel inlet and two parallel outlet, we don't want this kind of crossing to have new mixing
-		}}}
-
-
-		if(nr_in==2 && nn->b==4 && pp3 != NULL && pp4 != NULL){ // for fancy mixing we need one perpendicular and one parallel inlet pore
-			nn->cb=1;   //just for printing, I want to single out special pores
-			N_streamtube_mixing++;
-			if(fabs(pp->q) > fabs(pp4->q)){ //if our pore takes the most of the flow
-				ww_r[r_no] = i;		ww_c[r_no] = pp4->tmp;		B[r_no++] =  fabs(pp4->q)*outlet_c_b(pp4);
-				ww_r[r_no] = i;     ww_c[r_no] = pp3->tmp;      B[r_no++] = (fabs(pp->q) - fabs(pp4->q))*outlet_c_b(pp3);
-				ww_r[r_no] = i;     ww_c[r_no] = i;             B[r_no++] = -fabs(pp->q);
-			}
-
-			else{
-				ww_r[r_no] = i;		ww_c[r_no] = pp4->tmp;		B[r_no++] =  outlet_c_b(pp4);
-				ww_r[r_no] = i;     ww_c[r_no] = i;             B[r_no++] = -1;
-				}
-			}
-
-		else { 		//normal mixing
-			nn->cb=0;                       //just for printing, I want to single out normal nodes
-			double S_q=0;
-			for(int s=0; s<nn->b; s++){		//equations for normal and outlet nodes
-				Pore *pp = findPore(nn,nn->n[s]);
-				double qq;
-				if(nn==pp->n[0]) qq = -pp->q;
-				else             qq =  pp->q;
-				if(qq > 0){
-					ww_r[r_no] = i;   ww_c[r_no] = pp->tmp;  B[r_no++] = qq*outlet_c_b(pp);
-					S_q+=qq;}}
-
-			ww_r[r_no] = i;   ww_c[r_no] = i;       B[r_no]	= -S_q;
-			if(S_q==0) B[r_no]=1;		//nothing is flowing into the pore
-			r_no++;
-		}
-	}
-
-	//if(r_no!=R_no) {cerr<<"Problem with filling linear equations for concentration! R_no = "<<R_no<<" r_no = "<<r_no<<endl; exit(666);}
-	cerr<<"Calculating concentrations: solving matrix..."<<endl<<flush;
-	int M_out = solve_matrix(R_m, r_no, ww_r, ww_c, B, y);
-	if(M_out!=0) cerr<<"Problem with solving linear equations; M_out = "<<M_out<<endl;
-
-
-	cerr<<"Filling solution..."<<endl;
-	for(int i=0;i<NP;i++) p[i]->c_in = y[i];     //filling the solution
-	cerr<<"The stream-tube mixing has been used in "<<1.*N_streamtube_mixing/NP<<" cases."<<endl;
-
-	//additional printing for debugging
-	print_network_for_debugging ("After calculating inlet concentration ","pressure", "concentration");
-
-	delete[] ww_r;
-	delete[] ww_c;
-	delete[] B;
-	delete[] y;
-
-}
-
-
-
 /**
 * This function update the diameters of all pores due to the dissolution process.
 * WARNING: No precipitation is done in this version.
@@ -783,6 +737,36 @@ void Network::dissolve(){
 * @date 25/09/2019
 */
 void Network::dissolve_and_precipitate(){
+
+	cerr<<"Dissolving and precipitating..."<<endl;
+
+
+	for(int i=0;i<NP;i++){ //for each pore...
+		Pore* p0 = p[i];
+		if (p0->q == 0 || p0->d == 0 || p0->l<=l_min)  continue;    //no reaction in tiny grain or in pore with no flow
+		R->final_geometry_change(p0,this);
+	}
+
+	//final volumes update
+	if(if_track_grains)     for(int i=0; i<NG; i++) for(int im; im<R->bm; im++) g[i]->V[im] = g[i]->V_old[im];
+
+	//final length u[date
+	if(if_dynamical_length) for(int i=0; i<NP; i++) p[i]->calculate_actual_length(this);
+
+
+	//additional printing for debugging
+	print_network_for_debugging ("After dissolution and precipitation","pressure", "diameter","volume A");
+
+}
+
+
+/**
+* This function update the diameters of all pores due to both dissolution and precipitation reactions.
+*
+* @author Agnieszka Budek
+* @date 25/09/2019
+*/
+void Network::dissolve_and_precipitate_old(){
 
 	cerr<<"Dissolving and precipitating..."<<endl;
 
@@ -837,6 +821,5 @@ void Network::dissolve_and_precipitate(){
 	print_network_for_debugging ("After dissolution and precipitation","pressure", "diameter","volume A");
 
 }
-
 
 

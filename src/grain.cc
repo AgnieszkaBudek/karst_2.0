@@ -11,10 +11,12 @@
 * @author Agnieszka Budek
 * @date 13/03/2020
 */
-Grain::Grain (){
+Grain::Grain (int bbm) : bm(bbm) {
 
-	Va = 0; 	Ve=0;
-	tmp = -1; a = -1; tmp2=-1;
+	V = new double [bm]; V_old = new double [bm];
+	for(int i=0;i<bm;i++) {V[i] = 0; V_old[i] = 0;}
+
+	tmp = -1; a = -1;
 	bN=0; bP=0;
 
 	n = NULL;
@@ -31,10 +33,12 @@ Grain::Grain (){
 * @param nn2 third node
 * @date 25/09/2019
 */
-Grain::Grain (float name, Node* nn0, Node* nn1, Node* nn2){
+Grain::Grain (float name, Node* nn0, Node* nn1, Node* nn2,int bbm) : bm(bbm){
+
+	V = new double [bm]; V_old = new double [bm];
+	for(int i=0;i<bm;i++) {V[i] = 0; V_old[i] = 0;}
 		
-	Va = 0; 	Ve=0;
-	tmp = name; a = name; tmp2=0;
+	tmp = name; a = name;
 	bN=3; bP=3;
 
 	n = new Node*[3];
@@ -59,10 +63,12 @@ Grain::Grain (float name, Node* nn0, Node* nn1, Node* nn2){
 * @param nn3 forth node
 * @date 13/03/2020
 */
-Grain::Grain (float name, Node* nn0, Node* nn1, Node* nn2,Node *nn3){
+Grain::Grain (float name, Node* nn0, Node* nn1, Node* nn2,Node *nn3,int bbm) : bm(bbm){
 
-	Va = 0; 	Ve=0;
-	tmp = name; a = name; tmp2=0;
+	V = new double [bm]; V_old = new double [bm];
+	for(int i=0;i<bm;i++) {V[i] = 0; V_old[i] = 0;}
+
+	tmp = name; a = name;
 	bN=4; bP=4;
 
 	n = new Node*[4];
@@ -83,10 +89,12 @@ Grain::Grain (float name, Node* nn0, Node* nn1, Node* nn2,Node *nn3){
 * @param g parent grain
 * @date 25/09/2019
 */
-Grain::Grain (Grain &g){
+Grain::Grain (Grain &g): bm(g.bm){
 
-	Va  = g.Va;  Ve = g.Ve;
-	tmp = g.tmp; a  = g.a; tmp2=0;
+	V = new double[bm]; V_old = new double[bm];
+	for(int i=0;i<bm;i++) {V[i]  = g.V[i]; V_old[i]  = g.V_old[i];}
+
+	tmp = g.tmp; a  = g.a;
 	bN  = g.bN;  bP = g.bP;
 
 	n = new Node*[bN];
@@ -98,11 +106,13 @@ Grain::Grain (Grain &g){
 }
 
 
-Grain& Grain::operator = (Grain &g){
+Grain& Grain::operator = (Grain &g) : bm(g.bm){
 
 
-	Va  = g.Va;  Ve = g.Ve;
-	tmp = g.tmp; a  = g.a; tmp2=g.tmp2;
+	V = new double[bm]; V_old = new double[bm];
+	for(int i=0;i<bm;i++) {V[i]  = g.V[i]; V_old[i]  = g.V_old[i];}
+
+	tmp = g.tmp; a  = g.a;
 	bN  = g.bN;  bP = g.bP;
 
 	n = new Node*[bN];
@@ -119,10 +129,12 @@ Grain& Grain::operator = (Grain &g){
 * @author Agnieszka Budek
 * @date 25/09/2019
 */
-Grain::Grain (float name, int bbP, int bbN, Node** nn0, Pore** pp0){
+Grain::Grain (float name, int bbP, int bbN, Node** nn0, Pore** pp0, int bbm) : bm(bbm){
 
-	Va = 0; 	Ve=0;
-	tmp = name; a = name; tmp2=0;
+	V = new double [bm]; V_old = new double [bm];
+	for(int i=0;i<bm;i++) {V[i] = 0; V_old[i] = 0;}
+
+	tmp = name; a = name;
 	bN=bbN; bP=bbP;
 
 	n = new Node*[bN];
@@ -132,9 +144,14 @@ Grain::Grain (float name, int bbP, int bbN, Node** nn0, Pore** pp0){
 	for(int i=0;i<bP;i++) p[i] = pp0[i];
 }
 
-Grain::Grain (float name, double V_a_tmp, double V_e_tmp, int bb_N, int bb_P){
-	Va = V_a_tmp; 	Ve = V_e_tmp;
-	tmp = name; a = name; tmp2=0;
+Grain::Grain (float name, double V_a_tmp, double V_e_tmp, double V_f_tmp, int bb_N, int bb_P, int bbm) : bm(bbm) {
+
+	V = new double [bm]; V_old = new double [bm];
+	if(bm>0) V[0] = V_a_tmp;
+	if(bm>1) V[1] = V_e_tmp;
+	if(bm>2) V[2] = V_f_tmp;
+
+	tmp = name; a = name;
 	bN=bb_N; bP=bb_P;
 
 	n = new Node*[bN];
@@ -160,13 +177,13 @@ void Grain::calculate_initial_volume (Network *S){
 		double z = S->node_distance(n[2], n[0]);
 		double P = (x+y+z)/2;
 
-		Va = sqrt(P*(P-x)*(P-y)*(P-z));
-		for (int i=0;i<bP;i++) Va -= (M_PI*p[i]->d*p[i]->d*p[i]->l/4)/2;
+		V[0] = sqrt(P*(P-x)*(P-y)*(P-z));
+		for (int i=0;i<bP;i++) V[0] -= (M_PI*p[i]->d*p[i]->d*p[i]->l/4)/2;
 	}
 	//WARNING: the general formula should be implemented for cubic network with added random node positions
 	else if(bN==8){
-		Va = 1;
-		for (int i=0;i<bP;i++) Va -= (M_PI*p[i]->d*p[i]->d*p[i]->l/4)/4;
+		V[0] = 1;
+		for (int i=0;i<bP;i++) V[0] -= (M_PI*p[i]->d*p[i]->d*p[i]->l/4)/4;
 	}
 
 	else if (bN==4){
@@ -176,34 +193,34 @@ void Grain::calculate_initial_volume (Network *S){
 		double z = S->node_distance(n[2], n[0]);
 		double P = (x+y+z)/2;
 
-		Va = sqrt(P*(P-x)*(P-y)*(P-z));
+		V[0] = sqrt(P*(P-x)*(P-y)*(P-z));
 
 		x = S->node_distance(n[0], n[3]);
 		y = S->node_distance(n[3], n[2]);
 		z = S->node_distance(n[2], n[0]);
 		P = (x+y+z)/2;
 
-		Va += sqrt(P*(P-x)*(P-y)*(P-z));
+		V[0] += sqrt(P*(P-x)*(P-y)*(P-z));
 
-		for (int i=0;i<bP;i++) Va -= (M_PI*p[i]->d*p[i]->d*p[i]->l/4)/2;
+		for (int i=0;i<bP;i++) V[0] -= (M_PI*p[i]->d*p[i]->d*p[i]->l/4)/2;
 	}
 
 
 	else if (bN==2){
-		Va = 0;
+		V[0] = 0;
 	}
 
 
 
 	else {
 		cerr<<"WARNING: Initial grain volume for general network has to be implemented!!!"<<endl;
-		Va = 1;
+		V[0] = 1;
 		cerr<<*this<<endl;
 	}
 
-	if(Va<0) Va = 0;
-	if(!(Va>=0)){
-		Va=sqrt(3)/4;
+	if(V[0]<0) V[0] = 0;
+	if(!(V[0]>=0)){
+		V[0]=sqrt(3)/4;
 		//cerr<<"WARNING: Problem with calculating initial volume for grain"<<*this<<" Va = "<<Va<<endl;
 		//cerr<<"Problematic pores: "<<" p = ("<<p[0]->l<<","<<p[1]->l<<","<<p[2]->l<<")"<<endl;
 	}
@@ -286,7 +303,10 @@ double Grain::calculate_maximal_volume (Network *S){
 * @date 25/09/2019
 */
 bool Grain::to_be_merge(){
-	if	(Va+Ve<=0)   	 		return true;
+	double V_tot=0;
+	for(int i=0;i<bm;i++) V_tot += V[i];
+
+	if	(V_tot<=0)   	 		return true;
 	else						return false;
 }
 
@@ -524,8 +544,9 @@ ostream& operator << (ostream & stream, Grain &g){
 	}
 	stream<<")";
 	stream<<"  tmp = " << g.tmp;
-	stream<<"  Va = "  << g.Va;
-	stream<<"  Ve = "  << g.Ve;
+	for (int i=0;i<g.bm;i++){
+		stream<<"  V[">>i<<"] = "  << g.V[i];}
+
 	return stream;
 }
 
@@ -538,7 +559,9 @@ ostream& operator << (ostream & stream, Grain &g){
 * @date 25/09/2019
 */
 ofstream_txt & operator << (ofstream_txt & stream, Grain &g){
-	stream <<setw(12)<<g.a<<setw(12)<<g.Va<<setw(12)<<g.Ve<<endl;
+	stream <<setw(12)<<g.a<<setw(6)<<g.bm;
+	for (int i=0;i<g.bm;i++){setw(12)<<g.V[i];
+	stream<<endl;
 	return stream;
 }
 

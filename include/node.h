@@ -47,7 +47,7 @@ class Node{
 
 		int b;			///< number of neighbors
 		int bG;			///< number of attached grains
-		int bS;         ///< number of soluble species that can enter the node
+		int bw;         ///< number of soluble species that can enter the node
 
 		Node  **n;		///< list of neighboring nodes
 		Pore  **p;		///< list of neighboring pores
@@ -61,9 +61,9 @@ class Node{
 
 	public:
 
-		Node  (int bb, float tt = 0);
-		Node  (int name, int b_tmp, int t_tmp, Point point);
-		~Node (){delete[] n; n=NULL; delete[] p; p=NULL; if(bG>0) delete[] g; g=NULL; delete []c; c=NULL;}
+		Node  (int bb, float tt = 0, int bw);
+		Node  (int name, int b_tmp, int t_tmp, Point point, int bw);
+		~Node (){delete[] n; n=NULL; delete[] p; p=NULL; if(bG>0) delete[] g; g=NULL; delete[] c; c=NULL;}
 
 
 

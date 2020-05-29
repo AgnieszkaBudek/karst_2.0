@@ -51,7 +51,7 @@ double Solid_E_Agnieszkas_model::dd(Pore *p, Network *S){
 												   c0  * (f1*(1-exp(-f2)) - f2*(1-exp(-f1)))/(f1-f2)+\
 												   c0_c*  (1-exp(-f2)) );
 
-	return dd_minus;
+	return (- dd_minus)*S->d0;
 }
 
 bool Solid_A_Agnieszkas_model::is_reacting(Pore *p, Network *S){
@@ -82,6 +82,6 @@ double Solid_A_Agnieszkas_model::dd(Pore *p, Network *S){
 	else        	     dd_plus = S->dt*c0*(1-exp(-f1))/f1/p->d;
 
 
-	return dd_plus;
+	return dd_plus*S->d0;
 
 }

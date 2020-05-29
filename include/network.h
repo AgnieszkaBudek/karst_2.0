@@ -39,6 +39,7 @@
 #include "node.h"
 #include "constants.h"
 #include "printing.h"
+#include "reactions.h"
 
 using namespace std;
 
@@ -72,7 +73,8 @@ class Network
 		int N_wo;			///< number of outlet nodes
 
 		// physical parameters
-		Reactions R;        ///< class with all reactions and info about all soluble and solid species
+		Reactions* R;            ///< class with all reactions and info about all soluble and solid species
+		string reaction_model;   ///< name of reaction model to properly initialize reactions
 
 		double P_in;		///< pressure at the inlet (by default equal to N_y, don't change when Q_tot!=0) (must by positive)
 		double P_out;		///< pressure at the outlet (by default equal to N_y, don't change when Q_tot!=0) (should be set to zero)
@@ -91,9 +93,9 @@ class Network
 		double G2;		///< DaPe for precipitation
 		double Pe1;		///< Peclet number for dissolution (D along pore) (not used now)
 		double Pe2;		///< Peclet number for precipitation (D along pore)  (not used now)
-		double gamma;	///< ratio of acid capacity numbers between dissolution and precipitation
-		double kappa;	///< ratio of Da_2/Da_1 of reaction rates (dissolution vs precipitation)
-		double theta;   ///< ratio of G2/G1 (dissolution vs precipitation)
+		double gamma;	///< ratio of acid capacity numbers between dissolution and precipitation (in two reaction system)
+		double kappa;	///< ratio of Da_2/Da_1 of reaction rates (dissolution vs precipitation) (in two reaction system)
+		double theta;   ///< ratio of G2/G1 (dissolution vs precipitation) (in two reaction system)
 		double d_min;	///< minimal possible pore diameter (important for precipitation)
 		double l_min;   ///< minimal pore length (for numerical reason)
 
@@ -186,7 +188,8 @@ class Network
 		void do_one_euler_step();					///< do one euler step, simplest numerical method for integrating differential equation of the system evolution
 		void calculate_pressures();					///< calculate pressure field for the whose network
 		void calculate_flows();						///< calculate flow field for the whole network
-		void calculate_concentrations();			///< calculate concentration profile for species b
+		void calculate_all_concentrations();	    ///< calculate concentration profile for all species
+		void calculate_concentrations(int i);       ///< calculate concentration for species i
 		void dissolve_and_precipitate();							 ///< change the pore sizes due to both dissolution and precipitation
 		void calculate_pressures_and_flows_smarter(double d_max);    ///< alternative way of calculating pressure and flow field, using d_max: pores larger then d_max do not consume pressure drop but can consume acid :)
 		void calculate_pressures_for_small_d(double d_max);			 ///< part of an alternative way of calculating pressure and flow field, WARNING: must be tested more carefully
@@ -214,11 +217,9 @@ class Network
 // calculating initial properties of the system
 		void calculate_initial_mean_flow();		///< calculate initial mean flow through the system, important for setting Da_eff and G correctly
 		void calculate_initial_d0_and_l0 ();    ///< calculate initial mean pore length and diameter, important for setting Da_eff and G correctly
-		void calculate_initial_total_V(int i);  ///< calculate initial amount of species i, important for mass balance
-		void recalculate_k1 ();					///< recalculate reaction rate, k, has no impact on the simulation, just for potential curiosity
-		void recalculate_DD1();					///< recalculate diffusion coefficient, has no impact on the simulation, just for potential curiosity
-		void recalculate_k2 ();					///< recalculate reaction rate for second reaction, has no impact on the simulation, just for potential curiosity
-		void recalculate_DD2();					///< recalculate diffusion coefficient, has no impact on the simulation, just for potential curiosity
+		void calculate_initial_total_V();       ///< calculate initial amount of species i, important for mass balance
+		void recalculate_k ();					///< recalculate reaction rate, k, has no impact on the simulation, just for potential curiosity
+		void recalculate_DD();					///< recalculate diffusion coefficient, has no impact on the simulation, just for potential curiosity
 
 // creating network
 		void createHexagonalNetwork(int N, int M);	            		///< creating hexagonal network of nodes/pores

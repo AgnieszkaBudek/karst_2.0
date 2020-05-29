@@ -15,9 +15,6 @@ Network::Network (string input_file_name) {
 	P_in   = N_y-1;   //pressure at the inlet (must by positive)
 	P_out  = 0;	      //pressure at the outlet, always should be set to zero
 	Q_tot  = 2*N_x;   //total flow through the system (if == 0 the constant pressure is kept)
-	Va_tot = 0;       //total volume of dissolving species
-	Ve_tot = 0;       //total volume of precipitating species
-
 
 	//dimenssionless parameters describing evolution of the system
 
@@ -36,22 +33,15 @@ Network::Network (string input_file_name) {
 	l_min = l0*1e-10;//minimal possible pore length (must be >0 for numerical reasons)
 
 
+	//Reaction initialization
+	reaction_model = "dissolution_and_precipitation_A";
+	R = new Reactions(reaction_model);
 
 	//physical parameters -> should be set after choosing dimenssionless one
-	
-	k1	= 10e-8;		//reaction rate for dissolution
-	k2	= 1;			//reaction rate for precipitation
-	D1	= 0;			//diffusion coefficient for dissolution
-	D2	= 1;			//diffusion coefficient for precipitation
-	DD1 =-1;			//transversal diffusion coefficient for dissolution
-	DD2 = 1;			//transversal diffusion coefficient for precipitation
 	Sh  = 4;			//Sherwood number for pipe
-	gamma_1	= 1;		//capacity number for dissolution   (c_sol = 1 by default)
-	gamma_2 = 1;		//capacity number for precipitation (c_sol = 1 by default)
-	Cb_0 	= 1;		//acid inlet concentration 
-	Cc_0	= 0;		//precipitating species inlet concentration
 	mu_0    = M_PI*pow(d0,4)/(128*l0);		//viscosity  always set to M_PI*pow(d0,4)/(128*l0)
-	dt_unit = 2*k1 * gamma_1/d0;            //(in dimensionless units [2 k1 * gamma_1/d0])
+
+	dt_unit = 2*R->k[0] * R->gamma[0]/d0;            //(in dimensionless units [2 k1 * gamma_1/d0])
 
 	//evolution parameters
 	T_max       = 10;     	  //maximal number of time steps
@@ -105,9 +95,8 @@ Network::Network (string input_file_name) {
 	if_adaptive_dt                       = true; 	     //adapting dt according to d_d_max and d_d_min;
 	if_recalculate_physical_parameters   = true;         //if true recalculate physical parameters according to dimensionless one
 	if_smarter_calculation_of_pressure   = true;         //if true pressure and flow is calculate in two steps
-	if_precipitation				     = false;		 //if true apart form dissolution the precipitation in on
 	if_dynamical_length				     = true;		 //if true length of pore is changing according to dissolution and precipitation
-	if_streamtube_mixing                 = false;        // if true the stream-tube mixing is perform while calculation the concentration (works only for dissolution now)
+
 
 	//output
 	if_save_ps            = true;     //if true ps pictures are created
@@ -206,8 +195,7 @@ Network::Network (string input_file_name) {
 	if(if_track_grains){
 		cerr<<"Calculating initial grain volume..."<<endl;
 		for(int i=0;i<NG;i++) g[i]->calculate_initial_volume(this);
-		calculate_initial_total_Va();
-		calculate_initial_total_Ve();}
+		calculate_initial_total_V();}
 
 
 //updating pore lengths
@@ -217,9 +205,8 @@ Network::Network (string input_file_name) {
 	calculate_initial_d0_and_l0 ();
 	calculate_initial_mean_flow();
 	if(if_recalculate_physical_parameters) {
-		recalculate_k1 ();
-		recalculate_DD1();
-		//Add precipitation reaction parameters: k2 i DD2
+		recalculate_k ();
+		recalculate_DD();
 	}
 
 

@@ -51,11 +51,12 @@ class Grain{
 
 	public:
 
-		int bS;          ///< number of solid species building a grain
+		const int bm;    ///< number of solid species building a grain
 		double *V;		 ///< table with volume of particular species
+		double *V_old;   ///< table with volume of particular species in previous time step
 
 		double tmp;		 ///< temporal information (name or type of grain)///
-		double tmp2;	 ///< temporal information (for precipitation only)///
+
 		int a;           ///< name of a grain
 		int bN;          ///< numbers of nodes in vicinity (used for non-triangular network)
 		int bP;          ///< numbers of pores in vicinity (used for non-triangular network)
@@ -66,13 +67,13 @@ class Grain{
 
 	public:
 
-		Grain (float tmp,  Node* nn0, Node* nn1, Node* nn2);           //constructor for triangular network
-		Grain (float tmp,  Node* nn0, Node* nn1, Node* nn2, Node* nn3);//constructor for square network
-		Grain (float tmp=0,  int bbP=3, int bbN=3, Node** nn0=NULL, Pore** pp0=NULL);   //constructor for a general network
-		Grain (float name, double V_a_tmp, double V_e_tmp, int bb_N, int bb_P);        //constructor for a network read from file
+		Grain (float tmp,  Node* nn0, Node* nn1, Node* nn2,int bm);                              //constructor for triangular network
+		Grain (float tmp,  Node* nn0, Node* nn1, Node* nn2, Node* nn3,int bm);                   //constructor for square network
+		Grain (float tmp=0,  int bbP=3, int bbN=3, Node** nn0=NULL, Pore** pp0=NULL, int bm);    //constructor for a general network
+		Grain (float name, double V_a_tmp, double V_e_tmp, double V_f_tmp,int bb_N, int bb_P, int bm);          //constructor for a network read from file
 		Grain (Grain &g);
-		Grain ();
-		~Grain ()  {delete[] n; n=NULL; delete[] p; p=NULL; }
+		Grain (int bw);
+		~Grain ()  {delete[] n; n=NULL; delete[] p; p=NULL; delete[] V; V=NULL; delete[] V_old; V_old=NULL;}
 
 		Grain& operator = (Grain &g);
 

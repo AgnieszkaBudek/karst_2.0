@@ -4,7 +4,8 @@
 #include "grain.h"
 
 Pore::Pore (double dd, double ll, float name, int bb){
-	d = dd; l = ll; a=name; tmp=name; q=0; x=1; bG=bb; c_in=0;
+
+	d = dd; l = ll; a=name; tmp=name; q=0; x=1; bG=bb;
 
 	n[0]=NULL; n[1]=NULL;	
 	if(bG>0){
@@ -14,60 +15,41 @@ Pore::Pore (double dd, double ll, float name, int bb){
 }
 
 
-
 /**
-* This function returns the inlet concentration of species B for the pore depending on flow direction through the pore.
+* This function returns the inlet concentration of species i for the pore depending on flow direction through the pore.
 * @author Agnieszka Budek
-* @date 25/09/2019
+* @date 27/05/2020
 */
-double Pore::calculate_inlet_cb(){
-	if (q>0)  return n[0]->cb;
-	else      return n[1]->cb;
+double Pore::calculate_inlet_c(int i){
+	if (q>0)  return n[0]->c[i];
+	else      return n[1]->c[i];
 }
 
 /**
-* This function returns the outlet concentration of species B for the pore depending on flow direction through the pore.
+* This function returns the outlet concentration of species i for the pore depending on flow direction through the pore.
 * @author Agnieszka Budek
-* @date 25/09/2019
+* @date 26/05/2020
 */
-double Pore::calculate_outlet_cb(){
-	if (q>0) return n[1]->cb;
-	else     return n[0]->cb;
-}
-
-/**
-* This function returns the inlet concentration of species C for the pore depending on flow direction through the pore.
-* @author Agnieszka Budek
-* @date 25/09/2019
-*/
-double Pore::calculate_inlet_cc(){
-	if (q>0)  return n[0]->cc;
-	else      return n[1]->cc;
-}
-
-/**
-* This function returns the outlet concentration of species C for the pore depending on flow direction through the pore.
-* @author Agnieszka Budek
-* @date 25/09/2019
-*/
-double Pore::calculate_outlet_cc(){
-	if (q>0) return n[1]->cc;
-	else     return n[0]->cc;
+double Pore::calculate_outlet_c(int i){
+	if (q>0) return n[1]->c[i];
+	else     return n[0]->c[i];
 }
 
 
 /**
-* This function returns true if the species A is still present in neighboring grains.
+* This function returns true if the species i is still present in neighboring grains.
 * This information is important when deciding if the dissolution can still occur in the pore.
 * @author Agnieszka Budek
-* @date 25/09/2019
+* @date 27/05/2020
 */
-bool Pore::is_Va_left(){
-	double Va_tot=0;
-	for (int b=0;b<bG;b++) Va_tot+=g[b]->Va;
-	if(Va_tot>0)   return true;
-	else		   return false;
+bool Pore::is_V_left(int i){
+	double V_tot=0;
+	for (int b=0;b<bG;b++) V_tot+=g[b]->V[i];
+	if(V_tot>0)   return true;
+	else	      return false;
 }
+
+
 
 
 /**
@@ -114,7 +96,7 @@ void Pore::calculate_actual_length(Network *S, double l_max, double l_0){
 	double factor=0; double V_max=0; double V_act=0;
 	for (int s=0; s<bG; s++){
 		V_max = g[s]->calculate_maximal_volume(S);
-		V_act = g[s]->Va + g[s]->Ve;
+		for(int im=0; im<S->R->bm; im++)   V_act += g[s]->V[im];
 		if(V_max>0 && V_act>0) factor += pow(V_act/V_max,1./3);  //One may ask about exponent for semi 2D network, maybe it should be two?
 		}
 
@@ -123,17 +105,16 @@ void Pore::calculate_actual_length(Network *S, double l_max, double l_0){
 
 	if(l<=S->l_min) l = S->l_min;
 
-	if(l<=S->l_min) {
-		if(S->if_verbose) cerr<<"l = l_min for Pore:"<<*this<<endl;
-		for (int s=0; s<bG; s++){
-			if(S->if_verbose) cerr<<"The following gains is going to be empty."<<endl\
-					<<"Grain:"<<*g[s]<<endl;
-			S->Va_tot -= g[s]->Va; g[s]->Va =0;
-            S->Ve_tot -= g[s]->Ve; g[s]->Ve =0;
+//Nie pamiętam po co to bylo
+//	if(l<=S->l_min) {
+//		for (int s=0; s<bG; s++){
+//			if(S->if_verbose) cerr<<"The following gains is going to be empty."<<endl\
+//					<<"Grain:"<<*g[s]<<endl;
+//			S->Va_tot -= g[s]->Va; g[s]->Va =0;
+//            S->Ve_tot -= g[s]->Ve; g[s]->Ve =0;
+//		}
+//	}
 
-
-		}
-	}
 }
 
 /**
