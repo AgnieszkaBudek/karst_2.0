@@ -76,6 +76,8 @@ class Network
 		double Q_tot;		///< total flow through the system
 		double Va_tot;		///< total amount of volume of dissolving species
 		double Ve_tot;		///< total amount of volume of precipitating species
+		double Vx_tot;      ///< total amount of non reacting
+		double Vx_perc;     ///< percentage of non reacting species
 
 		double q_in_0;      ///< initial mean flow through pores (by definition initial flow through inlet pores)
 
@@ -130,7 +132,7 @@ class Network
 		ofstream_ps 	net_ps;
 		ofstream_txt    pores_out, nodes_out, grains_out, net_out, net_g_out;
 		ofstream_txt    time_evolution_out, pattern_analysis_out, child_distribution_out, fork_distribution_out, cluster_size_out;
-		ofstream_txt    diameters_out, flow_out, pressure_out, concentration_out, concentration2_out, VA_out,VE_out, lengths_out;
+		ofstream_txt    diameters_out, flow_out, pressure_out, concentration_out, concentration2_out, VA_out, VE_out, VX_out, lengths_out;
 	   	ifstream 	    conf_in, net_in, net_g_in, pores_in, grains_in;
 	
 

@@ -17,6 +17,8 @@ Network::Network (string input_file_name) {
 	Q_tot  = 2*N_x;   //total flow through the system (if == 0 the constant pressure is kept)
 	Va_tot = 0;       //total volume of dissolving species
 	Ve_tot = 0;       //total volume of precipitating species
+	Vx_tot = 0;       //total amount of non reacting species
+	Vx_perc= 0;       // percentage of non reacting species in the system
 
 
 	//dimenssionless parameters describing evolution of the system
@@ -151,6 +153,7 @@ Network::Network (string input_file_name) {
 		concentration2_out.open("c2.out",	      ios_base::out | ios_base::trunc );
 		VA_out			  .open("VA.out",	      ios_base::out | ios_base::trunc );
 		VE_out			  .open("VE.out",	      ios_base::out | ios_base::trunc );
+		VX_out			  .open("VX.out",	      ios_base::out | ios_base::trunc );
 		lengths_out		  .open("l.out",	      ios_base::out | ios_base::trunc );
 	}
 
@@ -285,6 +288,7 @@ Network:: ~Network (){
 		concentration2_out .close();
 		VA_out			   .close();
 		VE_out 			   .close();
+		VX_out 			   .close();
 		lengths_out		   .close();
 	}
 

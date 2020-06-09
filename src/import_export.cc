@@ -87,7 +87,7 @@ void Network::export_topology_file_with_grains (string out_file_name){
 
 	for (int i=0;i<NG;i++) {
 		Grain * gg = g[i];
-		os<<setw(8)<<gg->a<<setw(14)<<setprecision(5)<<gg->Va<<setw(14)<<setprecision(5)<<gg->Ve<<setw(14)<<gg->bN<<setw(7)<<gg->bP;
+		os<<setw(8)<<gg->a<<setw(14)<<setprecision(5)<<gg->Va<<setw(14)<<setprecision(5)<<gg->Ve<<setw(14)<<gg->Vx<<setw(14)<<gg->bN<<setw(7)<<gg->bP;
 		os << "  (";
 		for(int bb=0;bb<gg->bN;bb++)   os<<setw(w_tmp_n)<< gg->n[bb]->a;
 		os << ")\t\t(";
@@ -287,10 +287,10 @@ void Network::import_grains_from_file (string in_file_name){
 		istringstream line(s);
 
 		int name, bN_tmp, bP_tmp;
-		double Va_tmp, Ve_tmp;
+		double Va_tmp, Ve_tmp, Vx_tmp;
 
-		if(line >> name >> Va_tmp >> Ve_tmp >> bN_tmp >> bP_tmp) {
-			g[j] = new Grain(name,Va_tmp,Ve_tmp,bN_tmp, bP_tmp);
+		if(line >> name >> Va_tmp >> Ve_tmp >> Vx_tmp >> bN_tmp >> bP_tmp) {
+			g[j] = new Grain(name,Va_tmp,Ve_tmp,Vx_tmp,bN_tmp, bP_tmp);
 			line.clear();
 		}
 		else {cerr<<"ERROR: Problem with parsing beginning of line "<<i<< " in file "<<in_file_name<<"."<<endl<<flush; exit(1); continue;}
@@ -414,7 +414,7 @@ void Network::print_net_txt(){
 	nodes_out<<"#" <<setw(11)<<"name"<<setw(6)<<"type"<<setw(12)<<"u"<<setw(12)<<"cb"<<setw(12)<<"cc"<<endl;
 	nodes_out<<"#  ------------------------------------------------"<<endl;
 
-	grains_out<<"#" <<setw(11)<<"name"<<setw(12)<<"Va"<<setw(12)<<"Ve"<<endl;
+	grains_out<<"#" <<setw(11)<<"name"<<setw(12)<<"Va"<<setw(12)<<"Ve"<<setw(12)<<"Vx"<<endl;
 	grains_out<<"#  ------------------------------------------------"<<endl;
 
 
@@ -451,6 +451,7 @@ void Network::print_tables_txt(){
 	if(if_track_grains){
 		VA_out		       <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
 		VE_out      	   <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
+		VX_out      	   <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
 	}
 
 	if (type_of_topology == "hexagonal"){
@@ -463,6 +464,7 @@ void Network::print_tables_txt(){
 			concentration2_out <<setprecision(7)<<setw(12)<<n[i]->cc;
 			for(int b=0; b<2;b++)VA_out  <<setprecision(7)<<setw(12)<<g[2*i+b]->Va;
 			for(int b=0; b<2;b++)VE_out  <<setprecision(7)<<setw(12)<<g[2*i+b]->Ve;
+			for(int b=0; b<2;b++)VX_out  <<setprecision(7)<<setw(12)<<g[2*i+b]->Vx;
 			if(i%N_x ==N_x-1){
 				diameters_out       <<endl;
 				flow_out            <<endl;
@@ -471,6 +473,7 @@ void Network::print_tables_txt(){
 				pressure_out        <<endl;
 				VA_out              <<endl;
 				VE_out              <<endl;
+				VX_out              <<endl;
 				lengths_out         <<endl;
 			}
 		}
@@ -486,6 +489,7 @@ void Network::print_tables_txt(){
 				concentration2_out <<setprecision(7)<<setw(12)<<n[i]->cc;
 				VA_out  <<setprecision(7)<<setw(12)<<g[i]->Va;
 				VE_out  <<setprecision(7)<<setw(12)<<g[i]->Ve;
+				VX_out  <<setprecision(7)<<setw(12)<<g[i]->Vx;
 				if(i%N_x ==N_x-1){
 					diameters_out       <<endl;
 					flow_out            <<endl;
@@ -494,6 +498,7 @@ void Network::print_tables_txt(){
 					pressure_out        <<endl;
 					VA_out              <<endl;
 					VE_out              <<endl;
+					VX_out              <<endl;
 					lengths_out         <<endl;
 				}
 			}

@@ -180,6 +180,10 @@ void::Network::read_setup_file(ifstream& fp_setup){
 			Cc_0 = stod(value);
 			cerr<< "Setting Cc_0 = "<<Cc_0<<endl;}
 
+		else if(name == "Vx_perc"){
+			Vx_perc = stod(value);
+			cerr<< "Setting Vx_perc = "<<Vx_perc<<endl;}
+
 		else if(name == "T_max"){
 			T_max = stod(value);
 			cerr<< "Setting T_max = "<<T_max<<endl;}

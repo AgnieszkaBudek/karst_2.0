@@ -53,6 +53,7 @@ class Grain{
 
 		double Va;		 ///< volume of material A
 		double Ve;		 ///< volume of material E
+		double Vx;       ///< volume of non-reacting material
 
 		double tmp;		 ///< temporal information (name or type of grain)///
 		double tmp2;	 ///< temporal information (for precipitation only)///
@@ -69,7 +70,7 @@ class Grain{
 		Grain (float tmp,  Node* nn0, Node* nn1, Node* nn2);           //constructor for triangular network
 		Grain (float tmp,  Node* nn0, Node* nn1, Node* nn2, Node* nn3);//constructor for square network
 		Grain (float tmp=0,  int bbP=3, int bbN=3, Node** nn0=NULL, Pore** pp0=NULL);   //constructor for a general network
-		Grain (float name, double V_a_tmp, double V_e_tmp, int bb_N, int bb_P);        //constructor for a network read from file
+		Grain (float name, double V_a_tmp, double V_e_tmp, double V_X_tmp, int bb_N, int bb_P);        //constructor for a network read from file
 		Grain (Grain &g);
 		Grain ();
 		~Grain ()  {delete[] n; n=NULL; delete[] p; p=NULL; }

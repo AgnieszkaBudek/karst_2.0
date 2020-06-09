@@ -68,8 +68,9 @@ void Network::calculate_initial_mean_flow(){   //important for physical paramete
 * @date 25/09/2019
 */
 void Network :: calculate_initial_total_Va(){
-	Va_tot = 0;
+	Va_tot = 0;   Vx_tot = 0;
 	for(int i=0;i<NG;i++) Va_tot+=g[i]->Va;
+	for(int i=0;i<NG;i++) Vx_tot+=g[i]->Vx;
 
 }
 
@@ -384,7 +385,7 @@ void Network:: createRandomTrianglesNetwork(int N_x, int N_y){
 	NG = int(NP*2./3. + 0.9);
 	g = new Grain*[NG];
 	cerr<<"Numbers of grain "<<NG<<endl;
-	for(int i=0;i<NG;i++) g[i] = new Grain(i,0,0,3,3);
+	for(int i=0;i<NG;i++) g[i] = new Grain(i,0,0,0,3,3);
 	int i=0;
 	for (const auto &t : triangles) if(t.p1.a >=0 && t.p2.a >=0 && t.p3.a >=0){
 			if((t.p1.a < NN )||(t.p2.a < NN )||(t.p3.a < NN))

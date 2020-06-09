@@ -13,7 +13,7 @@
 */
 Grain::Grain (){
 
-	Va = 0; 	Ve=0;
+	Va = 0; 	Ve=0;     Vx=0;
 	tmp = -1; a = -1; tmp2=-1;
 	bN=0; bP=0;
 
@@ -33,7 +33,7 @@ Grain::Grain (){
 */
 Grain::Grain (float name, Node* nn0, Node* nn1, Node* nn2){
 		
-	Va = 0; 	Ve=0;
+	Va = 0; 	Ve=0;     Vx=0;
 	tmp = name; a = name; tmp2=0;
 	bN=3; bP=3;
 
@@ -61,7 +61,7 @@ Grain::Grain (float name, Node* nn0, Node* nn1, Node* nn2){
 */
 Grain::Grain (float name, Node* nn0, Node* nn1, Node* nn2,Node *nn3){
 
-	Va = 0; 	Ve=0;
+	Va = 0; 	Ve=0;      Vx=0;
 	tmp = name; a = name; tmp2=0;
 	bN=4; bP=4;
 
@@ -85,7 +85,7 @@ Grain::Grain (float name, Node* nn0, Node* nn1, Node* nn2,Node *nn3){
 */
 Grain::Grain (Grain &g){
 
-	Va  = g.Va;  Ve = g.Ve;
+	Va  = g.Va;  Ve = g.Ve;   Vx = g.Vx;
 	tmp = g.tmp; a  = g.a; tmp2=0;
 	bN  = g.bN;  bP = g.bP;
 
@@ -101,7 +101,7 @@ Grain::Grain (Grain &g){
 Grain& Grain::operator = (Grain &g){
 
 
-	Va  = g.Va;  Ve = g.Ve;
+	Va  = g.Va;  Ve = g.Ve;  Vx = g.Vx;
 	tmp = g.tmp; a  = g.a; tmp2=g.tmp2;
 	bN  = g.bN;  bP = g.bP;
 
@@ -121,7 +121,7 @@ Grain& Grain::operator = (Grain &g){
 */
 Grain::Grain (float name, int bbP, int bbN, Node** nn0, Pore** pp0){
 
-	Va = 0; 	Ve=0;
+	Va = 0; 	Ve=0;     Vx=0;
 	tmp = name; a = name; tmp2=0;
 	bN=bbN; bP=bbP;
 
@@ -132,8 +132,8 @@ Grain::Grain (float name, int bbP, int bbN, Node** nn0, Pore** pp0){
 	for(int i=0;i<bP;i++) p[i] = pp0[i];
 }
 
-Grain::Grain (float name, double V_a_tmp, double V_e_tmp, int bb_N, int bb_P){
-	Va = V_a_tmp; 	Ve = V_e_tmp;
+Grain::Grain (float name, double V_a_tmp, double V_e_tmp, double V_x_tmp, int bb_N, int bb_P){
+	Va = V_a_tmp; 	Ve = V_e_tmp;   Vx = V_x_tmp;
 	tmp = name; a = name; tmp2=0;
 	bN=bb_N; bP=bb_P;
 
@@ -207,7 +207,12 @@ void Grain::calculate_initial_volume (Network *S){
 		//cerr<<"WARNING: Problem with calculating initial volume for grain"<<*this<<" Va = "<<Va<<endl;
 		//cerr<<"Problematic pores: "<<" p = ("<<p[0]->l<<","<<p[1]->l<<","<<p[2]->l<<")"<<endl;
 	}
-	//cerr<<"VA = "<<Va<<endl;
+
+	//updating Vx percentage
+	if(S->Vx_perc > 0){
+		Vx = S->Vx_perc*Va;
+		Va = (1-S->Vx_perc)*Va;
+	}
 }
 
 /**
@@ -286,7 +291,7 @@ double Grain::calculate_maximal_volume (Network *S){
 * @date 25/09/2019
 */
 bool Grain::to_be_merge(){
-	if	(Va+Ve<=0)   	 		return true;
+	if	(Va+Ve+Vx<=0)   	 		return true;
 	else						return false;
 }
 
@@ -526,6 +531,7 @@ ostream& operator << (ostream & stream, Grain &g){
 	stream<<"  tmp = " << g.tmp;
 	stream<<"  Va = "  << g.Va;
 	stream<<"  Ve = "  << g.Ve;
+	stream<<"  Vx = "  << g.Vx;
 	return stream;
 }
 
@@ -538,7 +544,7 @@ ostream& operator << (ostream & stream, Grain &g){
 * @date 25/09/2019
 */
 ofstream_txt & operator << (ofstream_txt & stream, Grain &g){
-	stream <<setw(12)<<g.a<<setw(12)<<g.Va<<setw(12)<<g.Ve<<endl;
+	stream <<setw(12)<<g.a<<setw(12)<<g.Va<<setw(12)<<g.Ve<<setw(12)<<g.Vx<<endl;
 	return stream;
 }
 

@@ -114,7 +114,7 @@ void Pore::calculate_actual_length(Network *S, double l_max, double l_0){
 	double factor=0; double V_max=0; double V_act=0;
 	for (int s=0; s<bG; s++){
 		V_max = g[s]->calculate_maximal_volume(S);
-		V_act = g[s]->Va + g[s]->Ve;
+		V_act = g[s]->Va + g[s]->Ve + g[s]->Vx;
 		if(V_max>0 && V_act>0) factor += pow(V_act/V_max,1./3);  //One may ask about exponent for semi 2D network, maybe it should be two?
 		}
 

@@ -123,6 +123,7 @@ void Network::write_time_step_properties(){
 				"P"             <<setw(15)<<\
 				"VA_tot"        <<setw(15)<<\
 				"VE_tot"        <<setw(15)<<\
+				"VX_tot"        <<setw(15)<<\
 				"d_in_max"      <<setw(15)<<\
 				"d_out_max"     <<setw(15)<<endl;
 		time_evolution_out<<"#  ----------------------------------------------------------------------------------------------------------------"<<endl;
@@ -144,6 +145,7 @@ void Network::write_time_step_properties(){
 			wi[0]->u   <<setw(15)<<\
 			Va_tot     <<setw(15)<<\
 			Ve_tot     <<setw(15)<<\
+			Vx_tot     <<setw(15)<<\
 			d_in_max   <<setw(15)<<\
 			d_out_max  <<endl<<flush;
 }
