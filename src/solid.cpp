@@ -9,10 +9,23 @@
 #include "pore.h"
 #include "node.h"
 #include "network.h"
+#include "reactions.h"
 
 Solid::Solid() {
-	// TODO Auto-generated constructor stub
 
+	V_tot = 0;
+	gamma = -1;
+	br    = 0;
+	r     = NULL;
+
+}
+
+Solid::Solid(int bbr, Single_Reaction** rr){
+
+	V_tot =  0;
+	gamma = -1;
+	br    = bbr;
+	r     = rr;
 }
 
 Solid::~Solid() {

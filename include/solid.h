@@ -10,8 +10,16 @@
 
 class Pore;
 class Network;
+class Single_Reaction;
 
 class Solid {
+
+	double gamma; 		  ///< capacity number
+	double V_tot;		  ///< total amount of volume for species
+
+	int br;               ///< number of reactions in takes part  //not used
+	Single_Reaction **r;  ///< list of reaction it takes part     //not used
+
 
 public:
 	virtual bool    is_reacting(Pore* p, Network* S)=0;  //if true the species is reacting in a pore
@@ -19,6 +27,7 @@ public:
 
 public:
 	Solid();
+	Solid(int bbr, Single_Reaction** rr);
 	virtual ~Solid();
 };
 

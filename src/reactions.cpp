@@ -7,6 +7,27 @@
 
 #include "reactions.h"
 
+Single_Reaction::Single_Reaction(){
+
+	sw = NULL;
+	sm = NULL;
+	pw = NULL;
+	pm = NULL;
+	k  = -1;
+
+}
+
+Single_Reaction::Single_Reaction(Soluble * ssw, Solid *ssm, Soluble *ppw, Solid *ppm){
+
+	sw = ssw;
+	sm = ssm;
+	pw = ppw;
+	pm = ppm;
+	k  = -1;
+
+}
+
+
 Reactions::Reactions(string model_name) {
 
 	if      (model_name == "pure_dissolution") 					Set_reactions_to_pure_dissolution();
@@ -18,12 +39,9 @@ Reactions::Reactions(string model_name) {
 
 Reactions::~Reactions() {
 
-	delete [] k;      k     = NULL;
-	delete [] D;      D     = NULL;
-	delete [] DD;     DD    = NULL;
-	delete [] C0;     C0    = NULL;
-	delete [] V_tot;  V_tot = NULL;
-	delete [] gamma;  gamma = NULL;
+	delete [] w;
+	delete [] m;
+	delete [] r;
 
 }
 
@@ -34,23 +52,28 @@ void Reactions::Set_reactions_to_pure_dissolution(){
 	br = 1;    ///< one reaction
 
 	w = new Soluble* [bw];    		///< table with soluble materials
-	m = new Solid*   [bm];      		///< table with solid materials
-
-	C0    = new double [bw];    		///< table with soluble materials concentration
-	V_tot = new double [bm];      		///< table with total amount of volume for all species
-
-	k = new double [br];      		///< table with reactions rate (not used now)
-	D = new double [bw];      		///< table with diffusion coefficient (not used now)
-	DD= new double [bw];      		///< table with transversal diffusion coefficient (not used now)
-	gamma = new double[bm];         ///< table with capacity number for all solids
-
-	C0[0]     = 1;                   ///< by definition in this system inlet concentration of acid is 1
-	gamma[0] = 1;					///< by definition in this system gamma is 1
+	m = new Solid*   [bm];          ///< table with solid materials
+	r = new Singla_Reaction* [br];  ///< list of reactions
 
 	w[0] = new Soluble_B_Agnieszkas_model();
 	m[0] = new Solid_A_Agnieszkas_model();
 	m[1] = new Solid_non_reacting();
 
+	r[0] = new Single_Reaction(w[0],m[0],NULL,NULL);
+
+////to be deleted
+////giving info about reactions to Soluble and Solids
+//	w[0]->br   = 1;
+//	w[0]->r    = new Single_Reaction* [1];
+//	w[0]->r[0] = r[0];
+//
+//	m[0]->br   = 1;
+//	m[0]->r    = new Single_Reaction* [1];
+//	m[0]->r[0] = r[0];
+//
+//	m[1]->br   = 1;
+//	m[1]->r    = new Single_Reaction* [1];
+//	m[1]->r[0] = r[0];
 }
 
 void Reactions::Set_reactions_to_dissolution_and_precipitation_A(){
@@ -61,26 +84,41 @@ void Reactions::Set_reactions_to_dissolution_and_precipitation_A(){
 	br = 2;    ///< one reaction
 
 	w = new Soluble* [bw];    		///< table with soluble materials
-	m = new Solid*   [bm];      		///< table with solid materials
+	m = new Solid*   [bm];          ///< table with solid materials
+	r = new Singla_Reaction* [br];  ///< list of reactions
 
-	C0    = new double [bw];    		///< table with soluble materials concentration
-	V_tot = new double [bm];      		///< table with total amount of volume for all species
-
-	k = new double [br];      		///< table with reactions rate (not used now)
-	D = new double [bw];      		///< table with diffusion coefficient (not used now)
-	DD= new double [bw];      		///< table with transversal diffusion coefficient (not used now)
-	gamma = new double[bm];         ///< table with capacity number for all solids
-
-	C0[0]     = 1;                   ///< can be change later in network creator (while reading setup file)
-	C0[1]     = 0;                   ///< can be change later in network creator (while reading setup file)
-	gamma[0] = 1;					///< can be change later in network creator (while reading setup file)
-	gamma[1] = 1;					///< can be change later in network creator (while reading setup file)
 
 	w[0] = new Soluble_B_Agnieszkas_model();
 	w[1] = new Soluble_C_Agnieszkas_model();
 	m[0] = new Solid_A_Agnieszkas_model();
-	m[1] = new Solid_E_Agnieszkas_model();
-	m[2] = new Solid_non_reacting();
+	m[0] = new Solid_E_Agnieszkas_model();
+	m[1] = new Solid_non_reacting();
+
+	r[0] = new Single_Reaction(w[0],m[0],w[1],NULL);
+	r[1] = new Single_Reaction(w[1],NULL,NULL,m[1]);
+
+
+//to be deleted
+////giving info about reactions to Soluble and Solids
+//	w[0]->br   = 1;
+//	w[0]->r    = new Single_Reaction* [1];
+//	w[0]->r[0] = r[0];
+//
+//	m[0]->br   = 1;
+//	m[0]->r    = new Single_Reaction* [1];
+//	m[0]->r[0] = r[0];
+//
+//	w[1]->br   = 2;
+//	w[1]->r    = new Single_Reaction* [2];
+//	w[1]->r[0] = r[0];  w[1]->r[1] = r[1];
+//
+//
+//	m[1]->br   = 1;
+//	m[1]->r    = new Single_Reaction* [1];
+//	m[1]->r[0] = r[1];
+
+
+
 }
 
 void Reactions::Set_reactions_to_dissolution_and_precipitation_F1(){

@@ -40,6 +40,8 @@
 #include "constants.h"
 #include "printing.h"
 #include "reactions.h"
+#include "solid.h"
+#include "soluble.h"
 
 using namespace std;
 
@@ -271,10 +273,10 @@ class Network
 		void import_grains_from_file            (string in_file_name);			///< import extra info about grains: list of grains and their neighboring nodes and pores plus info avout Va and Ve
 
 // verification
-		void check_flow_balance();		  	///< Checks if the flow through the system is conserve (if not the pressure field is not calculated precisely enough)
-		void check_material_balance();		///< Checks if the amount of all species is conserved, if not some problem with merging occurs
-		void check_network_connections();   ///< Checks consistency of network connections, if false the initial network is badly defined or there is a problem with merging
-		void check_GMash_connections();		///< FOr checking GMash only
+		void check_flow_balance();		  	   ///< Checks if the flow through the system is conserve (if not the pressure field is not calculated precisely enough)
+		void check_material_balance(int im);   ///< Checks if the amount of species im is conserved, if not some problem with merging occurs
+		void check_network_connections();      ///< Checks consistency of network connections, if false the initial network is badly defined or there is a problem with merging
+		void check_GMash_connections();		   ///< FOr checking GMash only
 		void print_network_for_debugging (string text = "Network",string type_n = "name", string type_p="name", string type_g = "name"); ///< Print all information about network in large pdf (WARNING: not to be used for large networks and large no of time steps)
 
 // results analysis

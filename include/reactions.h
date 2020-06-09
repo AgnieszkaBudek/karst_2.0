@@ -26,6 +26,27 @@ class Solid;
 class Pore;
 class Network;
 
+
+
+class Single_Reaction{
+
+public:
+	Single_Reaction();
+	Single_Reaction(Soluble *, Solid *, Soluble *, Solid *);
+
+public:
+
+	Soluble   *sw;  ///<soluble substrate  (there may be more soluble substrates in general case, but it is not implemented yet)
+	Solid     *sm;	///<solid substrate
+	Soluble   *pw;  ///<soluble product
+	Solid     *pm;  ///<solid product
+
+	double      k;  //<reaction rate
+
+};
+
+
+
 class Reactions {
 
 public:
@@ -34,15 +55,9 @@ public:
 	int bm;    ///< number of solid species
 	int br;    ///< number of independent reactions
 
-	Soluble** w;    	///< table with soluble materials
-	Solid  ** m;   		///< table with solid materials
-
-	double* k;     		///< table with reactions rate (not used now)
-	double* D;     		///< table with diffusion coefficient (not used now)
-	double* DD;    		///< table with transversal diffusion coefficient (not used now)
-	double* gamma; 		///< table with capacity number for all solid materials
-	double* C0;			///< inlet concentration of all soluble materials
-	double* V_tot;		///< table with total amount of volume for all species
+	Soluble** w;    	  ///< table with soluble materials
+	Solid  ** m;   		  ///< table with solid materials
+	Single_Reaction** r;  ///< table with all reactions in the system
 
 
 public:

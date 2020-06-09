@@ -11,6 +11,7 @@
 #include "pore.h"
 #include "node.h"
 #include "network.h"
+#include "reactions.h"
 
 #include <math.h>
 #include <cmath>
@@ -26,12 +27,32 @@
 
 
 Soluble::Soluble() {
-	// TODO Auto-generated constructor stub
+
+	br = 0;
+	r = NULL;
+
+	C0 = 0;
+	D  = -1;
+	DD = -1;
+	r = NULL;
 
 }
 
+Soluble::Soluble(int bbr, Single_Reaction** rr){
+
+	br = bbr;
+	r  = rr;
+
+	C0 = 0;
+	D  = -1;
+	DD = -1;
+
+
+}
+
+
 Soluble::~Soluble() {
-	// TODO Auto-generated destructor stub
+	delete []r;
 }
 
 bool Soluble_B_Agnieszkas_model::is_reacting(Pore *p, Network *S){
@@ -114,7 +135,7 @@ double Soluble_C_Agnieszkas_model::c1(Pore *p0, Network *S){
 	//Checking if there is enough space for full dissolution
 	if(p0->d + dd < S->d_min){
 		double delta_minus = S->R->m[1]->dd(p0,S);
-		if(p0->is_V_left(0)) return q_tmp;            //if there is no space for full precipitation I use ugly but working formula form outlet_c_c_2
+		if(p0->is_V_left(0)) return q_tmp*1;            //if there is no space for full precipitation I use ugly but working formula form outlet_c_c_2
 		else                 return q_tmp*(1 - (p0->d-S->d_min)/fabs(delta_minus)*(1-exp(-f2)));
 	}
 	else 		return  q_tmp*exp(-f2);	  //if there is enough space for precipitation

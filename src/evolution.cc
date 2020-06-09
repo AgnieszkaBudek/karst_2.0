@@ -80,7 +80,7 @@ void Network::do_one_euler_step(){
 
 	//checking acid and flow balance
 	check_flow_balance();
-	if(if_track_grains) check_material_balance();
+	if(if_track_grains) for(int im=0;im<R->bm;im++) check_material_balance(im);
 
 	//check_GMash_connections();  //additional checking for G_Mash network
 

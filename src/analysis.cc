@@ -26,10 +26,10 @@ void Network::analyze_diss_pattern(bool if_anal_pattern){
 	if (s_save_data<0)                                   if_anal_pattern = check_diss_front(print_diss_factor, pages_saved*abs(s_save_data));
 	else if (s_save_data>=1 && tot_steps%int(s_save_data)==0) if_anal_pattern = true;
 	else if (s_save_data>0 && s_save_data<1){ //check the volume condition!!!
-		if (tot_steps==0) Va_old = Va_tot;
-		if ((Va_old-Va_tot)/Va_tot>s_save_data){
+		if (tot_steps==0) Va_old = R->m[0]->V_tot;
+		if ((Va_old-R->m[0]->V_tot)/Va_old>s_save_data){
 			if_anal_pattern = true;
-			Va_old = Va_tot;
+			Va_old = R->m[0]->V_tot;
 		}
 	}
 
@@ -121,10 +121,10 @@ void Network::write_time_step_properties(){
 				"time"          <<setw(15)<<\
 				"Q"             <<setw(15)<<\
 				"P"             <<setw(15)<<\
-				"VA_tot"        <<setw(15)<<\
-				"VE_tot"        <<setw(15)<<\
 				"d_in_max"      <<setw(15)<<\
-				"d_out_max"     <<setw(15)<<endl;
+				"d_out_max"     <<setw(2);
+		for(int i=0;i<R->bm;i++) time_evolution_out<<"V["<<setw(1)<<i<<"]_max"<<setw(12);
+		time_evolution_out<<endl;
 		time_evolution_out<<"#  ----------------------------------------------------------------------------------------------------------------"<<endl;
 	}
 
@@ -142,9 +142,9 @@ void Network::write_time_step_properties(){
 			tot_time   <<setw(15)<<\
 			Q_tot      <<setw(15)<<\
 			wi[0]->u   <<setw(15)<<\
-			Va_tot     <<setw(15)<<\
-			Ve_tot     <<setw(15)<<\
 			d_in_max   <<setw(15)<<\
-			d_out_max  <<endl<<flush;
+			d_out_max  <<setw(15);
+	for(int i=0;i<R->bm;i++) time_evolution_out<<R->m[0]->V_tot<<setw(15);
+	time_evolution_out<<endl<<flush;
 }
 

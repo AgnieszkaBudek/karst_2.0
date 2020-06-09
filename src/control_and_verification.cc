@@ -1,4 +1,4 @@
-#include "network.h"
+ #include "network.h"
 
 /**
 * This function checks flow balance in the system.
@@ -161,6 +161,75 @@ void Network::check_precipitating_balance(){
 	Va_tot=Va_tot_tmp;
 
 }
+
+
+
+
+void Network::check_material_balance(int im){
+
+	Solid* m = R->m[im];
+
+	double eps = 1e-5; // acceptable error
+	double V_in=0, V_out=0;
+	double V_prod_delta =0;
+
+	//calculate total production of species m
+	double V_prod_new = 0; int i_tmp=-1;
+	for(int ir=0; ir<R->br;ir++) if(R->r[ir]->pm == m){
+		for (i_tmp=0;i_tmp<R->bm;i_tmp++) if(R->r[ir]->sm == R->m[i_tmp]) break;
+	}
+
+	for(int i=0;i<NG;i++) V_prod_new+= g[i]->V[i_tmp]/R->m[i_tmp]->gamma;
+	V_prod_delta = V_prod_new - R->m[i_tmp]->V_tot;
+
+
+	double V_prod_delta = V_prod_new - m->V_tot;
+
+
+	//total
+
+	//calculate total input of precipitaton species
+	for(int i=0;i<N_wi;i++){
+		Node* n_tmp = wi[i];
+		for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0) VC_in+=fabs(n_tmp->p[j]->q)*n_tmp->cc*dt/dt_unit;
+	}
+
+	//calculate total output of acid
+	for(int i=0;i<N_wo;i++){
+		Node* n_tmp = wo[i];
+		for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0) VC_out+=(1.*gamma)*fabs(n_tmp->p[j]->q)*n_tmp->cc*dt/dt_unit; //UWAGA: to ewentualnie pomnozym przez gamma i kappa trzeba lub nie
+		}
+
+	//calculate consumption of C
+	double Ve_tot_tmp = 0;
+	for(int i=0;i<NG;i++) Ve_tot_tmp+= g[i]->Ve;
+
+	double Ve_delta =  Ve_tot_tmp - Ve_tot;
+
+	//tymczasowe smieci
+	double d_min = 1;
+	for(int i=0;i<NP;i++)   if (p[i]->d<d_min && p[i]->d>0) d_min = p[i]->d;
+//	cerr<<"d_min = "    << d_min<<endl;
+//	cerr<<"VC_in = "    << VC_in<<endl;
+//	cerr<<"VC_out = "   << VC_out<<endl;
+//	cerr<<"Ve_stare = " << Ve_tot<<endl;
+//	cerr<<"Ve_nowe =  " << Ve_tot_tmp<<endl;
+
+
+
+	double Vc_delta =  VC_in - VC_out;
+	if(fabs(Vc_delta - Ve_delta)/fabs(Vc_delta + Ve_delta) > eps)
+		{cerr<<"WARNING: Mass is not conserved in precipitation: Vc_delta = "<<setprecision(10)<<Vc_delta <<" Ve_delta = "<<Ve_delta<<setprecision(10)<<"."<<endl;}
+	else
+		cerr<<"Mass is conserved in precipitation: Vc_delta = "<<Vc_delta <<" Ve_delta = "<<Ve_delta<<"."<<endl;
+	Ve_tot=Ve_tot_tmp;
+	Va_tot=Va_tot_tmp;
+
+}
+
+
+
+
 
 
 /**
