@@ -101,7 +101,7 @@ void Pore::calculate_maximal_length(Network *S, double l_max, double l_0){
 * @param l_max maximal length for the network, important for periodic boundary conditions
 * @param l_0 characteristic pore's length, if there is a problem with calculation max length l_0 is returned
 * @author Agnieszka Budek
-* @date 25/09/2019
+* @date 26/09/2019
 */
 void Pore::calculate_actual_length(Network *S, double l_max, double l_0){
 
