@@ -50,13 +50,13 @@ int test_oscillation_in_diss_pre(string config_name){
 	int N = 10;
 
 	for(int i=0;i<N;i++){
-		cerr<<"Dissolution nr " <<i<<endl;
+		cerr<<"\n\n\n\nDissolution nr " <<i<<endl;
 		S->Cb_0  = 1;
 		S->Cc_0  = 0;
 		S->gamma = 0;
 		S->evolution(0); 							//evolution of the system
 
-		cerr<<"Precipitation nr " <<i<<endl;
+		cerr<<"\n\n\n\nPrecipitation nr " <<i<<endl;
 		S->Cb_0  = 0;
 		S->Cc_0  = 1;
 		S->gamma = gamma;
@@ -103,7 +103,7 @@ int main(int argc, char** argv){
 
 		case 'C':   config_name     = string(argv[++i]); cerr<<"config_name = "<<config_name<<endl; break;
 
-		case 'V':   sim_version     = string(argv[++i]); cerr<<"config_name = "<<config_name<<endl; break;
+		case 'V':   sim_version     = string(argv[++i]); cerr<<"sim_version = "<<sim_version<<endl; break;
 
 		default:	printf("Unknown argument.\n"); break;
 	}
