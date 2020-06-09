@@ -38,6 +38,42 @@
 #include "printing.h"
 #include "tests.h"
 
+
+
+int test_oscillation_in_diss_pre(string config_name){
+
+	if (config_name == "")  config_name = "config.txt";
+
+	Network *S = new Network(config_name);		//creation the system: reading initial parameters form the file
+
+	double gamma = S->gamma;
+	int N = 10;
+
+	for(int i=0;i<N;i++){
+		cerr<<"Dissolution nr " <<i<<endl;
+		S->Cb_0  = 1;
+		S->Cc_0  = 0;
+		S->gamma = 0;
+		S->evolution(0); 							//evolution of the system
+
+		cerr<<"Precipitation nr " <<i<<endl;
+		S->Cb_0  = 0;
+		S->Cc_0  = 1;
+		S->gamma = gamma;
+		S->evolution(0); 							//evolution of the system
+	}
+
+	delete S;    								//closing the system
+
+	return 0;
+
+}
+
+
+/**
+ * Basic simulation run with both dissolution and precipitation (depending on the config file)
+ **/
+
 int test_dissolution(string config_name){
 
 	if (config_name == "")  config_name = "config.txt";
@@ -57,7 +93,7 @@ int main(int argc, char** argv){
 	
 	bool if_show_picture = 0 ;  //if true, picture is automatically shown (working on MacOs, Linux to be checked)
 	string config_name   = "";  //path to the config file
-
+    string sim_version   = "single_run";
 
 //inline options: normal mode, debugging mode, number of simulations, etc.
 
@@ -67,10 +103,16 @@ int main(int argc, char** argv){
 
 		case 'C':   config_name     = string(argv[++i]); cerr<<"config_name = "<<config_name<<endl; break;
 
+		case 'V':   sim_version     = string(argv[++i]); cerr<<"config_name = "<<config_name<<endl; break;
+
 		default:	printf("Unknown argument.\n"); break;
 	}
 
-    test_dissolution(config_name);
+
+    //which version of simulateon to run
+    if       (sim_version == "single_run")    test_dissolution            (config_name);
+    else  if (sim_version == "oscillation")	  test_oscillation_in_diss_pre(config_name);
+    else                                      cerr<<"ERROR: Improper value of sim_version!"<<endl;
 
 //    test_triangulation();
 
