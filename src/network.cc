@@ -205,13 +205,13 @@ Network::Network (string input_file_name) {
 //calculating initial Va volume for grains
 	if(if_track_grains){
 		cerr<<"Calculating initial grain volume..."<<endl;
-		for(int i=0;i<NG;i++) g[i]->calculate_initial_volume(this);
+		if(type_of_topology != "from_file") for(int i=0;i<NG;i++) g[i]->calculate_initial_volume(this);
 		calculate_initial_total_Va();
 		calculate_initial_total_Ve();}
 
 
 //updating pore lengths
-	if(if_dynamical_length) for(int i=0; i<NP;i++) p[i]->calculate_actual_length(this);
+	if(if_dynamical_length && type_of_topology != "from_file") for(int i=0; i<NP;i++) p[i]->calculate_actual_length(this);
 
 //calculating physical parameters based on dimensionless one
 	calculate_initial_d0_and_l0 ();
