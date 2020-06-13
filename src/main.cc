@@ -47,7 +47,7 @@ int test_oscillation_in_diss_pre(string config_name){
 	Network *S = new Network(config_name);		//creation the system: reading initial parameters form the file
 
 	double gamma = S->gamma;
-	int N = 10;
+	int N = 5;
 
 	for(int i=0;i<N;i++){
 		cerr<<"\n\n\n\nDissolution nr " <<i<<endl;

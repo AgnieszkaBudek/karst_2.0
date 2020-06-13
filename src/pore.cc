@@ -197,6 +197,25 @@ double Pore::local_Da_eff_2(Network* S){
 }
 
 
+double Pore::local_Pe(Network *S){
+
+	if (q==0) return -1;
+	if (d==0) return -1;
+
+	return S->Pe*(fabs(q)/S->q_in_0)*pow((l/S->l0),2)*(S->d0/d);
+}
+
+
+double Pore::local_Pe_2(Network *S){
+
+	if (q==0) return -1;
+	if (d==0) return -1;
+
+	return S->Pe2*(fabs(q)/S->q_in_0)*pow((l/S->l0),2)*(S->d0/d);
+}
+
+
+
 
 /**
 * This function returns the change in diameter due to dissolution in one time step.
@@ -219,12 +238,22 @@ double Pore::default_dd_plus(Network*S){
 
 	double dd_plus = 0; 		//diameter change
 
+	//version without transversal diffusion
+	if(S->D1==0){
+		//finding dissolution contribution
+		if      (f1==0)      dd_plus = 0;
+		else if (S->G1 >=0)  dd_plus = S->dt*c0*(1-exp(-f1))/(1+g)/f1;
+		else        	     dd_plus = S->dt*c0*(1-exp(-f1))/f1/d;
+	}
+	else{  //version with transversal diffusion
+		double pe = local_Pe(S);
+		double c1 = calculate_outlet_cb();
+		double a  = sqrt(pe*(4*f1+pe));
+		double b  = pe/2;
 
-	//finding dissolution contribution
-	if      (f1==0)      dd_plus = 0;
-	else if (S->G1 >=0)  dd_plus = S->dt*c0*(1-exp(-f1))/(1+g)/f1;
-	else        	     dd_plus = S->dt*c0*(1-exp(-f1))/f1/d;
-
+		dd_plus  = S->dt*(2*b*(c0 - c1) + a*(c0 + c1)/tanh(a/2.) - a*(c1 + c0*exp(2*b))/sinh(a/2.)/exp(b))/(4.*b*f1);
+		dd_plus  = fabs(dd_plus);
+	}
 
 	return dd_plus;
 }
@@ -266,6 +295,9 @@ double Pore::default_dd_minus(Network*S){
 
 	return dd_minus;
 }
+
+
+
 
 /**
 * This function removes the pore form the list of neighboring nodes.

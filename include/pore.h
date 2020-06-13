@@ -76,11 +76,16 @@ class Pore{
 		void   calculate_actual_length (Network *S = NULL, double l_max=10, double l_0=1);	///< calculate initial pore length
 		double local_G        (Network* S);			///< dissolution parameters
 		double local_Da_eff   (Network* S); 		///< dissolution parameter
+		double local_Pe       (Network* S); 		///< dissolution parameter
 		double local_G_2      (Network* S);      	///< precipitation parameter
 		double local_Da_eff_2 (Network* S);      	///< precipitation parameter
+		double local_Pe_2     (Network* S); 		///< precipitation parameter
 		bool   is_Va_left();						///< return false if there is no Va material left
-		double default_dd_plus(Network*S);		///< change in diameter as a result of dissolution
-		double default_dd_minus(Network*S);    ///< default change in diameter as a result of precipitation (no space condition is checked)
+		double default_dd_plus   (Network*S);		///< change in diameter as a result of dissolution
+		double default_dd_minus  (Network*S);       ///< default change in diameter as a result of precipitation (no space condition is checked)
+		double default_dd_plus_d (Network*S);		///< change in diameter as a result of dissolution (model with diffusion)
+		double default_dd_minus_d(Network*S);       ///< default change in diameter as a result of precipitation (no space condition is checked)  (model with diffusion)
+
 
 
 		void   remove_info_from_attached_nodes(); 			///< remove this pore from the list of connected nodes

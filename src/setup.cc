@@ -145,8 +145,8 @@ void::Network::read_setup_file(ifstream& fp_setup){
 			cerr<< "Setting G2 = "<<G2<<endl;}
 
 		else if(name == "Pe1"){
-			Pe1 = stod(value);
-			cerr<< "Setting Pe1 = "<<Pe1<<endl;}
+			Pe = stod(value);
+			cerr<< "Setting Pe1 = "<<Pe<<endl;}
 
 		else if(name == "Pe2"){
 			Pe2 = stod(value);

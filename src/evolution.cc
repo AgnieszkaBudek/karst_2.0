@@ -77,13 +77,13 @@ void Network::do_one_euler_step(){
 
 	if(if_precipitation){
 
-		calculate_concentrations();
+		calculate_concentrations_b();
 		calculate_concentrations_c();
 		dissolve_and_precipitate();
 		}
 	else{
 		if(if_streamtube_mixing) 	calculate_concentrations_streamtube_mixing();
-		else						calculate_concentrations();
+		else						calculate_concentrations_b();
 
 	    dissolve();
 	}

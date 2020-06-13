@@ -102,7 +102,7 @@ class Network
 		double Da2;		///< effective Damkohler number for precipitation
 		double G1;		///< DaPe for dissolution
 		double G2;		///< DaPe for precipitation
-		double Pe1;		///< Peclet number for dissolution (D along pore) (not used now)
+		double Pe;		///< Peclet number for dissolution (D along pore) (not used now)
 		double Pe2;		///< Peclet number for precipitation (D along pore)  (not used now)
 		double gamma;	///< ratio of acid capacity numbers between dissolution and precipitation
 		double kappa;	///< ratio of Da_2/Da_1 of reaction rates (dissolution vs precipitation)
@@ -201,7 +201,7 @@ class Network
 		void do_one_euler_step();					///< do one euler step, simplest numerical method for integrating differential equation of the system evolution
 		void calculate_pressures();					///< calculate pressure field for the whose network
 		void calculate_flows();						///< calculate flow field for the whole network
-		void calculate_concentrations();			///< calculate concentration profile for species b
+		void calculate_concentrations_b();			///< calculate concentration profile for species b
 		void calculate_concentrations_c();			///< calculate concentration profile for species c
 		void calculate_concentrations_streamtube_mixing(); 		     ///< new fancy mixing method where particles prefer to go straight through the crossing
  		void dissolve();											 ///< change the pore sizes due to the dissolution
@@ -212,12 +212,22 @@ class Network
 		void calculate_flows_for_large_d(double d_max);				 ///< part of an alternative way of calculating pressure and flow field, WARNING: must be tested more carefully
 
 
+
 		void adapt_dt();												///< part of adapting the time step, for the dissolution to be not too slow not too fast
 		void recalculate_flows_to_keep_Q_tot(string type_of_nodes);     ///< when total flow through the system is kept the flow field must be rescaled in each time step
 		void set_adaptive_dt(double dd, double dV);                     ///< the time dt will be adapted in each time step according to the speed of dissolution and precipitation
 		void check_if_dissolved();										///< checks if the system is dissolved, if yes the simulation stops
 
-		//Properties of particular pores
+
+// evolution with transversal diffusion
+		void calculate_concentrations_b_diff();			///< calculate concentration profile for species b
+		void calculate_concentrations_c_diff();			///< calculate concentration profile for species c
+ 		void dissolve_diff();							///< change the pore sizes due to the dissolution
+		void dissolve_and_precipitate_diff();			///< change the pore sizes due to both dissolution and precipitation
+
+
+
+//Properties of particular pores
 		double outlet_c_b       (Pore* p);    	///< returns the outlet concentration of species b in the pore p as a function of c0_b
 		double outlet_c_c_1     (Pore* p);		///< returns the outlet concentration of species c in the pore p as a function of c0_b
 		double outlet_c_c_2     (Pore* p);		///< returns the outlet concentration of species c in the pore p as a function of c0_c
@@ -227,6 +237,15 @@ class Network
 		double G2_in_pore       (Pore* p);		///< returns the value of g2 (see precipitation) in the pore p
 		double Da_eff_in_pore   (Pore* p);		///< returns the value of Da_eff in the pore p
 		double Da_eff_2_in_pore (Pore* p);		///< returns the value of Da_eff_2 (see precipitation) in the pore p
+		double Pe_in_pore       (Pore *p);      ///< returns the value of Peclet number in the pore p for the species b
+		double Pe_in_2_pore     (Pore *p);      ///< returns the value of Peclet number in the pore p for the species c
+		double outlet_c_b_1_d   (Pore* p,int);  ///< returns the outlet concentration of species b in the pore p as a function of c0_b (version with diffusion)
+		double outlet_c_b_0_d   (Pore* p,int);	///< returns the outlet concentration of species b (the free parameter)
+		double outlet_c_c_1_d   (Pore* p,int);  ///< returns the outlet concentration of species c in the pore p as a function of c0_c (version with diffusion)
+		double outlet_c_c_0_d   (Pore* p,int);	///< returns the outlet concentration of species c (the free parameter)
+
+
+
 
 		void check_diss_pattern(double threshold);		///< check the position of the dissolution pattern - pores larger that threshold x d0
 		bool check_diss_front  (double threshold, int row);  ///< check if the dissolution pattern -reaches particular row of pores

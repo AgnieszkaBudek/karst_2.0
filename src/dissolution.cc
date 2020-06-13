@@ -446,7 +446,7 @@ double Network::outlet_c_c_2 (Pore *p0){
 * @author Agnieszka Budek
 * @date 25/09/2019
 */
-void Network::calculate_concentrations(){
+void Network::calculate_concentrations_b(){
 
 	cerr<<"Calculating concentrations for species B..."<<endl;
 
