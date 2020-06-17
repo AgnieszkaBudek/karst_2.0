@@ -106,6 +106,7 @@ class Network
 		double Pe2;		///< Peclet number for precipitation (D along pore)  (not used now)
 		double gamma;	///< ratio of acid capacity numbers between dissolution and precipitation
 		double kappa;	///< ratio of Da_2/Da_1 of reaction rates (dissolution vs precipitation)
+		double sigma;   ///< ratio of Pe1/Pe2 (dissolution vs reaction)
 		double theta;   ///< ratio of G2/G1 (dissolution vs precipitation)
 		double d_min;	///< minimal possible pore diameter (important for precipitation)
 		double l_min;   ///< minimal pore length (for numerical reason)
@@ -199,12 +200,20 @@ class Network
 		void evolution(long int T = 0);				///< make whole evolution
 		void do_one_leapfrog_step();				///< do one leap-frog step, WARNING: not implemented yet
 		void do_one_euler_step();					///< do one euler step, simplest numerical method for integrating differential equation of the system evolution
-		void calculate_pressures();					///< calculate pressure field for the whose network
-		void calculate_flows();						///< calculate flow field for the whole network
-		void calculate_concentrations_b();			///< calculate concentration profile for species b
+		void calculate_pressure_and_flow_filed();   ///< main function to calculate pressure and flow fields
+		void calculate_concentration_field();       ///< main function calculating concentration field for all species
+		void update_geometry();                     ///< main function updating diameters and length in all pores
+		void check_mass_balance();                  ///< check if the above function preserve total mass in the system
+
+// specific realization of evolution function
+		void calculate_pressures();					///< calculate pressure field for the whole network (default version)
+		void calculate_flows();						///< calculate flow field for the whole network (default version)
+		void calculate_concentrations_b();			///< calculate concentration profile for species b (whipot diffusion)
 		void calculate_concentrations_c();			///< calculate concentration profile for species c
 		void calculate_concentrations_streamtube_mixing(); 		     ///< new fancy mixing method where particles prefer to go straight through the crossing
- 		void dissolve();											 ///< change the pore sizes due to the dissolution
+		void calculate_concentrations_b_diff();			///< calculate concentration profile for species b
+		void calculate_concentrations_c_diff();			///< calculate concentration profile for species c
+		void dissolve();											 ///< change the pore sizes due to the dissolution
 		void dissolve_and_precipitate();							 ///< change the pore sizes due to both dissolution and precipitation
 		void calculate_pressures_and_flows_smarter(double d_max);    ///< alternative way of calculating pressure and flow field, using d_max: pores larger then d_max do not consume pressure drop but can consume acid :)
 		void calculate_pressures_for_small_d(double d_max);			 ///< part of an alternative way of calculating pressure and flow field, WARNING: must be tested more carefully
@@ -217,13 +226,6 @@ class Network
 		void recalculate_flows_to_keep_Q_tot(string type_of_nodes);     ///< when total flow through the system is kept the flow field must be rescaled in each time step
 		void set_adaptive_dt(double dd, double dV);                     ///< the time dt will be adapted in each time step according to the speed of dissolution and precipitation
 		void check_if_dissolved();										///< checks if the system is dissolved, if yes the simulation stops
-
-
-// evolution with transversal diffusion
-		void calculate_concentrations_b_diff();			///< calculate concentration profile for species b
-		void calculate_concentrations_c_diff();			///< calculate concentration profile for species c
- 		void dissolve_diff();							///< change the pore sizes due to the dissolution
-		void dissolve_and_precipitate_diff();			///< change the pore sizes due to both dissolution and precipitation
 
 
 

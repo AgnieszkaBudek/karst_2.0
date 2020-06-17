@@ -144,9 +144,9 @@ void::Network::read_setup_file(ifstream& fp_setup){
 			G2 = stod(value);
 			cerr<< "Setting G2 = "<<G2<<endl;}
 
-		else if(name == "Pe1"){
+		else if(name == "Pe"){
 			Pe = stod(value);
-			cerr<< "Setting Pe1 = "<<Pe<<endl;}
+			cerr<< "Setting Pe = "<<Pe<<endl;}
 
 		else if(name == "Pe2"){
 			Pe2 = stod(value);
@@ -159,6 +159,11 @@ void::Network::read_setup_file(ifstream& fp_setup){
 		else if(name == "kappa"){
 			kappa = stod(value);
 			cerr<< "Setting kappa = "<<kappa<<endl;}
+
+		else if(name == "sigma"){
+			sigma = stod(value);
+			cerr<< "Setting sigma = "<<sigma<<endl;}
+
 
 		else if(name == "theta"){
 			theta = stod(value);
@@ -471,6 +476,7 @@ void::Network::read_setup_file(ifstream& fp_setup){
 	NN    = N_x * N_y;
 	Da2   = kappa * Da;
 	G2    = theta * G1;
+	Pe2   = sigma*Pe;
 
 
 	cerr<<"At the beginning of the simulation:\nDa = "<<Da<<"\nG1 = "<<G1<<"\nDa2 = "<<Da2<<"\nG2 = "<<G2<<endl;

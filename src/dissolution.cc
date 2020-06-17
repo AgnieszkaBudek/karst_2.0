@@ -455,7 +455,7 @@ void Network::calculate_concentrations_b(){
 
 	int R_no = 0;
 	for(int i=0;i<NN;i++)
-		if(n[i]->t==0) R_no+=n[i]->b+1;
+		if(n[i]->t<=0) R_no+=n[i]->b+1;
 		else           R_no++;
 
 
@@ -529,7 +529,7 @@ void Network::calculate_concentrations_c(){
 	//calculating nr of nono zero elements of linear equations
 	int R_no = 0;
 	for(int i=0;i<NN;i++)
-		if(n[i]->t==0) R_no+=n[i]->b+1;
+		if(n[i]->t<=0) R_no+=n[i]->b+1;
 		else           R_no++;
 
 

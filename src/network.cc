@@ -29,11 +29,12 @@ Network::Network (string input_file_name) {
 	Da2   = 1;		 //effective Damkohler number for precipitation
 	G1    = 1;		 //DaPe for dissolution
 	G2    = 1;		 //DaPe for precipitation
-	Pe   = 1;		 //Peclet number for dissolution (D along pore)
-	Pe2   = 1;		 //Peclet number for precipitation (D along pore)
+	Pe    = -1;		 //Peclet number for dissolution (D along pore)   (-1 means no diffusion)
+	Pe2   = -1;		 //Peclet number for precipitation (D along pore) (-1 means no diffusion)
 	gamma = 1;	     //ratio of acid capacity numbers between dissolution and precipitation (gamma1/gamma2)
 	kappa = 1;	     //ratio of Da_1/Da_2 = ratio of reaction rates
 	theta = 1;	     //ratio of G_1/G_2
+	sigma = 1;       //ratio of Pe/Pe_2
 	d_min = d0/100.; //minimal possible pore diameter (important in precipitation)
 	l_min = l0*1e-10;//minimal possible pore length (must be >0 for numerical reasons)
 

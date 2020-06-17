@@ -22,7 +22,7 @@ void Network::calculate_concentrations_b_diff(){
 
 	int R_no = 0;
 	for(int i=0;i<NN;i++)
-		if(n[i]->t==0) R_no+=n[i]->b+1;
+		if(n[i]->t!=1) R_no+=n[i]->b+1;
 		else           R_no++;
 
 
@@ -42,18 +42,21 @@ void Network::calculate_concentrations_b_diff(){
 		if(n[i]->t==1) 	y[i] = Cb_0;
 		else 			y[i] = 0;
 
-		if(n[i]->t==1) S_q=-1;					//if node is an inlet one
+		if(n[i]->t==1) S_q=1;					//if node is an inlet one
 		else for(int s=0; s<n[i]->b; s++){		//eqs for normal and outlet nodes
+
 			Pore *pp = findPore(n[i],n[i]->n[s]);
 			double qq;
 			if(n[i]==pp->n[0]) qq = -pp->q;
 			else               qq =  pp->q;
+			if(qq==0) continue;
 
 			ww_r[r_no] 	= i;
 			ww_c[r_no] 	= n[i]->n[s]->tmp;
-			B[r_no]		= outlet_c_b_1_d(pp,_sign(qq));
-			S_q+= outlet_c_b_0_d(pp,_sign(qq));
-			r_no++;}
+			if(n[i]->t==-1) {B[r_no++] = qq*outlet_c_b(pp);            S_q += -qq;
+					        if(qq<=0) {cerr<<"BLAD!!!"<<endl; exit(123);}}
+			else            {B[r_no++] = qq*outlet_c_b_1_d(pp,_sign(qq)); S_q += qq*outlet_c_b_0_d(pp,_sign(qq)); }
+			}
 
 		ww_r[r_no] 		= i;
 		ww_c[r_no] 		= i;
@@ -78,31 +81,22 @@ void Network::calculate_concentrations_b_diff(){
 	delete[] B;
 	delete[] y;
 
-
 }
-
-
-
 
 
 void Network::calculate_concentrations_c_diff(){
 
+	cerr<<"Has to be implemented!!!"<<endl;
+	exit(123);
 
 }
 
-
-void Network::dissolve_diff(){
-
-}
-
-
-void Network::dissolve_and_precipitate_diff(){
-
- //ta funkcja zostanie stara, tylko będę podstawiac w miejsce p->dd_plus odpowiednio funkcę z dyfuzja lub bez
-}
 
 
 double Network::outlet_c_b_1_d   (Pore* p, int s) {
+
+	if(p->d==0) return 0;
+	if(p->q==0) return 0;
 
 	double pe = p->local_Pe    (this);
 	double da = p->local_Da_eff(this);
@@ -110,22 +104,25 @@ double Network::outlet_c_b_1_d   (Pore* p, int s) {
 	double a = sqrt(pe*(4*da+pe));
 	double b = s*pe/2;
 
-	if(s>0) return p->q*(a*exp(a/2.+b))/(2.*b*(exp(a)-1));
-	else    return p->q*(a+2*b + (a-2*b)*exp(a))/(4.*b*(1- exp(a)));
+	return - (a*exp(a/2.+b)) / (2.*b*(1-exp(a)));
 }
 
 
 
 double Network::outlet_c_b_0_d   (Pore* p, int s) {
 
+	if(p->d==0) return 0;
+	if(p->q==0) return 0;
+
+
 	double pe = p->local_Pe    (this);
 	double da = p->local_Da_eff(this);
 
 	double a = sqrt(pe*(4*da+pe));
 	double b = s*pe/2;
 
-	if(s>0) return p->q*(a+2*b + (a-2*b)*exp(a))/(4.*b*(1- exp(a)));
-	else    return p->q*(a*exp(a/2.+b))/(2.*b*(exp(a)-1));
+	return  (a+2*b + (a-2*b)*exp(a)) / (4.*b*(1-exp(a)));
+
 }
 
 
