@@ -230,7 +230,7 @@ double Pore::default_dd_plus(Network*S){
 	if(l<=S->l_min)    return 0;   //no reaction in tiny grain
 
 	//dissolution parameters
-	double f1      = local_Da_eff(S);
+	double da      = local_Da_eff(S);
 	double g       = local_G(S);
 	double c0;
 	if(S->if_streamtube_mixing) c0 = c_in;
@@ -238,20 +238,20 @@ double Pore::default_dd_plus(Network*S){
 
 	double dd_plus = 0; 		//diameter change
 
-	//version without transversal diffusion
-	if(S->D1==0){
-		//finding dissolution contribution
-		if      (f1==0)      dd_plus = 0;
-		else if (S->G1 >=0)  dd_plus = S->dt*c0*(1-exp(-f1))/(1+g)/f1;
-		else        	     dd_plus = S->dt*c0*(1-exp(-f1))/f1/d;
+
+	if(S->Pe==-1){   //version without transversal diffusion
+
+		if      (da==0)      dd_plus = 0;
+		else if (S->G1 >=0)  dd_plus = S->dt*c0*(1-exp(-da))/(1+g)/da;
+		else        	     dd_plus = S->dt*c0*(1-exp(-da))/da/d;
 	}
 	else{  //version with transversal diffusion
 		double pe = local_Pe(S);
 		double c1 = calculate_outlet_cb();
-		double a  = sqrt(pe*(4*f1+pe));
+		double a  = sqrt(pe*(4*da+pe));
 		double b  = pe/2;
 
-		dd_plus  = S->dt*(2*b*(c0 - c1) + a*(c0 + c1)/tanh(a/2.) - a*(c1 + c0*exp(2*b))/sinh(a/2.)/exp(b))/(4.*b*f1);
+		dd_plus  = S->dt*(2*b*(c0 - c1) + a*(c0 + c1)/tanh(a/2.) - a*(c1 + c0*exp(2*b))/sinh(a/2.)/exp(b))/(4.*b*da)/(1+g);
 		dd_plus  = fabs(dd_plus);
 	}
 

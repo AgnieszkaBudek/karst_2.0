@@ -76,7 +76,7 @@ ofstream_ps & operator << (ofstream_ps & stream, Pore &p){
 
 	bool if_debug=true;
 	if(p.n[0]->xy - p.n[1]->xy < max_distance && p.d<300&& p.n[0]->xy.z == z_to_print && p.n[1]->xy.z == z_to_print){
-		if (if_debug && p.x==2) stream<<Porek(p.n[0]->xy,p.n[1]->xy,p.d/10,p.tmp,kkk);
+		if (if_debug || p.x==2) stream<<Porek(p.n[0]->xy,p.n[1]->xy,p.d/10,p.tmp,kkk);
 		//else                    stream<<Porek(p.n[0]->xy,p.n[1]->xy,p.d/4 ,p.tmp,kkk);
 		}
 	return stream;}

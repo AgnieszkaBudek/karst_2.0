@@ -767,7 +767,7 @@ void Network::dissolve(){
 
 	//updating Va and Ve (must be done after main dissolution for c_out to be calculated correctly)
 	if(if_track_grains)     for(int i=0;i<NG;i++)   {g[i]->Va+=g[i]->tmp; if(g[i]->Va<0) {Va_tot-=g[i]->Va; g[i]->Va = 0;}}
-	if(if_dynamical_length) for(int i=0; i<NP; i++) p[i]->calculate_actual_length(this);
+	if(if_dynamical_length) for(int i=0; i<NP; i++)  p[i]->calculate_actual_length(this);
 
 
 	//additional printing for debugging

@@ -49,13 +49,16 @@ void Network::calculate_concentrations_b_diff(){
 			double qq;
 			if(n[i]==pp->n[0]) qq = -pp->q;
 			else               qq =  pp->q;
-			if(qq==0) continue;
+			if(fabs(qq)<=1e-10)  continue;  //epsilon for numerical stability, one has to check the best value
 
 			ww_r[r_no] 	= i;
 			ww_c[r_no] 	= n[i]->n[s]->tmp;
-			if(n[i]->t==-1) {B[r_no++] = qq*outlet_c_b(pp);            S_q += -qq;
-					        if(qq<=0) {cerr<<"BLAD!!!"<<endl; exit(123);}}
-			else            {B[r_no++] = qq*outlet_c_b_1_d(pp,_sign(qq)); S_q += qq*outlet_c_b_0_d(pp,_sign(qq)); }
+			if (n[i]->t==-1) {
+				//y[i]=0.5;                                        //for debugging
+				//B[r_no++] = qq*outlet_c_b(pp);  S_q += -qq;      //first attempt, but mass not conserved
+				B[r_no++] = qq*outlet_c_b_1_d(pp,_sign(qq)); S_q += qq*outlet_c_b_0_d(pp,_sign(qq))-qq;}
+			else           {
+				B[r_no++] = qq*outlet_c_b_1_d(pp,_sign(qq)); S_q += qq*outlet_c_b_0_d(pp,_sign(qq));}
 			}
 
 		ww_r[r_no] 		= i;
@@ -65,6 +68,20 @@ void Network::calculate_concentrations_b_diff(){
 		if(S_q==0) B[r_no]=1;		//nothing is flowing into the pore
 		r_no++;
 	}
+
+// Printing entire matrix for debugging purpose
+//	double M[NN][NN];
+//	cerr<<endl<<endl;
+//	for (int i=0;i<NN;i++) for(int j=0;j<NN;j++)
+//		M[i][j]=0;
+//	for (int i=0;i<r_no;i++) M[ww_r[i]][ww_c[i]] = B[i];
+//	for (int i=0;i<NN;i++){
+//		for(int j=0;j<NN;j++) cerr<<setw(7)<<setprecision(4)<<M[i][j];
+//		cerr<<endl;
+//	}
+
+
+
 	//if(r_no!=R_no) {cerr<<"Problem with filling linear equations for concentration! R_no = "<<R_no<<" r_no = "<<r_no<<endl; exit(666);}
 	cerr<<"Calculating concentrations: solving matrix..."<<endl;
 	int M_out = solve_matrix(R_m, r_no, ww_r, ww_c, B, y);
@@ -75,6 +92,7 @@ void Network::calculate_concentrations_b_diff(){
 
 	//additional printing for debugging
 	print_network_for_debugging ("After calculating concentration B field ","acid concentration", "flow");
+
 
 	delete[] ww_r;
 	delete[] ww_c;
@@ -98,11 +116,14 @@ double Network::outlet_c_b_1_d   (Pore* p, int s) {
 	if(p->d==0) return 0;
 	if(p->q==0) return 0;
 
+	//pore connected to the outlet does not track diffusion
+	//if(p->n[0]->t==-1 || p->n[1]->t==-1)	return 1; //problems when dc=0 in the last pore (with small q)
+
 	double pe = p->local_Pe    (this);
 	double da = p->local_Da_eff(this);
 
 	double a = sqrt(pe*(4*da+pe));
-	double b = s*pe/2;
+	double b = s*pe/2.;
 
 	return - (a*exp(a/2.+b)) / (2.*b*(1-exp(a)));
 }
@@ -115,13 +136,17 @@ double Network::outlet_c_b_0_d   (Pore* p, int s) {
 	if(p->q==0) return 0;
 
 
+	//pore connected to the outlet does not track diffusion
+	//if(p->n[0]->t==-1 || p->n[1]->t==-1)	return 1; //problems when dc=0 in the last pore (with small q)
+
+
 	double pe = p->local_Pe    (this);
 	double da = p->local_Da_eff(this);
 
 	double a = sqrt(pe*(4*da+pe));
-	double b = s*pe/2;
+	double b = s*pe/2.;
 
-	return  (a+2*b + (a-2*b)*exp(a)) / (4.*b*(1-exp(a)));
+	return  (a + 2*b + (a - 2*b)*exp(a)) / (4.*b*(1-exp(a)));
 
 }
 

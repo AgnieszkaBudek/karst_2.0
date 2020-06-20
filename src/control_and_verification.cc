@@ -84,22 +84,38 @@ void Network::check_acid_balance(){
 		//calculate total input of acid
 		for(int i=0;i<N_wi;i++){
 			Node* n_tmp = wi[i];
-			for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0) VB_in+=fabs(n_tmp->p[j]->q)*n_tmp->cb*dt/dt_unit;
+			for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0) {
+				Pore *pp=n_tmp->p[j];
+				if(Pe==-1) VB_in+=fabs(pp->q)*n_tmp->cb*dt/dt_unit;
+				else       VB_in+=fabs(pp->q)*\
+								(outlet_c_b_1_d(pp,-1)*pp->calculate_outlet_cb() +\
+								 outlet_c_b_0_d(pp,-1)*pp->calculate_inlet_cb ())*\
+								 dt/dt_unit;}
 		}
 
 		//calculate total output of acid
 		for(int i=0;i<N_wo;i++){
 			Node* n_tmp = wo[i];
-			for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0) VB_out+=fabs(n_tmp->p[j]->q)*n_tmp->cb*dt/dt_unit;
+			for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0){
+				Pore *pp=n_tmp->p[j];
+				if(Pe==-1 || true) VB_out +=fabs(pp->q)*n_tmp->cb*dt/dt_unit;
+				else	   VB_out +=fabs(pp->q)*\
+						(outlet_c_b_1_d(pp,1)*pp->calculate_inlet_cb() +\
+						 outlet_c_b_0_d(pp,1)*pp->calculate_outlet_cb ())*\
+						 dt/dt_unit;}
 			}
 	}
+
+	cerr<<"VB_in = " <<VB_in <<endl;
+	cerr<<"VB_out = "<<VB_out<<endl;
+
 
 	//calculate consumption of acid
 	double Va_tot_tmp = 0;
 	for(int i=0;i<NG;i++) Va_tot_tmp+= g[i]->Va;
 
 	double Va_delta = Va_tot - Va_tot_tmp;
-	double Vb_delta = VB_in - VB_out;
+	double Vb_delta = VB_in  - VB_out;
 
 	if(fabs(Vb_delta - Va_delta)/fabs(Vb_delta + Va_delta) > eps)
 		{cerr<<"WARNING: Mass is not conserved: Vb_delta = "<<setprecision(10)<<Vb_delta <<" Va_delta = "<<Va_delta<<setprecision(10)<<"."<<endl;}
@@ -107,6 +123,7 @@ void Network::check_acid_balance(){
 		cerr<<"Mass is conserved: Vb_delta = "<<Vb_delta <<" Va_delta = "<<Va_delta<<"."<<endl;
 	if(!if_precipitation) Va_tot=Va_tot_tmp;
 
+	//if(tot_steps==1) exit(123);
 }
 
 
