@@ -126,21 +126,16 @@ void Network::calculate_concentration_field(){
 
 	if(Pe==-1){  //without transversal diffusion
 
-		if(if_precipitation){
-			calculate_concentrations_b();
-			calculate_concentrations_c();
-			}
-		else{
-			if(if_streamtube_mixing) 	calculate_concentrations_streamtube_mixing();
-			else						calculate_concentrations_b();
-		}
+		if(if_streamtube_mixing) 	calculate_concentrations_streamtube_mixing();
+		else						calculate_concentrations_b();
+
+		if(if_precipitation)        calculate_concentrations_c();
 	}
 
 	else {   //version with transversal diffusion
 		calculate_concentrations_b_diff();
 		if(if_precipitation) calculate_concentrations_c_diff();
 	}
-
 }
 
 

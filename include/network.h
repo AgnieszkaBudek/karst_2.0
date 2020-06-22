@@ -78,6 +78,11 @@ class Network
 		double Ve_tot;		///< total amount of volume of precipitating species
 		double Vx_tot;      ///< total amount of non reacting
 		double Vx_perc;     ///< percentage of non reacting species
+		double Vb_in_tot;   ///< total volume of species b flowing into the system in one time step
+		double Vb_out_tot;  ///< total volume of species b flowing out of the system in one time step
+		double Vc_in_tot;   ///< total volume of species c flowing into the system in one time step
+		double Vc_out_tot;  ///< total volume of species c flowing out of the system in one time step
+
 
 		double q_in_0;      ///< initial mean flow through pores (by definition initial flow through inlet pores)
 
@@ -259,8 +264,10 @@ class Network
 		void calculate_initial_total_Ve();		///< calculate initial amount of species E, important for mass balance
 		void recalculate_k1 ();					///< recalculate reaction rate, k, has no impact on the simulation, just for potential curiosity
 		void recalculate_DD1();					///< recalculate diffusion coefficient, has no impact on the simulation, just for potential curiosity
+		void recalculate_D1();					///< recalculate transversal diffusion coefficient, has no impact on the simulation, just for potential curiosity
 		void recalculate_k2 ();					///< recalculate reaction rate for second reaction, has no impact on the simulation, just for potential curiosity
-		void recalculate_DD2();					///< recalculate diffusion coefficient, has no impact on the simulation, just for potential curiosity
+		void recalculate_DD2();					///< recalculate transversal diffusion coefficient, has no impact on the simulation, just for potential curiosity
+		void recalculate_D2();
 
 // creating network
 		void createHexagonalNetwork(int N, int M);	            		///< creating hexagonal network of nodes/pores

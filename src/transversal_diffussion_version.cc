@@ -69,19 +69,6 @@ void Network::calculate_concentrations_b_diff(){
 		r_no++;
 	}
 
-// Printing entire matrix for debugging purpose
-//	double M[NN][NN];
-//	cerr<<endl<<endl;
-//	for (int i=0;i<NN;i++) for(int j=0;j<NN;j++)
-//		M[i][j]=0;
-//	for (int i=0;i<r_no;i++) M[ww_r[i]][ww_c[i]] = B[i];
-//	for (int i=0;i<NN;i++){
-//		for(int j=0;j<NN;j++) cerr<<setw(7)<<setprecision(4)<<M[i][j];
-//		cerr<<endl;
-//	}
-
-
-
 	//if(r_no!=R_no) {cerr<<"Problem with filling linear equations for concentration! R_no = "<<R_no<<" r_no = "<<r_no<<endl; exit(666);}
 	cerr<<"Calculating concentrations: solving matrix..."<<endl;
 	int M_out = solve_matrix(R_m, r_no, ww_r, ww_c, B, y);
@@ -93,6 +80,28 @@ void Network::calculate_concentrations_b_diff(){
 	//additional printing for debugging
 	print_network_for_debugging ("After calculating concentration B field ","acid concentration", "flow");
 
+
+
+//updating info about Vb_in_tot and Vb_out_tot (for checking the mass balance)
+	Vb_in_tot =0;
+	double Vb_in_tot1 =0;
+	double Vb_in_tot0 =0;
+	//Vb_out_tot=0;
+	//calculate total input of acid
+	for(int i=0;i<N_wi;i++){
+		Node* n_tmp = wi[i];
+		for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0) {
+			Pore *pp=n_tmp->p[j];
+    		Vb_in_tot1+=outlet_c_b_1_d(pp,-1)*pp->calculate_outlet_cb()*pp->q*dt/dt_unit;
+			Vb_in_tot0+=outlet_c_b_0_d(pp,-1)*pp->calculate_inlet_cb() *pp->q*dt/dt_unit;
+			Vb_in_tot+=pp->q*\
+				(outlet_c_b_1_d(pp,-1)*pp->calculate_outlet_cb() +\
+				 outlet_c_b_0_d(pp,-1)*pp->calculate_inlet_cb ())*\
+				 dt/dt_unit;}
+			}
+
+	cerr<<"Vb_in_tot0 = "<<Vb_in_tot0<<endl;
+	cerr<<"Vb_in_tot1 = "<<Vb_in_tot1<<endl;
 
 	delete[] ww_r;
 	delete[] ww_c;

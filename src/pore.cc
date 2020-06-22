@@ -202,7 +202,7 @@ double Pore::local_Pe(Network *S){
 	if (q==0) return -1;
 	if (d==0) return -1;
 
-	return S->Pe*(fabs(q)/S->q_in_0)*pow((l/S->l0),2)*(S->d0/d);
+	return S->Pe*(fabs(q)/S->q_in_0)*(l/S->l0)*pow(S->d0/d,2);
 }
 
 
@@ -211,7 +211,7 @@ double Pore::local_Pe_2(Network *S){
 	if (q==0) return -1;
 	if (d==0) return -1;
 
-	return S->Pe2*(fabs(q)/S->q_in_0)*pow((l/S->l0),2)*(S->d0/d);
+	return S->Pe2*(fabs(q)/S->q_in_0)*(l/S->l0)*pow(S->d0/d,2);
 }
 
 
@@ -253,6 +253,7 @@ double Pore::default_dd_plus(Network*S){
 
 		dd_plus  = S->dt*(2*b*(c0 - c1) + a*(c0 + c1)/tanh(a/2.) - a*(c1 + c0*exp(2*b))/sinh(a/2.)/exp(b))/(4.*b*da)/(1+g);
 		dd_plus  = fabs(dd_plus);
+		if(fabs(q)<1e-10) dd_plus=0;  //temporarly to avoid numerical problems
 	}
 
 	return dd_plus;

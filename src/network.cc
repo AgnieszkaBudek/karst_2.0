@@ -19,6 +19,10 @@ Network::Network (string input_file_name) {
 	Ve_tot = 0;       //total volume of precipitating species
 	Vx_tot = 0;       //total amount of non reacting species
 	Vx_perc= 0;       // percentage of non reacting species in the system
+	Vb_in_tot =0;     //total volume of species b flowing into the system in one time step
+	Vb_out_tot=0;     //total volume of species b flowing out of the system in one time step
+	Vc_in_tot =0;     //total volume of species c flowing into the system in one time step
+	Vc_out_tot=0;     //total volume of species c flowing out of the system in one time step
 
 
 	//dimenssionless parameters describing evolution of the system
@@ -223,6 +227,7 @@ Network::Network (string input_file_name) {
 	if(if_recalculate_physical_parameters) {
 		recalculate_k1 ();
 		recalculate_DD1();
+		recalculate_D1 ();
 		//Add precipitation reaction parameters: k2 i DD2
 	}
 
