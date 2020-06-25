@@ -749,7 +749,7 @@ void Network::dissolve(){
 	for(int i=0;i<NP;i++){ //for each pore...
 
 		Pore* p0 = p[i];
-		if (p0->q == 0 || p0->d == 0) 				continue;
+		if (p0->d == 0)              				continue;
 		if(if_track_grains && !p0->is_Va_left()) 	continue;
 
 		double dd  = p0->default_dd_plus (this);

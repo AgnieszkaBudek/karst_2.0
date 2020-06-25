@@ -226,7 +226,7 @@ double Pore::local_Pe_2(Network *S){
 double Pore::default_dd_plus(Network*S){
 
 	if(S->if_track_grains && !is_Va_left())  return 0;   //no reaction if there is no A species available
-	if(d==0 || q ==0)  return 0;   //pore with no flow
+	if(d==0)           return 0;   //pore with no flow
 	if(l<=S->l_min)    return 0;   //no reaction in tiny grain
 
 	//dissolution parameters
@@ -241,9 +241,9 @@ double Pore::default_dd_plus(Network*S){
 
 	if(S->Pe==-1){   //version without transversal diffusion
 
-		if      (da==0)      dd_plus = 0;
-		else if (S->G1 >=0)  dd_plus = S->dt*c0*(1-exp(-da))/(1+g)/da;
-		else        	     dd_plus = S->dt*c0*(1-exp(-da))/da/d;
+		if      (da==0 || q==0)  dd_plus = 0;
+		else if (S->G1 >=0)      dd_plus = S->dt*c0*(1-exp(-da))/(1+g)/da;
+		else        	         dd_plus = S->dt*c0*(1-exp(-da))/da/d;
 	}
 	else{  //version with transversal diffusion
 
@@ -262,7 +262,7 @@ double Pore::default_dd_plus(Network*S){
 			double dape = S->DaPe * (S->d0/d) * pow(l/S->l0,2);
 			double c1   = calculate_outlet_cb();
 			dd_plus = S->dt*(c0+c1) * tanh(sqrt(dape)/2) /sqrt(dape) / (1+g);
-			dd_plus = 0;
+			//dd_plus = 0;
 		}
 	}
 

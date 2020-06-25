@@ -78,14 +78,14 @@ void Network::check_acid_balance(){
 		}
 	}
 
-	else if(Pe!=-1){
+	else if(Pe==-1){
 
 		//calculate total input of acid
 		for(int i=0;i<N_wi;i++){
 			Node* n_tmp = wi[i];
 			for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0) {
 				Pore *pp=n_tmp->p[j];
-				VB_in+=fabs(pp->q)*n_tmp->cb*dt/dt_unit;
+				VB_in += fabs(pp->q)*n_tmp->cb*dt/dt_unit;
 			}
 		}
 		//calculate total output of acid
@@ -93,7 +93,7 @@ void Network::check_acid_balance(){
 			Node* n_tmp = wo[i];
 			for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0){
 				Pore *pp=n_tmp->p[j];
-				VB_out +=fabs(pp->q)*n_tmp->cb*dt/dt_unit;
+				VB_out += fabs(pp->q)*n_tmp->cb*dt/dt_unit;
 			}
 		}
 	}

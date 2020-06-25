@@ -49,7 +49,7 @@ void Network::calculate_concentrations_b_diff(){
 			double qq;
 			if(n[i]==pp->n[0]) qq = -pp->q;
 			else               qq =  pp->q;
-			if(fabs(qq)<=1e-10)  continue;  //epsilon for numerical stability, one has to check the best value
+			//if(fabs(qq)<=1e-5)  continue;  //epsilon for numerical stability, one has to check the best value
 
 			ww_r[r_no] 	= i;
 			ww_c[r_no] 	= n[i]->n[s]->tmp;
@@ -98,9 +98,9 @@ void Network::calculate_concentrations_b_diff(){
 		Node* n_tmp = wi[i];
 		for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0) {
 			Pore *pp=n_tmp->p[j];
-    		Vb_in_tot1+=outlet_c_b_1_d(pp,-1)*pp->calculate_outlet_cb()*dt/dt_unit;
-			Vb_in_tot0+=outlet_c_b_0_d(pp,-1)*pp->calculate_inlet_cb() *dt/dt_unit;
-			Vb_in_tot+=\
+    		Vb_in_tot1-=outlet_c_b_1_d(pp,-1)*pp->calculate_outlet_cb()*dt/dt_unit;
+			Vb_in_tot0-=outlet_c_b_0_d(pp,-1)*pp->calculate_inlet_cb() *dt/dt_unit;
+			Vb_in_tot-=\
 				(outlet_c_b_1_d(pp,-1)*pp->calculate_outlet_cb() +\
 				 outlet_c_b_0_d(pp,-1)*pp->calculate_inlet_cb ())*\
 				 dt/dt_unit;}
@@ -111,8 +111,8 @@ void Network::calculate_concentrations_b_diff(){
 			for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0) {
 				Pore *pp=n_tmp->p[j];
 				Vb_out_tot+=\
-					(outlet_c_b_1_d(pp,1)*pp->calculate_outlet_cb() +\
-					 outlet_c_b_0_d(pp,1)*pp->calculate_inlet_cb ())*\
+					(outlet_c_b_1_d(pp,1)*pp->calculate_inlet_cb  () +\
+					 outlet_c_b_0_d(pp,1)*pp->calculate_outlet_cb ())*\
 					 dt/dt_unit;}
 				}
 
@@ -132,7 +132,6 @@ void Network::calculate_concentrations_c_diff(){
 double Network::outlet_c_b_1_d   (Pore* p, int s) {
 
 	if(p->d==0) return 0;
-	if(p->q==0) return 0;
 
 	if(fabs(p->q)>1e-5 && Pe <=100 && Da!=-1){  //normal flow through the pore
 		double pe = p->local_Pe    (this);
@@ -141,13 +140,17 @@ double Network::outlet_c_b_1_d   (Pore* p, int s) {
 		double a = sqrt(pe*(4*da+pe));
 		double b = s*pe/2.;
 
-		return - s*fabs(p->q)*(a*exp(a/2.+b)) / (2.*b*(1-exp(a)));
+		return  -s*fabs(p->q)*(a*exp(a/2.+b)) / (2.*b*(1-exp(a)));
 	}
 
 	else{  //no flow through the pore
-		return 0;
+		//return 0;
 		double dape = DaPe * (d0/p->d) * pow(p->l/l0,2);
-		return M_PI * p->d * (k1*(1+G1)) * p->l/sinh(sqrt(dape))/sqrt(dape);
+		double g = p->local_G(this);
+		//return M_PI * p->d * (k1/(1+g)) * p->l/sinh(sqrt(dape))/sqrt(dape);//dwa roznowazne wzory
+		return M_PI * pow(p->d,2) * D1/4 / sinh(sqrt(dape)) * sqrt(dape); //dwa roznowazne wzory
+
+
 	}
 }
 
@@ -156,7 +159,6 @@ double Network::outlet_c_b_1_d   (Pore* p, int s) {
 double Network::outlet_c_b_0_d   (Pore* p, int s) {
 
 	if(p->d==0) return 0;
-	if(p->q==0) return 0;
 
 	if(fabs(p->q)>1e-5 && Pe <=100 && Da!=-1){  //normal flow through the pore
 		double pe = p->local_Pe    (this);
@@ -164,14 +166,16 @@ double Network::outlet_c_b_0_d   (Pore* p, int s) {
 
 		double a = sqrt(pe*(4*da+pe));
 		double b = s*pe/2.;
-
 		return  s*fabs(p->q)*(a + 2*b + (a - 2*b)*exp(a)) / (4.*b*(1-exp(a)));
 	}
 
 	else{  //no flow through the pore
-		return 0;
-		double dape = DaPe * (d0/p->d) * pow(p->l/l0,2);
-		return M_PI * p->d * (k1*(1+G1)) * p->l  /tanh(sqrt(dape)) / sqrt(dape);
+		//return 0;
+		double dape = DaPe * (d0/p->d)   * pow(p->l/l0,2);
+		double g = p->local_G(this);
+		//return -M_PI * p->d * (k1/(1+g)) * p->l  /tanh(sqrt(dape)) / sqrt(dape);//dwa roznowazne wzory
+		return  -M_PI * pow(p->d,2) * D1/4  /tanh(sqrt(dape)) * sqrt(dape);//dwa roznowazne wzory
+
 	}
 
 }
