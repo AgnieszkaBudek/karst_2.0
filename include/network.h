@@ -109,6 +109,8 @@ class Network
 		double G2;		///< DaPe for precipitation
 		double Pe;		///< Peclet number for dissolution (D along pore) (not used now)
 		double Pe2;		///< Peclet number for precipitation (D along pore)  (not used now)
+		double DaPe;    ///< Peclet times Damkohler (useful for small q)
+		double DaPe2;   ///< Peclet times Damkohler for second reaction (useful for small q)
 		double gamma;	///< ratio of acid capacity numbers between dissolution and precipitation
 		double kappa;	///< ratio of Da_2/Da_1 of reaction rates (dissolution vs precipitation)
 		double sigma;   ///< ratio of Pe1/Pe2 (dissolution vs reaction)

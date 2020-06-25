@@ -35,6 +35,8 @@ Network::Network (string input_file_name) {
 	G2    = 1;		 //DaPe for precipitation
 	Pe    = -1;		 //Peclet number for dissolution (D along pore)   (-1 means no diffusion)
 	Pe2   = -1;		 //Peclet number for precipitation (D along pore) (-1 means no diffusion)
+	DaPe  = Da*Pe;
+	DaPe2 = Da2*Pe2;
 	gamma = 1;	     //ratio of acid capacity numbers between dissolution and precipitation (gamma1/gamma2)
 	kappa = 1;	     //ratio of Da_1/Da_2 = ratio of reaction rates
 	theta = 1;	     //ratio of G_1/G_2

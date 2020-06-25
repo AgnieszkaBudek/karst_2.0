@@ -78,7 +78,7 @@ void Network::check_acid_balance(){
 		}
 	}
 
-	else{
+	else if(Pe!=-1){
 
 		//calculate total input of acid
 		for(int i=0;i<N_wi;i++){
@@ -98,7 +98,16 @@ void Network::check_acid_balance(){
 		}
 	}
 
-	if(Pe!=-1){ VB_in = Vb_in_tot;}
+	else{
+		VB_in  = Vb_in_tot ;
+		VB_out = Vb_out_tot;
+	}
+
+	cerr<<"VB_in  = "<<VB_in <<endl;
+	cerr<<"VB_in  = "<<VB_in <<endl;
+	cerr<<"VB_out = "<<VB_out<<endl;
+	cerr<<"VB_out = "<<VB_out<<endl;
+
 
 	//calculate consumption of acid
 	double Va_tot_tmp = 0;

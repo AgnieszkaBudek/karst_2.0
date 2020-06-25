@@ -54,7 +54,7 @@ void Network::recalculate_DD1(){
 	if (G1 == 0)     DD1 = -1;            								// diffusion limited case
 	else if (G1<0)   DD1 = (Da*q_in_0)/(M_PI*Sh*l0);      				// reaction limited case; convention: G<0 => G = Inf
 	else             DD1 = (Da*q_in_0 + Da*G1*q_in_0)/(G1*l0*M_PI*Sh);	// mixed case
-	cerr<<"Transversal diffusion has been calculated: DD1 = "<<DD1<<endl;
+	cerr<<"Radial diffusion has been calculated: DD1 = "<<DD1<<endl;
 	if(G1<0) {dt_unit = 2*DD1*Sh*gamma_1/d0; cerr<<"Unit of time is set to: [2*DD1*Sh*gamma_1/d0^2] = "<<dt_unit<<endl;}
 
 }

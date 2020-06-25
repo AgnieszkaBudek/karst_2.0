@@ -246,14 +246,24 @@ double Pore::default_dd_plus(Network*S){
 		else        	     dd_plus = S->dt*c0*(1-exp(-da))/da/d;
 	}
 	else{  //version with transversal diffusion
-		double pe = local_Pe(S);
-		double c1 = calculate_outlet_cb();
-		double a  = sqrt(pe*(4*da+pe));
-		double b  = pe/2;
 
-		dd_plus  = S->dt*(2*b*(c0 - c1) + a*(c0 + c1)/tanh(a/2.) - a*(c1 + c0*exp(2*b))/sinh(a/2.)/exp(b))/(4.*b*da)/(1+g);
-		dd_plus  = fabs(dd_plus);
-		if(fabs(q)<1e-10) dd_plus=0;  //temporarly to avoid numerical problems
+		if(fabs(q)>1e-5 && S->Pe <= 100 && S->Da!=-1){     //if there is flow in the pore
+
+			double pe = local_Pe(S);
+			double c1 = calculate_outlet_cb();
+			double a  = sqrt(pe*(4*da+pe));
+			double b  = pe/2;
+
+			dd_plus  = S->dt*(2*b*(c0 - c1) + a*(c0 + c1)/tanh(a/2.) - a*(c1 + c0*exp(2*b))/sinh(a/2.)/exp(b))/(4.*b*da)/(1+g);
+			dd_plus  = fabs(dd_plus);
+		}
+		else{  //no flow in the pore - different formula
+
+			double dape = S->DaPe * (S->d0/d) * pow(l/S->l0,2);
+			double c1   = calculate_outlet_cb();
+			dd_plus = S->dt*(c0+c1) * tanh(sqrt(dape)/2) /sqrt(dape) / (1+g);
+			dd_plus = 0;
+		}
 	}
 
 	return dd_plus;

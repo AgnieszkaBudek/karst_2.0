@@ -56,9 +56,9 @@ void Network::calculate_concentrations_b_diff(){
 			if (n[i]->t==-1) {
 				//y[i]=0.5;                                        //for debugging
 				//B[r_no++] = qq*outlet_c_b(pp);  S_q += -qq;      //first attempt, but mass not conserved
-				B[r_no++] = qq*outlet_c_b_1_d(pp,_sign(qq)); S_q += qq*outlet_c_b_0_d(pp,_sign(qq))-qq;}
+				B[r_no++] = outlet_c_b_1_d(pp,_sign(qq)); S_q += outlet_c_b_0_d(pp,_sign(qq))-qq;}
 			else           {
-				B[r_no++] = qq*outlet_c_b_1_d(pp,_sign(qq)); S_q += qq*outlet_c_b_0_d(pp,_sign(qq));}
+				B[r_no++] = outlet_c_b_1_d(pp,_sign(qq)); S_q += outlet_c_b_0_d(pp,_sign(qq));}
 			}
 
 		ww_r[r_no] 		= i;
@@ -81,9 +81,15 @@ void Network::calculate_concentrations_b_diff(){
 	print_network_for_debugging ("After calculating concentration B field ","acid concentration", "flow");
 
 
+	delete[] ww_r;
+	delete[] ww_c;
+	delete[] B;
+	delete[] y;
+
+
 
 //updating info about Vb_in_tot and Vb_out_tot (for checking the mass balance)
-	Vb_in_tot =0;
+	Vb_in_tot =0; Vb_out_tot =0;
 	double Vb_in_tot1 =0;
 	double Vb_in_tot0 =0;
 	//Vb_out_tot=0;
@@ -92,21 +98,24 @@ void Network::calculate_concentrations_b_diff(){
 		Node* n_tmp = wi[i];
 		for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0) {
 			Pore *pp=n_tmp->p[j];
-    		Vb_in_tot1+=outlet_c_b_1_d(pp,-1)*pp->calculate_outlet_cb()*pp->q*dt/dt_unit;
-			Vb_in_tot0+=outlet_c_b_0_d(pp,-1)*pp->calculate_inlet_cb() *pp->q*dt/dt_unit;
-			Vb_in_tot+=pp->q*\
+    		Vb_in_tot1+=outlet_c_b_1_d(pp,-1)*pp->calculate_outlet_cb()*dt/dt_unit;
+			Vb_in_tot0+=outlet_c_b_0_d(pp,-1)*pp->calculate_inlet_cb() *dt/dt_unit;
+			Vb_in_tot+=\
 				(outlet_c_b_1_d(pp,-1)*pp->calculate_outlet_cb() +\
 				 outlet_c_b_0_d(pp,-1)*pp->calculate_inlet_cb ())*\
 				 dt/dt_unit;}
 			}
 
-	cerr<<"Vb_in_tot0 = "<<Vb_in_tot0<<endl;
-	cerr<<"Vb_in_tot1 = "<<Vb_in_tot1<<endl;
+	for(int i=0;i<N_wo;i++){
+			Node* n_tmp = wo[i];
+			for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0) {
+				Pore *pp=n_tmp->p[j];
+				Vb_out_tot+=\
+					(outlet_c_b_1_d(pp,1)*pp->calculate_outlet_cb() +\
+					 outlet_c_b_0_d(pp,1)*pp->calculate_inlet_cb ())*\
+					 dt/dt_unit;}
+				}
 
-	delete[] ww_r;
-	delete[] ww_c;
-	delete[] B;
-	delete[] y;
 
 }
 
@@ -125,16 +134,21 @@ double Network::outlet_c_b_1_d   (Pore* p, int s) {
 	if(p->d==0) return 0;
 	if(p->q==0) return 0;
 
-	//pore connected to the outlet does not track diffusion
-	//if(p->n[0]->t==-1 || p->n[1]->t==-1)	return 1; //problems when dc=0 in the last pore (with small q)
+	if(fabs(p->q)>1e-5 && Pe <=100 && Da!=-1){  //normal flow through the pore
+		double pe = p->local_Pe    (this);
+		double da = p->local_Da_eff(this);
 
-	double pe = p->local_Pe    (this);
-	double da = p->local_Da_eff(this);
+		double a = sqrt(pe*(4*da+pe));
+		double b = s*pe/2.;
 
-	double a = sqrt(pe*(4*da+pe));
-	double b = s*pe/2.;
+		return - s*fabs(p->q)*(a*exp(a/2.+b)) / (2.*b*(1-exp(a)));
+	}
 
-	return - (a*exp(a/2.+b)) / (2.*b*(1-exp(a)));
+	else{  //no flow through the pore
+		return 0;
+		double dape = DaPe * (d0/p->d) * pow(p->l/l0,2);
+		return M_PI * p->d * (k1*(1+G1)) * p->l/sinh(sqrt(dape))/sqrt(dape);
+	}
 }
 
 
@@ -144,18 +158,21 @@ double Network::outlet_c_b_0_d   (Pore* p, int s) {
 	if(p->d==0) return 0;
 	if(p->q==0) return 0;
 
+	if(fabs(p->q)>1e-5 && Pe <=100 && Da!=-1){  //normal flow through the pore
+		double pe = p->local_Pe    (this);
+		double da = p->local_Da_eff(this);
 
-	//pore connected to the outlet does not track diffusion
-	//if(p->n[0]->t==-1 || p->n[1]->t==-1)	return 1; //problems when dc=0 in the last pore (with small q)
+		double a = sqrt(pe*(4*da+pe));
+		double b = s*pe/2.;
 
+		return  s*fabs(p->q)*(a + 2*b + (a - 2*b)*exp(a)) / (4.*b*(1-exp(a)));
+	}
 
-	double pe = p->local_Pe    (this);
-	double da = p->local_Da_eff(this);
-
-	double a = sqrt(pe*(4*da+pe));
-	double b = s*pe/2.;
-
-	return  (a + 2*b + (a - 2*b)*exp(a)) / (4.*b*(1-exp(a)));
+	else{  //no flow through the pore
+		return 0;
+		double dape = DaPe * (d0/p->d) * pow(p->l/l0,2);
+		return M_PI * p->d * (k1*(1+G1)) * p->l  /tanh(sqrt(dape)) / sqrt(dape);
+	}
 
 }
 
