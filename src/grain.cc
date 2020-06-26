@@ -291,7 +291,7 @@ double Grain::calculate_maximal_volume (Network *S){
 * @date 25/09/2019
 */
 bool Grain::to_be_merge(){
-	if	(Va+Ve+Vx<=0)   	 		return true;
+	if	(Va+Ve+Vx<=0)   	 	return true;
 	else						return false;
 }
 

@@ -80,42 +80,12 @@ void Network::calculate_concentrations_b_diff(){
 	//additional printing for debugging
 	print_network_for_debugging ("After calculating concentration B field ","acid concentration", "flow");
 
+	calculate_V_total_diff();
 
 	delete[] ww_r;
 	delete[] ww_c;
 	delete[] B;
 	delete[] y;
-
-
-
-//updating info about Vb_in_tot and Vb_out_tot (for checking the mass balance)
-	Vb_in_tot =0; Vb_out_tot =0;
-	double Vb_in_tot1 =0;
-	double Vb_in_tot0 =0;
-	//Vb_out_tot=0;
-	//calculate total input of acid
-	for(int i=0;i<N_wi;i++){
-		Node* n_tmp = wi[i];
-		for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0) {
-			Pore *pp=n_tmp->p[j];
-    		Vb_in_tot1-=outlet_c_b_1_d(pp,-1)*pp->calculate_outlet_cb()*dt/dt_unit;
-			Vb_in_tot0-=outlet_c_b_0_d(pp,-1)*pp->calculate_inlet_cb() *dt/dt_unit;
-			Vb_in_tot-=\
-				(outlet_c_b_1_d(pp,-1)*pp->calculate_outlet_cb() +\
-				 outlet_c_b_0_d(pp,-1)*pp->calculate_inlet_cb ())*\
-				 dt/dt_unit;}
-			}
-
-	for(int i=0;i<N_wo;i++){
-			Node* n_tmp = wo[i];
-			for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0) {
-				Pore *pp=n_tmp->p[j];
-				Vb_out_tot+=\
-					(outlet_c_b_1_d(pp,1)*pp->calculate_inlet_cb  () +\
-					 outlet_c_b_0_d(pp,1)*pp->calculate_outlet_cb ())*\
-					 dt/dt_unit;}
-				}
-
 
 }
 
@@ -145,10 +115,12 @@ double Network::outlet_c_b_1_d   (Pore* p, int s) {
 
 	else{  //no flow through the pore
 		//return 0;
+		if(if_track_grains && !(p->is_Va_left())) return M_PI * pow(p->d,2) * D1/4 /p->l;
+
 		double dape = DaPe * (d0/p->d) * pow(p->l/l0,2);
 		double g = p->local_G(this);
-		//return M_PI * p->d * (k1/(1+g)) * p->l/sinh(sqrt(dape))/sqrt(dape);//dwa roznowazne wzory
-		return M_PI * pow(p->d,2) * D1/4 / sinh(sqrt(dape)) * sqrt(dape); //dwa roznowazne wzory
+		return M_PI * p->d * (k1/(1+g)) * p->l/sinh(sqrt(dape))/sqrt(dape);//dwa roznowazne wzory
+		//return M_PI * pow(p->d,2) * D1/4 /p->l / sinh(sqrt(dape)) * sqrt(dape); //dwa roznowazne wzory
 
 
 	}
@@ -171,10 +143,12 @@ double Network::outlet_c_b_0_d   (Pore* p, int s) {
 
 	else{  //no flow through the pore
 		//return 0;
+		if(if_track_grains && !(p->is_Va_left())) return -M_PI * pow(p->d,2) * D1/4 /p->l;
+
 		double dape = DaPe * (d0/p->d)   * pow(p->l/l0,2);
 		double g = p->local_G(this);
-		//return -M_PI * p->d * (k1/(1+g)) * p->l  /tanh(sqrt(dape)) / sqrt(dape);//dwa roznowazne wzory
-		return  -M_PI * pow(p->d,2) * D1/4  /tanh(sqrt(dape)) * sqrt(dape);//dwa roznowazne wzory
+		return -M_PI * p->d * (k1/(1+g)) * p->l  /tanh(sqrt(dape)) / sqrt(dape);//dwa roznowazne wzory
+		//return  -M_PI * pow(p->d,2) * D1/4 /p->l /tanh(sqrt(dape)) * sqrt(dape);//dwa roznowazne wzory
 
 	}
 

@@ -102,11 +102,11 @@ void Network::check_acid_balance(){
 		VB_in  = Vb_in_tot ;
 		VB_out = Vb_out_tot;
 	}
-
-	cerr<<"VB_in  = "<<VB_in <<endl;
-	cerr<<"VB_in  = "<<VB_in <<endl;
-	cerr<<"VB_out = "<<VB_out<<endl;
-	cerr<<"VB_out = "<<VB_out<<endl;
+//
+//	cerr<<"VB_in  = "<<VB_in <<endl;
+//	cerr<<"VB_in  = "<<VB_in <<endl;
+//	cerr<<"VB_out = "<<VB_out<<endl;
+//	cerr<<"VB_out = "<<VB_out<<endl;
 
 
 	//calculate consumption of acid
@@ -177,6 +177,37 @@ void Network::check_precipitating_balance(){
 
 }
 
+
+void Network::calculate_V_total_diff(){
+
+//updating info about Vb_in_tot and Vb_out_tot (for checking the mass balance)
+	Vb_in_tot =0; Vb_out_tot =0;
+	double Vb_in_tot1 =0;
+	double Vb_in_tot0 =0;
+	//Vb_out_tot=0;
+	//calculate total input of acid
+	for(int i=0;i<N_wi;i++){
+		Node* n_tmp = wi[i];
+		for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0) {
+			Pore *pp=n_tmp->p[j];
+			Vb_in_tot1-=outlet_c_b_1_d(pp,-1)*pp->calculate_outlet_cb()*dt/dt_unit;
+			Vb_in_tot0-=outlet_c_b_0_d(pp,-1)*pp->calculate_inlet_cb() *dt/dt_unit;
+			Vb_in_tot-=\
+				(outlet_c_b_1_d(pp,-1)*pp->calculate_outlet_cb() +\
+				 outlet_c_b_0_d(pp,-1)*pp->calculate_inlet_cb ())*\
+				 dt/dt_unit;}
+			}
+
+	for(int i=0;i<N_wo;i++){
+			Node* n_tmp = wo[i];
+			for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0) {
+				Pore *pp=n_tmp->p[j];
+				Vb_out_tot+=\
+					(outlet_c_b_1_d(pp,1)*pp->calculate_inlet_cb  () +\
+					 outlet_c_b_0_d(pp,1)*pp->calculate_outlet_cb ())*\
+					 dt/dt_unit;}
+				}
+}
 
 /**
 * This function checks network connections consistency.
