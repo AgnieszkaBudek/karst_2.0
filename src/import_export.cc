@@ -517,13 +517,21 @@ void Network::print_tables_txt(){
 				concentration2_out <<endl;
 				pressure_out       <<endl;
 				lengths_out        <<endl;
+				VA_out             <<endl;
+				VX_out             <<endl;
+				VE_out             <<endl;
 			}
 			double d_mean = 0; double q_mean = 0; double l_mean = 0;
 			for(int b=0;b<n[i]->b;b++){ d_mean+= n[i]->p[b]->d;  q_mean+= n[i]->p[b]->q; l_mean+=n[i]->p[b]->l;}
+			double VA_mean = 0; double VX_mean = 0; double VE_mean = 0;
+			for(int b=0;b<n[i]->bG;b++){ VA_mean += n[i]->g[b]->Va; VX_mean += n[i]->g[b]->Vx;  VE_mean += n[i]->g[b]->Ve;}
 			diameters_out      <<setprecision(5)<<setw(10)<<d_mean/n[i]->b;
 			flow_out           <<setprecision(5)<<setw(10)<<q_mean/n[i]->b;
 			pressure_out       <<setprecision(5)<<setw(12)<<n[i]->u;
 			lengths_out        <<setprecision(7)<<setw(12)<<l_mean/n[i]->b;
+			VA_out             <<setprecision(7)<<setw(12)<<VA_mean/n[i]->bG;
+			VX_out             <<setprecision(7)<<setw(12)<<VX_mean/n[i]->bG;
+			VE_out             <<setprecision(7)<<setw(12)<<VE_mean/n[i]->bG;
 			if (if_streamtube_mixing)   concentration_out  <<setprecision(5)<<setw(12)<<p[i]->c_in<<"\t"<<setprecision(5)<<setw(12)<<p[NN+i]->c_in;
 			else						concentration_out  <<setprecision(5)<<setw(12)<<n[i]->cb;
 			concentration2_out <<setprecision(5)<<setw(12)<<n[i]->cc;

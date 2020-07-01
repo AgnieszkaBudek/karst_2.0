@@ -247,7 +247,7 @@ double Pore::default_dd_plus(Network*S){
 	}
 	else{  //version with transversal diffusion
 
-		if(fabs(q)>1e-5 && S->Pe <= 100 && S->Da!=-1){     //if there is flow in the pore
+		if(fabs(q)>1e-5 && S->Pe > 0.001 && S->Da!=-1){     //if there is flow in the pore
 
 			double pe = local_Pe(S);
 			double c1 = calculate_outlet_cb();

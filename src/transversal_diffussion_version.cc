@@ -103,12 +103,13 @@ double Network::outlet_c_b_1_d   (Pore* p, int s) {
 
 	if(p->d==0) return 0;
 
-	if(fabs(p->q)>1e-5 && Pe <=100 && Da!=-1){  //normal flow through the pore
+	if(fabs(p->q)>1e-5 && Pe > 0.001 && Da!=-1){  //normal flow through the pore
 		double pe = p->local_Pe    (this);
 		double da = p->local_Da_eff(this);
 
 		double a = sqrt(pe*(4*da+pe));
 		double b = s*pe/2.;
+		if(if_track_grains && !(p->is_Va_left())) a=pe; //no reaction due tu lack of Va
 
 		return  -s*fabs(p->q)*(a*exp(a/2.+b)) / (2.*b*(1-exp(a)));
 	}
@@ -132,12 +133,14 @@ double Network::outlet_c_b_0_d   (Pore* p, int s) {
 
 	if(p->d==0) return 0;
 
-	if(fabs(p->q)>1e-5 && Pe <=100 && Da!=-1){  //normal flow through the pore
+	if(fabs(p->q)>1e-5 && Pe > 0.001 && Da!=-1){  //normal flow through the pore
 		double pe = p->local_Pe    (this);
 		double da = p->local_Da_eff(this);
 
 		double a = sqrt(pe*(4*da+pe));
 		double b = s*pe/2.;
+		if(if_track_grains && !(p->is_Va_left())) a=pe; //no reaction due tu lack of Va
+
 		return  s*fabs(p->q)*(a + 2*b + (a - 2*b)*exp(a)) / (4.*b*(1-exp(a)));
 	}
 
@@ -147,7 +150,7 @@ double Network::outlet_c_b_0_d   (Pore* p, int s) {
 
 		double dape = DaPe * (d0/p->d)   * pow(p->l/l0,2);
 		double g = p->local_G(this);
-		return -M_PI * p->d * (k1/(1+g)) * p->l  /tanh(sqrt(dape)) / sqrt(dape);//dwa roznowazne wzory
+		return - M_PI * p->d * (k1/(1+g)) * p->l  /tanh(sqrt(dape)) / sqrt(dape);//dwa roznowazne wzory
 		//return  -M_PI * pow(p->d,2) * D1/4 /p->l /tanh(sqrt(dape)) * sqrt(dape);//dwa roznowazne wzory
 
 	}

@@ -1,7 +1,7 @@
 #include "network.h"
 
 double z_to_print=0;
-double max_distance = 4;
+double max_distance = 10;
 
 
 
@@ -23,7 +23,7 @@ ofstream_ps & print_grain_with_scaling (ofstream_ps & stream, Grain &g, Network 
 	if(g.bN<3) {
 		if(S.if_verbose) cerr<<"Patological grain (bN = "<<g.bN<<", bP = "<<g.bP<<") has to be implemented."<<endl<<g<<endl;
 		return stream; }
-	if(g.Va + g.Ve <=0)  return stream;
+	if(g.Va + g.Ve +g.Vx <=0)  return stream;
 
 	int b = g.bN;
 	Point *PP = S.initial_xy[g.a];
