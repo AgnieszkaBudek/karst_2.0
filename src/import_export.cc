@@ -445,6 +445,7 @@ void Network::print_tables_txt(){
 	flow_out           <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
 	concentration_out  <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
 	concentration2_out <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
+	V_nod_out          <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
 	pressure_out       <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
 	lengths_out        <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
 
@@ -462,6 +463,7 @@ void Network::print_tables_txt(){
 			pressure_out       <<setprecision(7)<<setw(20)<<n[i]->u;
 			concentration_out  <<setprecision(7)<<setw(12)<<n[i]->cb;
 			concentration2_out <<setprecision(7)<<setw(12)<<n[i]->cc;
+			V_nod_out          <<setprecision(7)<<setw(12)<<n[i]->V;
 			for(int b=0; b<2;b++)VA_out  <<setprecision(7)<<setw(12)<<g[2*i+b]->Va;
 			for(int b=0; b<2;b++)VE_out  <<setprecision(7)<<setw(12)<<g[2*i+b]->Ve;
 			for(int b=0; b<2;b++)VX_out  <<setprecision(7)<<setw(12)<<g[2*i+b]->Vx;
@@ -470,6 +472,7 @@ void Network::print_tables_txt(){
 				flow_out            <<endl;
 				concentration_out   <<endl;
 				concentration2_out  <<endl;
+				V_nod_out           <<endl;
 				pressure_out        <<endl;
 				VA_out              <<endl;
 				VE_out              <<endl;
@@ -490,11 +493,13 @@ void Network::print_tables_txt(){
 				VA_out  <<setprecision(7)<<setw(12)<<g[i]->Va;
 				VE_out  <<setprecision(7)<<setw(12)<<g[i]->Ve;
 				VX_out  <<setprecision(7)<<setw(12)<<g[i]->Vx;
+				V_nod_out          <<setprecision(7)<<setw(12)<<n[i]->V;
 				if(i%N_x ==N_x-1){
 					diameters_out       <<endl;
 					flow_out            <<endl;
 					concentration_out   <<endl;
 					concentration2_out  <<endl;
+					V_nod_out           <<endl;
 					pressure_out        <<endl;
 					VA_out              <<endl;
 					VE_out              <<endl;
@@ -520,6 +525,7 @@ void Network::print_tables_txt(){
 				VA_out             <<endl;
 				VX_out             <<endl;
 				VE_out             <<endl;
+				V_nod_out          <<endl;
 			}
 			double d_mean = 0; double q_mean = 0; double l_mean = 0;
 			for(int b=0;b<n[i]->b;b++){ d_mean+= n[i]->p[b]->d;  q_mean+= n[i]->p[b]->q; l_mean+=n[i]->p[b]->l;}
@@ -528,10 +534,12 @@ void Network::print_tables_txt(){
 			diameters_out      <<setprecision(5)<<setw(10)<<d_mean/n[i]->b;
 			flow_out           <<setprecision(5)<<setw(10)<<q_mean/n[i]->b;
 			pressure_out       <<setprecision(5)<<setw(12)<<n[i]->u;
+			V_nod_out          <<setprecision(5)<<setw(12)<<n[i]->V;
 			lengths_out        <<setprecision(7)<<setw(12)<<l_mean/n[i]->b;
 			VA_out             <<setprecision(7)<<setw(12)<<VA_mean/n[i]->bG;
 			VX_out             <<setprecision(7)<<setw(12)<<VX_mean/n[i]->bG;
 			VE_out             <<setprecision(7)<<setw(12)<<VE_mean/n[i]->bG;
+
 			if (if_streamtube_mixing)   concentration_out  <<setprecision(5)<<setw(12)<<p[i]->c_in<<"\t"<<setprecision(5)<<setw(12)<<p[NN+i]->c_in;
 			else						concentration_out  <<setprecision(5)<<setw(12)<<n[i]->cb;
 			concentration2_out <<setprecision(5)<<setw(12)<<n[i]->cc;

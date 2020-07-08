@@ -743,8 +743,9 @@ void Network::dissolve(){
 
 	cerr<<"Dissolving..."<<endl;
 
-	//for updating grains volume;
+	//for updating grains and nodes volume;
 	if(if_track_grains) for (int i=0;i<NG;i++) g[i]->tmp=0;
+
 
 	for(int i=0;i<NP;i++){ //for each pore...
 
@@ -758,6 +759,7 @@ void Network::dissolve(){
 		int bG_tmp=0;
 		for(int s=0; s<p0->bG;s++) if(p0->g[s]->Va >0) bG_tmp++;
 		if(if_track_grains && bG_tmp>0) for(int s=0; s<p0->bG;s++) p0->g[s]->tmp-=(M_PI*(p0->d)*(dd*d0)/2*p0->l)/p0->bG;
+		if(if_track_grains) for(int i=0;i<2;i++) p0->n[i]->V += (M_PI*(p0->d)*(dd*d0)/2*p0->l)/2;
 
 		//updating diameter
 		p0->d += (dd*d0);   //increasing pore diameter
@@ -819,10 +821,10 @@ void Network::dissolve_and_precipitate(){
 			if(p0->g[s]->Va >0) p0->g[s]->tmp -=d_V_A/bG_tmp_A;
 			if (true)           p0->g[s]->tmp2+=d_V_E/p0->bG;
 		}
+		for(int i=0;i<2;i++)    p0->n[i]->V += (d_V_A - d_V_E)/2;
 
 		if(if_adaptive_dt)      set_adaptive_dt((dd_plus - dd_minus)*d0/p0->d, d_V_A + d_V_E);
 	}
-
 
 	//updating Va and Vc (must be done after main dissolution for c_out to be calculated correctly)
 	if(if_track_grains){

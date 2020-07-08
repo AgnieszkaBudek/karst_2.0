@@ -13,7 +13,7 @@
 * @date 12/06/2020
 */
 // evolution with transversal diffusion
-void Network::calculate_concentrations_b_diff(){
+void Network::calculate_concentrations_b_diff_T(){
 
 	cerr<<"Calculating concentrations for species B taking into account diffusion..."<<endl;
 
@@ -49,16 +49,15 @@ void Network::calculate_concentrations_b_diff(){
 			double qq;
 			if(n[i]==pp->n[0]) qq = -pp->q;
 			else               qq =  pp->q;
-			//if(fabs(qq)<=1e-5)  continue;  //epsilon for numerical stability, one has to check the best value
 
 			ww_r[r_no] 	= i;
 			ww_c[r_no] 	= n[i]->n[s]->tmp;
 			if (n[i]->t==-1) {
 				//y[i]=0.5;                                        //for debugging
 				//B[r_no++] = qq*outlet_c_b(pp);  S_q += -qq;      //first attempt, but mass not conserved
-				B[r_no++] = outlet_c_b_1_d(pp,_sign(qq)); S_q += outlet_c_b_0_d(pp,_sign(qq))-qq;}
+				B[r_no++] = outlet_c_b_1_d_T(pp,_sign(qq)); S_q += outlet_c_b_0_d_T(pp,_sign(qq))-qq;}
 			else           {
-				B[r_no++] = outlet_c_b_1_d(pp,_sign(qq)); S_q += outlet_c_b_0_d(pp,_sign(qq));}
+				B[r_no++] = outlet_c_b_1_d_T(pp,_sign(qq)); S_q += outlet_c_b_0_d_T(pp,_sign(qq));}
 			}
 
 		ww_r[r_no] 		= i;
@@ -90,7 +89,7 @@ void Network::calculate_concentrations_b_diff(){
 }
 
 
-void Network::calculate_concentrations_c_diff(){
+void Network::calculate_concentrations_c_diff_T(){
 
 	cerr<<"Has to be implemented!!!"<<endl;
 	exit(123);
@@ -99,7 +98,7 @@ void Network::calculate_concentrations_c_diff(){
 
 
 
-double Network::outlet_c_b_1_d   (Pore* p, int s) {
+double Network::outlet_c_b_1_d_T   (Pore* p, int s) {
 
 	if(p->d==0) return 0;
 
@@ -141,7 +140,7 @@ double Network::outlet_c_b_1_d   (Pore* p, int s) {
 
 
 
-double Network::outlet_c_b_0_d   (Pore* p, int s) {
+double Network::outlet_c_b_0_d_T   (Pore* p, int s) {
 
 	if(p->d==0) return 0;
 
@@ -180,5 +179,5 @@ double Network::outlet_c_b_0_d   (Pore* p, int s) {
 }
 
 
-double Network::outlet_c_c_1_d   (Pore* p,int s) {return 0;}   //to be implemented
-double Network::outlet_c_c_0_d   (Pore* p,int s) {return 0;}   //to be implemented
+double Network::outlet_c_c_1_d_T   (Pore* p,int s) {return 0;}   //to be implemented
+double Network::outlet_c_c_0_d_T   (Pore* p,int s) {return 0;}   //to be implemented

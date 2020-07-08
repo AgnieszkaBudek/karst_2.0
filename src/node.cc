@@ -3,7 +3,7 @@
 
 Node::Node (int bb, float name)	{
 	b=bb; a=name; tmp=name; t=0; x=1;
-	cb=0; cc=0; u=0;
+	cb=0; cc=0; u=0; V=0;
 	bG = 0; g=NULL;
 	n = new Node*[b];
 	p = new Pore*[b];
@@ -15,7 +15,7 @@ Node::Node (int bb, float name)	{
 
 Node::Node  (int name, int b_tmp, int t_tmp, Point point){
 	b=b_tmp; a=name; tmp=name; t=t_tmp; x=1;
-	cb=0; cc=0; u=0;
+	cb=0; cc=0; u=0; V=0;
 	bG = 0; g=NULL;
 	xy = point;
 	n = new Node*[b];
@@ -32,6 +32,26 @@ double Node::total_abs_flow(){
 	double Q_tmp = 0;
 	for(int i=0; i<b; i++) Q_tmp+= abs(p[i]->q);
 	return Q_tmp;
+}
+
+
+/** This function calculates initial volume of a pore.
+* Works if grains are tracked.
+*  @author Agnieszka Budek
+*  @date 08.07.2020
+*/
+
+void Node::calculate_initial_volume(Network *S){
+
+	double V_max  = 0;
+	double V_real = 0;
+
+	for(int i=0;i<bG;i++){
+		V_real += g[i]->total_volume()/g[i]->bN;
+		V_max  += g[i]->calculate_maximal_volume(S)/g[i]->bN;
+	}
+
+	V = V_max - V_real;
 }
 
 

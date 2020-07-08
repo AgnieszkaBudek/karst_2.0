@@ -133,8 +133,13 @@ void Network::calculate_concentration_field(){
 	}
 
 	else {   //version with transversal diffusion
-		calculate_concentrations_b_diff();
-		if(if_precipitation) calculate_concentrations_c_diff();
+		if(if_time_concentration){
+			calculate_concentrations_b_diff_T();
+			if(if_precipitation) calculate_concentrations_c_diff_T();}
+
+		else{
+			calculate_concentrations_b_diff();
+			if(if_precipitation) calculate_concentrations_c_diff();}
 	}
 }
 

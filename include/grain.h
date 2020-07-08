@@ -79,6 +79,7 @@ class Grain{
 
 		void   calculate_initial_volume (Network *S);
 		double calculate_maximal_volume (Network *S);
+		double total_volume();
 		void   change_nodes(Node *n_old, Node *n_new);
 		void   change_pores(Pore *p_old,Pore * p_new);
 		void   set_effective_d_and_l(Pore *p,Network *S);

@@ -41,9 +41,10 @@ class Node{
 
 	public:
 
-		double u;		///< pressure in this node
+		double  u;	    ///< pressure in this node
 		double cb;		///< concentration of acid (dissolving species) in this node
 		double cc;		///< concentration of precipitating species in this node
+		double  V;      ///< pore volume (important for calculating concentration in time)
 		
 		int b;			///< number of neighbors
 		int bG;			///< number of attached grains
@@ -80,6 +81,7 @@ class Node{
 
 		double total_abs_flow();								///< returns total absolute flow through neighbor pores
 		double total_pores_d ();								///< returns total diameter of neighbor pores
+		void   calculate_initial_volume(Network *S);            ///< calculate initial volume
 
 		//pattern analysis
 		void check_diss_pattern(double treshold);   			///< set x=1 for pores that are connected to the dissolution pattern

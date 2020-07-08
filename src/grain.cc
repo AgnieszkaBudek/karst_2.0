@@ -145,6 +145,11 @@ Grain::Grain (float name, double V_a_tmp, double V_e_tmp, double V_x_tmp, int bb
 
 }
 
+
+double Grain::total_volume(){
+	return Va+Ve+Vx;
+}
+
 /**
 * In this function an initial volume of a grain is calculated.
 * WARNING: Up to now only the trianglular volume is implemented.

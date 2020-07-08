@@ -245,7 +245,10 @@ double Pore::default_dd_plus(Network*S){
 		else if (S->G1 >=0)      dd_plus = S->dt*c0*(1-exp(-da))/(1+g)/da;
 		else        	         dd_plus = S->dt*c0*(1-exp(-da))/da/d;
 	}
+	else if(S->if_time_concentration){ cerr<<"Not implemented yet."<<endl; exit(123);}
+
 	else{  //version with transversal diffusion
+
 
 		if(fabs(q)>1e-5 && S->Pe > 0.001 && S->Da!=-1){     //if there is flow in the pore
 
@@ -277,6 +280,8 @@ double Pore::default_dd_plus(Network*S){
 * @date 14/03/2020
 */
 double Pore::default_dd_minus(Network*S){
+
+	if(S->Pe!=-1 || S->if_time_concentration){ cerr<<"Not implemented yet."<<endl; exit(123);}
 
 	if(d==0 || q ==0)  return 0;   //pore with no flow
 	if(l==S->l_min)    return 0;   //no reaction in tiny grain

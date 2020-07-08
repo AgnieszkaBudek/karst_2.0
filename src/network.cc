@@ -116,7 +116,8 @@ Network::Network (string input_file_name) {
 	if_smarter_calculation_of_pressure   = true;         //if true pressure and flow is calculate in two steps
 	if_precipitation				     = false;		 //if true apart form dissolution the precipitation in on
 	if_dynamical_length				     = true;		 //if true length of pore is changing according to dissolution and precipitation
-	if_streamtube_mixing                 = false;        // if true the stream-tube mixing is perform while calculation the concentration (works only for dissolution now)
+	if_streamtube_mixing                 = false;        //if true the stream-tube mixing is perform while calculation the concentration (works only for dissolution now)
+	if_time_concentration                = false;        //if true concentration is not stationary in time
 
 	//output
 	if_save_ps            = true;     //if true ps pictures are created
@@ -161,6 +162,7 @@ Network::Network (string input_file_name) {
 		VA_out			  .open("VA.out",	      ios_base::out | ios_base::trunc );
 		VE_out			  .open("VE.out",	      ios_base::out | ios_base::trunc );
 		VX_out			  .open("VX.out",	      ios_base::out | ios_base::trunc );
+		V_nod_out	      .open("V_nod.out",      ios_base::out | ios_base::trunc );
 		lengths_out		  .open("l.out",	      ios_base::out | ios_base::trunc );
 	}
 
@@ -217,7 +219,9 @@ Network::Network (string input_file_name) {
 		cerr<<"Calculating initial grain volume..."<<endl;
 		if(type_of_topology != "from_file") for(int i=0;i<NG;i++) g[i]->calculate_initial_volume(this);
 		calculate_initial_total_Va();
-		calculate_initial_total_Ve();}
+		calculate_initial_total_Ve();
+		for(int i=0;i<NN;i++) n[i]->calculate_initial_volume(this);
+	}
 
 
 //updating pore lengths
@@ -297,6 +301,7 @@ Network:: ~Network (){
 		VA_out			   .close();
 		VE_out 			   .close();
 		VX_out 			   .close();
+		V_nod_out          .close();
 		lengths_out		   .close();
 	}
 

@@ -320,6 +320,12 @@ void::Network::read_setup_file(ifstream& fp_setup){
 			else                     cerr<<"WARNING: Wrong value of variable if_precipitation. Set true or false."<<endl;
 			cerr<< "Setting if_precipitation = "<<if_precipitation<<endl;}
 
+		else if(name == "if_time_concentration"){
+			if      (value == "true" )   if_time_concentration  = true;
+			else if (value == "false")   if_time_concentration  = false;
+			else                     cerr<<"WARNING: Wrong value of variable if_time_concentration. Set true or false."<<endl;
+			cerr<< "Setting if_time_concentration = "<<if_time_concentration<<endl;}
+
 		else if(name == "if_dynamical_length"){
 			if      (value == "true" )   if_dynamical_length  = true;
 			else if (value == "false")   if_dynamical_length  = false;
