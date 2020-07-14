@@ -111,6 +111,7 @@ void Network::do_one_leapfrog_step(){
 
 void Network::calculate_pressure_and_flow_filed(){
 
+	if(!if_flow) return ;
 //calculating pressures
 	if(if_smarter_calculation_of_pressure)	{
 		calculate_pressures_and_flows_smarter(d_max_for_u);}
@@ -124,7 +125,7 @@ void Network::calculate_pressure_and_flow_filed(){
 
 void Network::calculate_concentration_field(){
 
-	if(Pe==-1){  //without transversal diffusion
+	if(Pe==-1 && !if_time_concentration){  //without transversal diffusion
 
 		if(if_streamtube_mixing) 	calculate_concentrations_streamtube_mixing();
 		else						calculate_concentrations_b();
@@ -134,8 +135,11 @@ void Network::calculate_concentration_field(){
 
 	else {   //version with transversal diffusion
 		if(if_time_concentration){
+			cerr<<"Calculating concentration profile in time."<<endl;
 			calculate_concentrations_b_diff_T();
-			if(if_precipitation) calculate_concentrations_c_diff_T();}
+			calculate_concentrations_c_diff_T();
+			calculate_concentrations_f_diff_T();
+		}
 
 		else{
 			calculate_concentrations_b_diff();
@@ -148,8 +152,9 @@ void Network::update_geometry(){
 
 	//updating diameters and lengths
 
-	if(if_precipitation)	dissolve_and_precipitate();
-	else                    dissolve();
+	if(if_time_concentration)     precipitate();
+	else if(if_precipitation)	  dissolve_and_precipitate();
+	else                          dissolve();
 
 }
 

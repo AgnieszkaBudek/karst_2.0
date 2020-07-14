@@ -88,6 +88,10 @@ void::Network::read_setup_file(ifstream& fp_setup){
 			D2 = stod(value);
 			cerr<< "Setting D2 = "<<D2<<endl;}
 
+		else if(name == "D3"){
+			D3 = stod(value);
+			cerr<< "Setting D3 = "<<D3<<endl;}
+
 		else if(name == "DD1"){
 			DD1 = stod(value);
 			cerr<< "Setting DD1 = "<<DD1<<endl;}
@@ -95,6 +99,11 @@ void::Network::read_setup_file(ifstream& fp_setup){
 		else if(name == "DD2"){
 			DD2 = stod(value);
 			cerr<< "Setting DD2 = "<<DD2<<endl;}
+
+		else if(name == "DD3"){
+			DD3 = stod(value);
+			cerr<< "Setting DD3 = "<<DD3<<endl;}
+
 
 		else if(name == "Sh"){
 			Sh = stod(value);
@@ -192,6 +201,18 @@ void::Network::read_setup_file(ifstream& fp_setup){
 		else if(name == "Cc_0"){
 			Cc_0 = stod(value);
 			cerr<< "Setting Cc_0 = "<<Cc_0<<endl;}
+
+		else if(name == "R1_threshold"){
+			R1_threshold = stod(value);
+			cerr<< "Setting R1_threshild = "<<R1_threshold<<endl;}
+
+		else if(name == "R2_threshold"){
+			R2_threshold = stod(value);
+			cerr<< "Setting R2_threshild = "<<R2_threshold<<endl;}
+
+		else if(name == "R2_n_threshold"){
+			R2_n_threshold = stod(value);
+			cerr<< "Setting R2_n_threshild = "<<R2_n_threshold<<endl;}
 
 		else if(name == "Vx_perc"){
 			Vx_perc = stod(value);
@@ -325,6 +346,13 @@ void::Network::read_setup_file(ifstream& fp_setup){
 			else if (value == "false")   if_time_concentration  = false;
 			else                     cerr<<"WARNING: Wrong value of variable if_time_concentration. Set true or false."<<endl;
 			cerr<< "Setting if_time_concentration = "<<if_time_concentration<<endl;}
+
+		else if(name == "if_flow"){
+			if      (value == "true" )   if_flow  = true;
+			else if (value == "false")   if_flow  = false;
+			else                     cerr<<"WARNING: Wrong value of variable if_flow. Set true or false."<<endl;
+			cerr<< "Setting if_flow = "<<if_flow<<endl;}
+
 
 		else if(name == "if_dynamical_length"){
 			if      (value == "true" )   if_dynamical_length  = true;

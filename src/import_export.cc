@@ -408,10 +408,10 @@ void Network::print_net_txt(){
 	nodes_out <<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
 	grains_out<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
 
-	pores_out<<"#" <<setw(11)<<"name"<<setw(12)<<"d"<<setw(12)<<"l"<<setw(8)<<"b"<<setw(12)<<"q"<<setw(12)<<"Da_local"<<setw(12)<<"G_local"<<endl;
+	pores_out<<"#" <<setw(11)<<"name"<<setw(12)<<"d"<<setw(12)<<"l"<<setw(8)<<"b"<<setw(12)<<"q"<<setw(12)<<"cb"<<setw(12)<<"cc"<<setw(12)<<"cf"<<endl;
 	pores_out<<"#  ----------------------------------------------------------------------"<<endl;
 
-	nodes_out<<"#" <<setw(11)<<"name"<<setw(6)<<"type"<<setw(12)<<"u"<<setw(12)<<"cb"<<setw(12)<<"cc"<<endl;
+	nodes_out<<"#" <<setw(11)<<"name"<<setw(6)<<"type"<<setw(12)<<"u"<<setw(12)<<"cb"<<setw(12)<<"cc"<<setw(12)<<"cf"<<endl;
 	nodes_out<<"#  ------------------------------------------------"<<endl;
 
 	grains_out<<"#" <<setw(11)<<"name"<<setw(12)<<"Va"<<setw(12)<<"Ve"<<setw(12)<<"Vx"<<endl;
@@ -441,37 +441,49 @@ void Network::print_net_txt(){
 */
 void Network::print_tables_txt(){
 
-	diameters_out      <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
-	flow_out           <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
-	concentration_out  <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
-	concentration2_out <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
-	V_nod_out          <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
-	pressure_out       <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
-	lengths_out        <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
+	diameters_out       <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
+	flow_out            <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
+	concentration_b_out <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
+	concentration_c_out <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
+	concentration_f_out <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
+	concentration_bp_out<<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
+	concentration_cp_out<<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
+	concentration_fp_out<<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
+	V_nod_out           <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
+	pressure_out        <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
+	lengths_out         <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
 
 	if(if_track_grains){
-		VA_out		       <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
-		VE_out      	   <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
-		VX_out      	   <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
+		VA_out		    <<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
+		VE_out      	<<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
+		VX_out      	<<endl<<endl<<fixed<<"#" << tot_steps<<". step of evolution: T_tot =  "<<tot_time<<endl;
 	}
 
 	if (type_of_topology == "hexagonal"){
 		for(int i=0;i<NN;i++) {
-			for(int b=0; b<3;b++) diameters_out  <<setprecision(7)<<setw(12)<<p[i*3+b]->d;
-			for(int b=0; b<3;b++) flow_out       <<setprecision(7)<<setw(12)<<p[i*3+b]->q;
-			for(int b=0; b<3;b++) lengths_out    <<setprecision(7)<<setw(12)<<p[i*3+b]->l;
-			pressure_out       <<setprecision(7)<<setw(20)<<n[i]->u;
-			concentration_out  <<setprecision(7)<<setw(12)<<n[i]->cb;
-			concentration2_out <<setprecision(7)<<setw(12)<<n[i]->cc;
-			V_nod_out          <<setprecision(7)<<setw(12)<<n[i]->V;
+			for(int b=0; b<3;b++) diameters_out        <<setprecision(7)<<setw(12)<<p[i*3+b]->d;
+			for(int b=0; b<3;b++) flow_out             <<setprecision(7)<<setw(12)<<p[i*3+b]->q;
+			for(int b=0; b<3;b++) lengths_out          <<setprecision(7)<<setw(12)<<p[i*3+b]->l;
+			for(int b=0; b<2;b++) concentration_bp_out <<setprecision(7)<<setw(12)<<p[i*2+b]->cb;
+			for(int b=0; b<2;b++) concentration_cp_out <<setprecision(7)<<setw(12)<<p[i*2+b]->cc;
+			for(int b=0; b<2;b++) concentration_fp_out <<setprecision(7)<<setw(12)<<p[i*2+b]->cf;
+			pressure_out        <<setprecision(7)<<setw(20)<<n[i]->u;
+			concentration_b_out <<setprecision(7)<<setw(12)<<n[i]->cb;
+			concentration_c_out <<setprecision(7)<<setw(12)<<n[i]->cc;
+			concentration_f_out <<setprecision(7)<<setw(12)<<n[i]->cf;
+			V_nod_out           <<setprecision(7)<<setw(12)<<n[i]->V;
 			for(int b=0; b<2;b++)VA_out  <<setprecision(7)<<setw(12)<<g[2*i+b]->Va;
 			for(int b=0; b<2;b++)VE_out  <<setprecision(7)<<setw(12)<<g[2*i+b]->Ve;
 			for(int b=0; b<2;b++)VX_out  <<setprecision(7)<<setw(12)<<g[2*i+b]->Vx;
 			if(i%N_x ==N_x-1){
 				diameters_out       <<endl;
 				flow_out            <<endl;
-				concentration_out   <<endl;
-				concentration2_out  <<endl;
+				concentration_b_out <<endl;
+				concentration_c_out <<endl;
+				concentration_f_out <<endl;
+				concentration_bp_out<<endl;
+				concentration_cp_out<<endl;
+				concentration_fp_out<<endl;
 				V_nod_out           <<endl;
 				pressure_out        <<endl;
 				VA_out              <<endl;
@@ -484,12 +496,16 @@ void Network::print_tables_txt(){
 
 	else if (type_of_topology == "diamond" || type_of_topology == "square"){
 			for(int i=0;i<NN;i++) {
-				for(int b=0; b<2;b++) diameters_out  <<setprecision(7)<<setw(12)<<p[i*2+b]->d;
-				for(int b=0; b<2;b++) flow_out       <<setprecision(7)<<setw(12)<<p[i*2+b]->q;
-				for(int b=0; b<2;b++) lengths_out    <<setprecision(7)<<setw(12)<<p[i*2+b]->l;
-				pressure_out       <<setprecision(7)<<setw(20)<<n[i]->u;
-				concentration_out  <<setprecision(7)<<setw(12)<<n[i]->cb;
-				concentration2_out <<setprecision(7)<<setw(12)<<n[i]->cc;
+				for(int b=0; b<2;b++) diameters_out       <<setprecision(7)<<setw(12)<<p[i*2+b]->d;
+				for(int b=0; b<2;b++) flow_out            <<setprecision(7)<<setw(12)<<p[i*2+b]->q;
+				for(int b=0; b<2;b++) lengths_out         <<setprecision(7)<<setw(12)<<p[i*2+b]->l;
+				for(int b=0; b<2;b++) concentration_b_out <<setprecision(7)<<setw(12)<<p[i*2+b]->cb;
+				for(int b=0; b<2;b++) concentration_c_out <<setprecision(7)<<setw(12)<<p[i*2+b]->cc;
+				for(int b=0; b<2;b++) concentration_f_out <<setprecision(7)<<setw(12)<<p[i*2+b]->cf;
+				pressure_out        <<setprecision(7)<<setw(20)<<n[i]->u;
+				concentration_b_out <<setprecision(7)<<setw(12)<<n[i]->cb;
+				concentration_c_out <<setprecision(7)<<setw(12)<<n[i]->cc;
+				concentration_f_out <<setprecision(7)<<setw(12)<<n[i]->cf;
 				VA_out  <<setprecision(7)<<setw(12)<<g[i]->Va;
 				VE_out  <<setprecision(7)<<setw(12)<<g[i]->Ve;
 				VX_out  <<setprecision(7)<<setw(12)<<g[i]->Vx;
@@ -497,8 +513,12 @@ void Network::print_tables_txt(){
 				if(i%N_x ==N_x-1){
 					diameters_out       <<endl;
 					flow_out            <<endl;
-					concentration_out   <<endl;
-					concentration2_out  <<endl;
+					concentration_b_out <<endl;
+					concentration_c_out <<endl;
+					concentration_f_out <<endl;
+					concentration_bp_out<<endl;
+					concentration_cp_out<<endl;
+					concentration_fp_out<<endl;
 					V_nod_out           <<endl;
 					pressure_out        <<endl;
 					VA_out              <<endl;
@@ -516,33 +536,42 @@ void Network::print_tables_txt(){
 		for(int i=0;i<NN;i++) {
 			if(int(n[i]->xy.y) > linia){
 				linia++;
-				diameters_out      <<endl;
-				flow_out           <<endl;
-				concentration_out  <<endl;
-				concentration2_out <<endl;
-				pressure_out       <<endl;
-				lengths_out        <<endl;
-				VA_out             <<endl;
-				VX_out             <<endl;
-				VE_out             <<endl;
-				V_nod_out          <<endl;
+				diameters_out       <<endl;
+				flow_out            <<endl;
+				concentration_b_out <<endl;
+				concentration_c_out <<endl;
+				concentration_f_out <<endl;
+				concentration_bp_out<<endl;
+				concentration_cp_out<<endl;
+				concentration_fp_out<<endl;
+				pressure_out        <<endl;
+				lengths_out         <<endl;
+				VA_out              <<endl;
+				VX_out              <<endl;
+				VE_out              <<endl;
+				V_nod_out           <<endl;
 			}
-			double d_mean = 0; double q_mean = 0; double l_mean = 0;
-			for(int b=0;b<n[i]->b;b++){ d_mean+= n[i]->p[b]->d;  q_mean+= n[i]->p[b]->q; l_mean+=n[i]->p[b]->l;}
+			double d_mean = 0; double q_mean = 0; double l_mean = 0; double c_bp = 0; double c_cp = 0; double c_fp = 0;
+			for(int b=0;b<n[i]->b;b++){ d_mean+= n[i]->p[b]->d;  q_mean+= n[i]->p[b]->q;  l_mean+=n[i]->p[b]->l;}
+			for(int b=0;b<n[i]->b;b++){ c_bp  += n[i]->p[b]->cb; c_cp  += n[i]->p[b]->cc; c_fp  += n[i]->p[b]->cf;}
 			double VA_mean = 0; double VX_mean = 0; double VE_mean = 0;
 			for(int b=0;b<n[i]->bG;b++){ VA_mean += n[i]->g[b]->Va; VX_mean += n[i]->g[b]->Vx;  VE_mean += n[i]->g[b]->Ve;}
-			diameters_out      <<setprecision(5)<<setw(10)<<d_mean/n[i]->b;
-			flow_out           <<setprecision(5)<<setw(10)<<q_mean/n[i]->b;
-			pressure_out       <<setprecision(5)<<setw(12)<<n[i]->u;
-			V_nod_out          <<setprecision(5)<<setw(12)<<n[i]->V;
-			lengths_out        <<setprecision(7)<<setw(12)<<l_mean/n[i]->b;
-			VA_out             <<setprecision(7)<<setw(12)<<VA_mean/n[i]->bG;
-			VX_out             <<setprecision(7)<<setw(12)<<VX_mean/n[i]->bG;
-			VE_out             <<setprecision(7)<<setw(12)<<VE_mean/n[i]->bG;
+			diameters_out       <<setprecision(5)<<setw(10)<<d_mean/n[i]->b;
+			flow_out            <<setprecision(5)<<setw(10)<<q_mean/n[i]->b;
+			pressure_out        <<setprecision(5)<<setw(12)<<n[i]->u;
+			V_nod_out           <<setprecision(5)<<setw(12)<<n[i]->V;
+			lengths_out         <<setprecision(7)<<setw(12)<<l_mean/n[i]->b;
+			concentration_bp_out<<setprecision(7)<<setw(12)<<c_bp/n[i]->b;
+			concentration_cp_out<<setprecision(7)<<setw(12)<<c_cp/n[i]->b;
+			concentration_fp_out<<setprecision(7)<<setw(12)<<c_fp/n[i]->b;
+			VA_out              <<setprecision(7)<<setw(12)<<VA_mean/n[i]->bG;
+			VX_out              <<setprecision(7)<<setw(12)<<VX_mean/n[i]->bG;
+			VE_out              <<setprecision(7)<<setw(12)<<VE_mean/n[i]->bG;
 
-			if (if_streamtube_mixing)   concentration_out  <<setprecision(5)<<setw(12)<<p[i]->c_in<<"\t"<<setprecision(5)<<setw(12)<<p[NN+i]->c_in;
-			else						concentration_out  <<setprecision(5)<<setw(12)<<n[i]->cb;
-			concentration2_out <<setprecision(5)<<setw(12)<<n[i]->cc;
+			if (if_streamtube_mixing)   concentration_b_out  <<setprecision(5)<<setw(12)<<p[i]->cb<<"\t"<<setprecision(5)<<setw(12)<<p[NN+i]->cb;
+			else						concentration_b_out  <<setprecision(5)<<setw(12)<<n[i]->cb;
+			concentration_c_out <<setprecision(5)<<setw(12)<<n[i]->cc;
+			concentration_f_out <<setprecision(5)<<setw(12)<<n[i]->cf;
 		}
 	}
 }

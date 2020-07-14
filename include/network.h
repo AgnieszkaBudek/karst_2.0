@@ -90,8 +90,10 @@ class Network
 		double k2;			///< reaction rate of precipitation
 		double D1;			///< diffusion coefficient for dissolution (not implemented yet, we assume that flow is faster then diffusion along pore)
 		double D2;			///< diffusion coefficient for precipitation (not implemented yet)
+		double D3;			///< diffusion coefficient for species f
 		double DD1;			///< transversal diffusion coefficient for dissolution
 		double DD2;			///< transversal diffusion coefficient for precipitation
+		double DD3;			///< transversal diffusion coefficient for species f
 		double Sh;			///< Sherwood number for pipe
 		double gamma_1;		///< capacity number for dissolution (important only for unit of dt, generally should be set to 1)
 		double gamma_2;		///< capacity number for precipitation
@@ -118,6 +120,12 @@ class Network
 		double d_min;	///< minimal possible pore diameter (important for precipitation)
 		double l_min;   ///< minimal pore length (for numerical reason)
 
+		//option for zeolite model
+		double R1_threshold;     ///< threshold for reaction R1
+		double R2_threshold;     ///< threshold for reaction R2 (condition for aggregation)
+		double R2_n_threshold;   ///< threshold for reaction R2 (condition for nucleation)
+
+
 
 		// evolution parameters
 		int    T_max;	  	///< maximal number of time steps in simulation
@@ -140,7 +148,9 @@ class Network
 		ofstream_ps 	net_ps;
 		ofstream_txt    pores_out, nodes_out, grains_out, net_out, net_g_out;
 		ofstream_txt    time_evolution_out, pattern_analysis_out, child_distribution_out, fork_distribution_out, cluster_size_out;
-		ofstream_txt    diameters_out, flow_out, pressure_out, concentration_out, concentration2_out, VA_out, VE_out, VX_out, lengths_out, V_nod_out;
+		ofstream_txt    diameters_out, flow_out, pressure_out;
+		ofstream_txt    concentration_b_out, concentration_c_out, concentration_f_out, concentration_bp_out,concentration_cp_out,concentration_fp_out;
+		ofstream_txt    VA_out, VE_out, VX_out, lengths_out, V_nod_out;
 	   	ifstream 	    conf_in, net_in, net_g_in, pores_in, grains_in;
 	
 
@@ -158,6 +168,7 @@ class Network
 	   	double gauss_sigma_d;           ///< if randomness is on this give information about width of the initial diameter distribution
 	   	double max_rand_shift_xy;       ///< if randomness is on this give information about max shift in positions
 
+
 		// dynamics
 		bool if_leapfrog;               ///< if true frog leap instead of Euler algorithm is used in evolution (not implemented yet)
 		bool if_full_dissolution;       ///< if true evolution stops when system is fully dissolved
@@ -169,6 +180,7 @@ class Network
 		bool if_dynamical_length;					///< if true length of pore is changing according to dissolution and precipitation
 		bool if_streamtube_mixing;					///< if true and we have square lattice  stream-tube mixing is performed while calculating the species B concentration
 		bool if_time_concentration;                 ///< if true, concentration is not stationary in time but time dependent term in ADR equation is taken into account
+		bool if_flow;                               ///< if false there is no flow through the system (for diffusion only)
 
 
 		// output
@@ -216,15 +228,17 @@ class Network
 // specific realization of evolution function
 		void calculate_pressures();					///< calculate pressure field for the whole network (default version)
 		void calculate_flows();						///< calculate flow field for the whole network (default version)
-		void calculate_concentrations_b();			///< calculate concentration profile for species b (whipot diffusion)
+		void calculate_concentrations_b();			///< calculate concentration profile for species b (without diffusion)
 		void calculate_concentrations_c();			///< calculate concentration profile for species c
 		void calculate_concentrations_streamtube_mixing(); 		     ///< new fancy mixing method where particles prefer to go straight through the crossing
 		void calculate_concentrations_b_diff();			///< calculate concentration profile for species b
 		void calculate_concentrations_c_diff();			///< calculate concentration profile for species c
 		void calculate_concentrations_b_diff_T();	    ///< calculate concentration profile for species b with time term (non stationary solution)
 		void calculate_concentrations_c_diff_T();		///< calculate concentration profile for species c with time term (non stationary solution)
+		void calculate_concentrations_f_diff_T();		///< calculate concentration profile for species c with time term (non stationary solution)
 		void dissolve();											 ///< change the pore sizes due to the dissolution
 		void dissolve_and_precipitate();							 ///< change the pore sizes due to both dissolution and precipitation
+		void precipitate();											 ///< just precipitation (in zeolite version)
 		void calculate_pressures_and_flows_smarter(double d_max);    ///< alternative way of calculating pressure and flow field, using d_max: pores larger then d_max do not consume pressure drop but can consume acid :)
 		void calculate_pressures_for_small_d(double d_max);			 ///< part of an alternative way of calculating pressure and flow field, WARNING: must be tested more carefully
 		void calculate_pressures_for_large_d(double d_max);			 ///< part of an alternative way of calculating pressure and flow field, WARNING: must be tested more carefully
@@ -255,16 +269,10 @@ class Network
 		double outlet_c_b_0_d   (Pore* p,int);	///< returns the outlet concentration of species b (the free parameter)
 		double outlet_c_c_1_d   (Pore* p,int);  ///< returns the outlet concentration of species c in the pore p as a function of c0_c (version with diffusion)
 		double outlet_c_c_0_d   (Pore* p,int);	///< returns the outlet concentration of species c (the free parameter)
-		double outlet_c_b_1_d_T (Pore* p,int);  ///< returns the outlet concentration of species b in the pore p as a function of c0_b (version with diffusion), version with time term
-		double outlet_c_b_0_d_T (Pore* p,int);	///< returns the outlet concentration of species b (the free parameter), version with time term
-		double outlet_c_c_1_d_T (Pore* p,int);  ///< returns the outlet concentration of species c in the pore p as a function of c0_c (version with diffusion), version with time term
-		double outlet_c_c_0_d_T (Pore* p,int);	///< returns the outlet concentration of species c (the free parameter), version with time term
-
-
-
 
 		void check_diss_pattern(double threshold);		///< check the position of the dissolution pattern - pores larger that threshold x d0
 		bool check_diss_front  (double threshold, int row);  ///< check if the dissolution pattern -reaches particular row of pores
+
 
 // calculating initial properties of the system
 		void calculate_initial_mean_flow();		///< calculate initial mean flow through the system, important for setting Da_eff and G correctly

@@ -4,7 +4,8 @@
 #include "grain.h"
 
 Pore::Pore (double dd, double ll, float name, int bb){
-	d = dd; l = ll; a=name; tmp=name; q=0; x=1; bG=bb; c_in=0;
+	d = dd; l = ll; a=name; tmp=name; q=0; x=1; bG=bb;
+	cb=0; cc=0; cf=0; cb_old=0; cc_old=0; cf_old=0;
 
 	n[0]=NULL; n[1]=NULL;	
 	if(bG>0){
@@ -70,6 +71,52 @@ bool Pore::is_Va_left(){
 }
 
 
+
+double Pore::volume(){
+	return M_PI*d*d*l/4;
+}
+
+
+double Pore::R_1(Network *S) {
+
+	double r = 0;   //reaction rate in a pore
+
+	if(cc*cb < S->R1_threshold) return 0;
+
+	double c_eff = (cb + cc - sqrt(pow(cb + cc,2) - 4*(cc*cb - S->R1_threshold)))/2.;
+	r = c_eff*volume();
+
+	return r;
+}
+
+
+double Pore::R_2(Network *S) {
+
+	double r = 0;   //reaction rate in a pore
+
+
+	if(cf >= S->R2_n_threshold || (cf >= S->R2_threshold && is_precipitatnt_in_neighbor(S))){
+
+		double c_eff = cf - sqrt(S->R2_threshold);
+		r = c_eff*volume();
+	}
+
+	return r;
+}
+
+
+bool Pore::is_precipitatnt_in_neighbor (Network *S){
+
+	double d_threshold = (S->d_min + S->d0)/2;
+
+	for(int i=0;i<2;i++){
+		Node *nn = n[i];
+		for (int b=0; b<nn->b; b++) if(nn->p[b]->d<=d_threshold) return true;
+	}
+
+	return false;
+}
+
 /**
 * This function returns the maximal length the pore can obtain taking into account geometric constrains.
 *
@@ -105,35 +152,23 @@ void Pore::calculate_maximal_length(Network *S, double l_max, double l_0){
 */
 void Pore::calculate_actual_length(Network *S, double l_max, double l_0){
 
-	l = S->point_distance(n[0]->xy, n[1]->xy);
+	double l0 = S->point_distance(n[0]->xy, n[1]->xy);
 
 	if (d == 0) return;
-
 	if(!S->if_dynamical_length || !S->if_track_grains) return;
 
-	double factor=0; double V_max=0; double V_act=0;
-	for (int s=0; s<bG; s++){
-		V_max = g[s]->calculate_maximal_volume(S);
-		V_act = g[s]->Va + g[s]->Ve + g[s]->Vx;
-		if(V_max>0 && V_act>0) factor += pow(V_act/V_max,1./3);  //One may ask about exponent for semi 2D network, maybe it should be two?
-		}
 
-	if(factor>0) 	l = l*factor/bG;
-	else			l = S->l_min;
+	double alpha = 0;
 
+	for(int i=0 ; i<bG; i++){
+		double V_max = g[i]->calculate_maximal_volume(S);
+		double V_act = g[i]->total_volume();
+		alpha += sqrt(V_act/V_max)/bG;
+	}
+
+	if(alpha<1 && alpha >=0) l = alpha*l0;
 	if(l<=S->l_min) l = S->l_min;
 
-	if(l<=S->l_min) {
-		if(S->if_verbose) cerr<<"l = l_min for Pore:"<<*this<<endl;
-		for (int s=0; s<bG; s++){
-			if(S->if_verbose) cerr<<"The following gains is going to be empty."<<endl\
-					<<"Grain:"<<*g[s]<<endl;
-			S->Va_tot -= g[s]->Va; g[s]->Va =0;
-            S->Ve_tot -= g[s]->Ve; g[s]->Ve =0;
-
-
-		}
-	}
 }
 
 /**
@@ -233,7 +268,7 @@ double Pore::default_dd_plus(Network*S){
 	double da      = local_Da_eff(S);
 	double g       = local_G(S);
 	double c0;
-	if(S->if_streamtube_mixing) c0 = c_in;
+	if(S->if_streamtube_mixing) c0 = cb;
 	else                        c0 = calculate_inlet_cb();
 
 	double dd_plus = 0; 		//diameter change
@@ -273,6 +308,21 @@ double Pore::default_dd_plus(Network*S){
 }
 
 
+double Pore::default_dd_plus_T(Network*S){
+
+	if(S->if_track_grains && !is_Va_left())  return 0;   //no reaction if there is no A species available
+	if(d==0)           return 0;   //pore with no flow
+	if(l<=S->l_min)    return 0;   //no reaction in tiny grain
+
+	double dd_plus = 0;  //no dissolution in zeolite version
+
+	return dd_plus;
+}
+
+
+
+
+
 /**
 * This function returns the change in diameter due to precipitation in one time step (no condition for left space is checked here).
 * @param S pointer to the network
@@ -291,7 +341,7 @@ double Pore::default_dd_minus(Network*S){
 	double f1      = local_Da_eff(S);
 	double g       = local_G(S);
 	double c0;
-	if(S->if_streamtube_mixing) c0 = c_in;
+	if(S->if_streamtube_mixing) c0 = cb;
 	else                        c0 = calculate_inlet_cb();
 
 
@@ -313,6 +363,19 @@ double Pore::default_dd_minus(Network*S){
 }
 
 
+
+double Pore::default_dd_minus_T(Network*S){
+
+	if(S->if_track_grains && !is_Va_left())  return 0;   //no reaction if there is no A species available
+	if(d==0)           return 0;   //pore with no flow
+	if(l<=S->l_min)    return 0;   //no reaction in tiny grain
+
+	double dd_minus = 0;  //no dissolution in zeolite version
+
+	dd_minus   = R_2(S) / (M_PI*l*d/2.);
+
+	return dd_minus;
+}
 
 
 /**
@@ -445,7 +508,7 @@ void Pore::change_pore_neighbours(Node * n_old, Node *n_new){
 
 ofstream_txt & operator << (ofstream_txt & stream, Pore &p){
 
-	stream <<setw(12)<<p.a<<setw(12)<<p.d<<setw(12)<<p.l<<setw(8)<<p.bG<<setw(12)<<p.q;
+	stream <<setw(12)<<p.a<<setw(12)<<p.d<<setw(12)<<p.l<<setw(8)<<p.bG<<setw(12)<<p.q<<setw(12)<<p.cb<<setw(12)<<p.cc<<setw(12)<<p.cf;
 	return stream;
 }
 

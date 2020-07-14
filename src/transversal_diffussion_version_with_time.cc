@@ -15,169 +15,277 @@
 // evolution with transversal diffusion
 void Network::calculate_concentrations_b_diff_T(){
 
-	cerr<<"Calculating concentrations for species B taking into account diffusion..."<<endl;
-
-	//calculating no of non zero elements of linear equations
-	for(int i=0;i<NN;i++) n[i]->tmp=i;
-
-	int R_no = 0;
-	for(int i=0;i<NN;i++)
-		if(n[i]->t!=1) R_no+=n[i]->b+1;
-		else           R_no++;
+	//cerr<<"Calculating concentrations for species B taking into account diffusion and time..."<<endl;
 
 
-	int R_m  = NN;						    //rank of the matrix to be solved
-
-	//for matrix containing linear equations for concentration to be solved
-	int* ww_r = new int [R_no];		//raw indexes
-	int* ww_c = new int [R_no];		//column indexes
-	double* B = new double [R_no];	//non zero elements
-	double* y = new double [NN];	//rhs
-
-
-	int r_no=0;
-	//filing matrix with eqs for each node
+	//calculating new cb for each node
 	for(int i=0;i<NN;i++){
-		double S_q=0;
-		if(n[i]->t==1) 	y[i] = Cb_0;
-		else 			y[i] = 0;
 
-		if(n[i]->t==1) S_q=1;					//if node is an inlet one
-		else for(int s=0; s<n[i]->b; s++){		//eqs for normal and outlet nodes
+		Node *nn = n[i];
 
-			Pore *pp = findPore(n[i],n[i]->n[s]);
+		if(nn->t==1) {    nn->cb = Cb_0; continue;}
+
+		double J_in   = 0;    //amount of species B flowing into the node due to convection
+		double J_diff = 0;    //amount of species B flowing in/out of the node due to diffusion
+		double Q_out  = 0;    //total flow through the node
+
+		for(int s=0; s<nn->b; s++){		//eqs for normal and outlet nodes
+
+			Pore *pp = findPore(nn,nn->n[s]);
+			if (pp->d == 0 || pp->l<=l_min)  continue;    //no reaction in tiny grain or in pore with no flow
 			double qq;
-			if(n[i]==pp->n[0]) qq = -pp->q;
-			else               qq =  pp->q;
+			if(nn==pp->n[0]) qq = -pp->q;
+			else             qq =  pp->q;
+			double l_tmp = point_distance(nn->xy,nn->n[s]->xy)/2.;
 
-			ww_r[r_no] 	= i;
-			ww_c[r_no] 	= n[i]->n[s]->tmp;
-			if (n[i]->t==-1) {
-				//y[i]=0.5;                                        //for debugging
-				//B[r_no++] = qq*outlet_c_b(pp);  S_q += -qq;      //first attempt, but mass not conserved
-				B[r_no++] = outlet_c_b_1_d_T(pp,_sign(qq)); S_q += outlet_c_b_0_d_T(pp,_sign(qq))-qq;}
-			else           {
-				B[r_no++] = outlet_c_b_1_d_T(pp,_sign(qq)); S_q += outlet_c_b_0_d_T(pp,_sign(qq));}
-			}
+			if(qq>0) { J_in += (qq * pp->cb_old); Q_out+=qq;}
+			J_diff += (nn->n[s]->cb_old - nn->cb_old) * M_PI*pow(pp->d,2)/4*D1/l_tmp;
+		}
 
-		ww_r[r_no] 		= i;
-		ww_c[r_no] 		= i;
-		B[r_no]			= S_q;
+		nn->cb += dt * (J_in + J_diff - Q_out*nn->cb_old) / nn->V;
+		if(nn->cb<0)  nn->cb = 0;
 
-		if(S_q==0) B[r_no]=1;		//nothing is flowing into the pore
-		r_no++;
 	}
 
-	//if(r_no!=R_no) {cerr<<"Problem with filling linear equations for concentration! R_no = "<<R_no<<" r_no = "<<r_no<<endl; exit(666);}
-	cerr<<"Calculating concentrations: solving matrix..."<<endl;
-	int M_out = solve_matrix(R_m, r_no, ww_r, ww_c, B, y);
-	if(M_out!=0) cerr<<"Problem with solving linear equations; M_out = "<<M_out<<endl;
 
-	cerr<<"Filling solution..."<<endl;
-	for(int i=0;i<NN;i++) n[i]->cb = y[i];     //filling the solution
+	//cerr<<"Calculating concentrations for species B in pores taking into account diffusion and time..."<<endl;
+
+
+	//calculating new cb for each node
+	for(int i=0;i<NP;i++){
+
+		Pore *pp = p[i];
+		if (pp->d == 0 || pp->l<=l_min)  continue;    //no reaction in tiny grain or in pore with no flow
+
+		double J_in   = 0;    //amount of species B flowing into the pore in one time step due to convection
+		double J_diff = 0;    //amount of species B flowing in/out of the pore due to diffusion
+
+		Node* nn = NULL;
+		if(pp->n[0]->u > pp->n[1]->u) nn = pp->n[0];
+		else             			  nn = pp->n[1];
+
+		double l_tmp = point_distance(pp->n[0]->xy,pp->n[1]->xy)/2.;
+
+		J_in   =  nn->cb_old * fabs(pp->q);
+		J_diff = (pp->n[0]->cb_old + pp->n[1]->cb_old - 2*pp->cb_old) * M_PI*pow(pp->d,2)/4*D1/l_tmp;
+
+		pp->cb +=  dt*( J_in + J_diff - fabs(pp->q)*pp->cb_old) / pp->volume();
+		if(pp->cb<0)  pp->cb = 0;
+	}
 
 	//additional printing for debugging
-	print_network_for_debugging ("After calculating concentration B field ","acid concentration", "flow");
-
-	calculate_V_total_diff();
-
-	delete[] ww_r;
-	delete[] ww_c;
-	delete[] B;
-	delete[] y;
+	print_network_for_debugging ("After calculating concentration B field ","acid concentration", "concentration B");
 
 }
-
 
 void Network::calculate_concentrations_c_diff_T(){
 
-	cerr<<"Has to be implemented!!!"<<endl;
-	exit(123);
+	//cerr<<"Calculating concentrations for species C taking into account diffusion and time..."<<endl;
+
+
+	//calculating new cb for each node
+	for(int i=0;i<NN;i++){
+
+		Node *nn = n[i];
+
+		if(nn->t==-1) {    nn->cc = Cc_0; continue;}
+
+		double J_in   = 0;    //amount of species C flowing into the node due to convection
+		double J_diff = 0;    //amount of species C flowing in/out of the node due to diffusion
+		double Q_out  = 0;    //total flow through the node
+
+		for(int s=0; s<nn->b; s++){		//eqs for normal and outlet nodes
+
+			Pore *pp = findPore(nn,nn->n[s]);
+			if (pp->d == 0 || pp->l<=l_min)  continue;    //no reaction in tiny grain or in pore with no flow
+			double qq;
+			if(nn==pp->n[0]) qq = -pp->q;
+			else             qq =  pp->q;
+			double l_tmp = point_distance(nn->xy,nn->n[s]->xy)/2.;
+
+			if(qq>0) { J_in += (qq * pp->cc_old); Q_out+=qq;}
+			J_diff += (nn->n[s]->cc_old - nn->cc_old) * M_PI*pow(pp->d,2)/4*D2/l_tmp;
+		}
+
+		nn->cc += dt * (J_in + J_diff - Q_out*nn->cc_old) / nn->V;
+		if(nn->cc<0)  nn->cc = 0;
+
+	}
+
+
+	//cerr<<"Calculating concentrations for species B in pores taking into account diffusion and time..."<<endl;
+
+
+	//calculating new cb for each node
+	for(int i=0;i<NP;i++){
+
+		Pore *pp = p[i];
+		if (pp->d == 0 || pp->l<=l_min)  continue;    //no reaction in tiny grain or in pore with no flow
+
+		double J_in   = 0;    //amount of species C flowing into the pore in one time step due to convection
+		double J_diff = 0;    //amount of species C flowing in/out of the pore due to diffusion
+
+		Node* nn = NULL;
+		if(pp->n[0]->u > pp->n[1]->u) nn = pp->n[0];
+		else             			  nn = pp->n[1];
+		double l_tmp = point_distance(pp->n[0]->xy,pp->n[1]->xy)/2.;
+
+		J_in   =  nn->cc_old * fabs(pp->q);
+		J_diff = (pp->n[0]->cc_old + pp->n[1]->cc_old - 2*pp->cc_old) * M_PI*pow(pp->d,2)/4*D2/l_tmp;
+
+
+		pp->cc += dt*(J_in + J_diff - fabs(pp->q)*pp->cc_old) / pp->volume();
+		if(pp->cc<0)  pp->cc = 0;
+	}
+
+	//additional printing for debugging
+	print_network_for_debugging ("After calculating concentration B field ","acid concentration", "concentration B");
+
+
+}
+
+
+void Network::calculate_concentrations_f_diff_T(){
+
+	//cerr<<"Calculating concentrations for species C taking into account diffusion and time..."<<endl;
+
+
+	//calculating new cb for each node
+	for(int i=0;i<NN;i++){
+
+		Node *nn = n[i];
+
+
+		double J_in   = 0;    //amount of species C flowing into the node due to convection
+		double J_diff = 0;    //amount of species C flowing in/out of the node due to diffusion
+		double Q_out  = 0;    //total flow through the node
+
+		for(int s=0; s<nn->b; s++){		//eqs for normal and outlet nodes
+
+			Pore *pp = findPore(nn,nn->n[s]);
+			if (pp->d == 0 || pp->l<=l_min)  continue;    //no reaction in tiny grain or in pore with no flow
+			double qq;
+			if(nn==pp->n[0]) qq = -pp->q;
+			else             qq =  pp->q;
+			double l_tmp = point_distance(nn->xy,nn->n[s]->xy)/2.;
+
+			if(qq>0) { J_in += (qq * pp->cf_old); Q_out+=qq;}
+			J_diff += (nn->n[s]->cf_old - nn->cf_old) * M_PI*pow(pp->d,2)*D3/4/l_tmp;
+		}
+
+		nn->cf += dt * (J_in + J_diff - Q_out*nn->cf_old) / nn->V;
+		if(nn->cf<0)  nn->cf = 0;
+
+	}
+
+
+	//cerr<<"Calculating concentrations for species B in pores taking into account diffusion and time..."<<endl;
+
+
+	//calculating new cb for each node
+	for(int i=0;i<NP;i++){
+
+		Pore *pp = p[i];
+
+		if (pp->d == 0 || pp->l<=l_min)  continue;    //no reaction in tiny grain or in pore with no flow
+
+		double J_in   = 0;    //amount of species C flowing into the pore in one time step due to convection
+		double J_diff = 0;    //amount of species C flowing in/out of the pore due to diffusion
+
+		Node* nn = NULL;
+		if(pp->n[0]->u > pp->n[1]->u) nn = pp->n[0];
+		else             			  nn = pp->n[1];
+		double l_tmp = point_distance(pp->n[0]->xy,pp->n[1]->xy)/2.;
+
+		J_in   =  nn->cf_old * fabs(pp->q);
+		J_diff = (pp->n[0]->cf_old + pp->n[1]->cf_old - 2*pp->cf_old) * M_PI*pow(pp->d,2)/4*D3/l_tmp;
+
+
+		pp->cf += dt*(J_in + J_diff - fabs(pp->q)*pp->cf_old) / pp->volume();
+		if(pp->cf<0)  pp->cf = 0;
+	}
+
+	//additional printing for debugging
+	print_network_for_debugging ("After calculating concentration B field ","acid concentration", "concentration B");
+
 
 }
 
 
 
-double Network::outlet_c_b_1_d_T   (Pore* p, int s) {
-
-	if(p->d==0) return 0;
+void Network::precipitate(){
 
 
-	if(Pe>10 && fabs(p->q)>1e-5 && false){ //not working yet
-		double pe = p->local_Pe    (this);
-		double da = p->local_Da_eff(this);
-		double gg = sqrt(da/pe+0.25);
+	cerr<<"Precipitating in zeolite..."<<endl;
 
-		if(if_track_grains && !(p->is_Va_left())) gg=0.5;
+	//for updating grains volume;
+	if(if_track_grains) for (int i=0;i<NG;i++) {g[i]->tmp=0; g[i]->tmp2=0; }
 
-		return - s*fabs(p->q)*2*gg*exp(-pe*(gg-0.5))/(1-exp(-2.*gg*pe));
+	for(int i=0;i<NP;i++){ //for each pore...
+
+
+		Pore* p0 = p[i];
+		if (p0->d == 0 || p0->l<=l_min)  continue;    //no reaction in tiny grain or in pore with no flow
+
+
+		double d_old    = p0->d;
+		double dd_plus  = 0;
+		double dd_minus = p0->R_2(this) / (M_PI*p0->l*p0->d/2.);;
+
+		//update cb, cc and cf due to reactions:
+		double R_1_tmp =  p0->R_1(this) / p0->volume();
+		double R_2_tmp =  p0->R_2(this) / p0->volume();
+		p0->cb -=  R_1_tmp;
+		p0->cc -=  R_1_tmp;
+		p0->cf +=  R_1_tmp - R_2_tmp;
+
+		//avoiding negative concentration
+		if(p0->cb<0) p0->cb=0;
+		if(p0->cc<0) p0->cc=0;
+		if(p0->cf<0) p0->cf=0;
+
+
+		//update geometry
+		p0->d += (dd_plus - dd_minus);
+		if(p0->d<0) {Ve_tot+= M_PI*pow(p0->d,2) * p0->l; p0->d = 0;}
+
+
+
+		//updating Va and Ve volumes
+		int bG_tmp_A=0;
+		double d_V_A = (M_PI*(d_old)*(dd_plus *d0)/2*p0->l);
+		double d_V_E = (M_PI*(d_old)*(dd_minus*d0)/2*p0->l);
+		for(int s=0; s<p0->bG;s++) if(p0->g[s]->Va >0) bG_tmp_A++;
+		for(int s=0; s<p0->bG;s++) {
+			if(p0->g[s]->Va >0) p0->g[s]->tmp -=d_V_A/bG_tmp_A;
+			if (true)           p0->g[s]->tmp2+=d_V_E/p0->bG;
+		}
+		for(int i=0;i<2;i++)    p0->n[i]->V += (d_V_A - d_V_E)/2;
+
+		if(if_adaptive_dt)      set_adaptive_dt((dd_plus - dd_minus)*d0/p0->d, d_V_A + d_V_E);
 	}
 
-	else if(fabs(p->q)>1e-5 && Pe > 0.001 && Da!=-1){  //normal flow through the pore
-		double pe = p->local_Pe    (this);
-		double da = p->local_Da_eff(this);
-
-		double a = sqrt(pe*(4*da+pe));
-		double b = s*pe/2.;
-		if(if_track_grains && !(p->is_Va_left())) a=pe; //no reaction due to the lack of Va
-
-		return  -s*fabs(p->q)*(a*exp(a/2.+b)) / (2.*b*(1-exp(a)));
+	//updating Va and Vc (must be done after main dissolution for c_out to be calculated correctly)
+	if(if_track_grains){
+		for (int i=0;i<NG;i++) {g[i]->Va+=g[i]->tmp;  if(g[i]->Va<0) {Va_tot-=g[i]->Va; g[i]->Va = 0;}}
+		for (int i=0;i<NG;i++)  g[i]->Ve+=g[i]->tmp2;
 	}
 
+	//update concentration_old
 
-	else{  //no flow through the pore
-		//return 0;
-		if(if_track_grains && !(p->is_Va_left())) return M_PI * pow(p->d,2) * D1/4 /p->l;
-
-		double dape = DaPe * (d0/p->d) * pow(p->l/l0,2);
-		double g = p->local_G(this);
-		return M_PI * p->d * (k1/(1+g)) * p->l/sinh(sqrt(dape))/sqrt(dape);//dwa roznowazne wzory
-		//return M_PI * pow(p->d,2) * D1/4 /p->l / sinh(sqrt(dape)) * sqrt(dape); //dwa roznowazne wzory
+	for (int i=0; i<NN; i++) {n[i]->cb_old = n[i]->cb; n[i]->cc_old = n[i]->cc; n[i]->cf_old = n[i]->cf;}
+	for (int i=0; i<NP; i++) {p[i]->cb_old = p[i]->cb; p[i]->cc_old = p[i]->cc; p[i]->cf_old = p[i]->cf;}
 
 
-	}
+	//updating pore lengths
+	if(if_dynamical_length) for(int i=0; i<NP; i++) p[i]->calculate_actual_length(this);
+	//updating node volume
+	if(if_track_grains)     for(int i=0; i<NN; i++) n[i]->calculate_volume(this);
+
+	//additional printing for debugging
+	print_network_for_debugging ("After dissolution and precipitation","pressure", "diameter","volume A");
+
 }
 
 
 
-double Network::outlet_c_b_0_d_T   (Pore* p, int s) {
-
-	if(p->d==0) return 0;
-
-	if(Pe>10 && fabs(p->q)>1e-5 and false){  //not working yet
-		double pe = p->local_Pe    (this);
-		double da = p->local_Da_eff(this);
-		double gg = sqrt(da/pe+0.25);
-
-		if(if_track_grains && !(p->is_Va_left())) gg=0.5;
-
-		return  s*fabs(p->q)* (0.5 - gg*(1+exp(-2*gg*Pe)) /(1-exp(-2*gg*pe)) );
-	}
-
-	else if(fabs(p->q)>1e-5 && Pe > 0.001 && Da!=-1){  //normal flow through the pore
-		double pe = p->local_Pe    (this);
-		double da = p->local_Da_eff(this);
-
-		double a = sqrt(pe*(4*da+pe));
-		double b = s*pe/2.;
-		if(if_track_grains && !(p->is_Va_left())) a=pe; //no reaction due tu lack of Va
-
-		return  s*fabs(p->q)*(a + 2*b + (a - 2*b)*exp(a)) / (4.*b*(1-exp(a)));
-	}
-
-	else{  //no flow through the pore
-		//return 0;
-		if(if_track_grains && !(p->is_Va_left())) return -M_PI * pow(p->d,2) * D1/4 /p->l;
-
-		double dape = DaPe * (d0/p->d)   * pow(p->l/l0,2);
-		double g = p->local_G(this);
-		return - M_PI * p->d * (k1/(1+g)) * p->l  /tanh(sqrt(dape)) / sqrt(dape);//dwa roznowazne wzory
-		//return  -M_PI * pow(p->d,2) * D1/4 /p->l /tanh(sqrt(dape)) * sqrt(dape);//dwa roznowazne wzory
-
-	}
-
-}
-
-
-double Network::outlet_c_c_1_d_T   (Pore* p,int s) {return 0;}   //to be implemented
-double Network::outlet_c_c_0_d_T   (Pore* p,int s) {return 0;}   //to be implemented

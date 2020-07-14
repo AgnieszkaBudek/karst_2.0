@@ -158,60 +158,18 @@ double Grain::total_volume(){
 */
 void Grain::calculate_initial_volume (Network *S){
 
+	double P0 = calculate_maximal_volume(S);
 
-	if (bN==3 ){ //version for 2D, triangular network with Heron formula
-		double x = S->node_distance(n[0], n[1]);
-		double y = S->node_distance(n[1], n[2]);
-		double z = S->node_distance(n[2], n[0]);
-		double P = (x+y+z)/2;
+	double Sum   = 0; //sum li x ri/2
+	double alpha = 0; //scaling property
 
-		Va = sqrt(P*(P-x)*(P-y)*(P-z));
-		for (int i=0;i<bP;i++) Va -= (M_PI*p[i]->d*p[i]->d*p[i]->l/4)/2;
+	for(int i=0;i<bP;i++){
+		double l_i = S->point_distance(p[i]->n[0]->xy,p[i]->n[1]->xy);
+		Sum += l_i*p[i]->d/4;
 	}
-	//WARNING: the general formula should be implemented for cubic network with added random node positions
-	else if(bN==8){
-		Va = 1;
-		for (int i=0;i<bP;i++) Va -= (M_PI*p[i]->d*p[i]->d*p[i]->l/4)/4;
-	}
-
-	else if (bN==4){
-
-		double x = S->node_distance(n[0], n[1]);
-		double y = S->node_distance(n[1], n[2]);
-		double z = S->node_distance(n[2], n[0]);
-		double P = (x+y+z)/2;
-
-		Va = sqrt(P*(P-x)*(P-y)*(P-z));
-
-		x = S->node_distance(n[0], n[3]);
-		y = S->node_distance(n[3], n[2]);
-		z = S->node_distance(n[2], n[0]);
-		P = (x+y+z)/2;
-
-		Va += sqrt(P*(P-x)*(P-y)*(P-z));
-
-		for (int i=0;i<bP;i++) Va -= (M_PI*p[i]->d*p[i]->d*p[i]->l/4)/2;
-	}
-
-
-	else if (bN==2){
-		Va = 0;
-	}
-
-
-
-	else {
-		cerr<<"WARNING: Initial grain volume for general network has to be implemented!!!"<<endl;
-		Va = 1;
-		cerr<<*this<<endl;
-	}
-
-	if(Va<0) Va = 0;
-	if(!(Va>=0)){
-		Va=sqrt(3)/4;
-		//cerr<<"WARNING: Problem with calculating initial volume for grain"<<*this<<" Va = "<<Va<<endl;
-		//cerr<<"Problematic pores: "<<" p = ("<<p[0]->l<<","<<p[1]->l<<","<<p[2]->l<<")"<<endl;
-	}
+	alpha = (P0 - Sum)/P0;
+	if(alpha < 0) Va = 0;
+	else          Va = alpha * P0;
 
 	//updating Vx percentage
 	if(S->Vx_perc > 0){

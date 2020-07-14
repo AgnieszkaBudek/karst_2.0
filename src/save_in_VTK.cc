@@ -147,7 +147,7 @@ void Network::write_concentration(string file_name)
 	ofstream &file = *os_p;
 	file << endl <<"SCALARS Concentration float" << endl << "LOOKUP_TABLE custom_table" << endl;
 
-	if(if_streamtube_mixing) for (int i = 0; i < NP; ++i)	file<< p[i]->c_in << endl;
+	if(if_streamtube_mixing) for (int i = 0; i < NP; ++i)	file<< p[i]->cb << endl;
 	else for (int i = 0; i < NP; ++i)	file<< p[i]->n[0]->cb << endl;
 	file.close();
 }

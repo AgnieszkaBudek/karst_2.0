@@ -387,7 +387,7 @@ double Network::outlet_c_c_1 (Pore *p0){
 
 	double q_tmp = fabs(p0->q);
 	double c_tmp_in;
-	if(if_streamtube_mixing) c_tmp_in = p0->c_in;
+	if(if_streamtube_mixing) c_tmp_in = p0->cb;
 	else                     c_tmp_in = p0->calculate_inlet_cb();
 
 
@@ -718,7 +718,7 @@ void Network::calculate_concentrations_streamtube_mixing(){
 
 
 	cerr<<"Filling solution..."<<endl;
-	for(int i=0;i<NP;i++) p[i]->c_in = y[i];     //filling the solution
+	for(int i=0;i<NP;i++) p[i]->cb = y[i];     //filling the solution
 	cerr<<"The stream-tube mixing has been used in "<<1.*N_streamtube_mixing/NP<<" cases."<<endl;
 
 	//additional printing for debugging

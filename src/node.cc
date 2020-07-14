@@ -3,7 +3,8 @@
 
 Node::Node (int bb, float name)	{
 	b=bb; a=name; tmp=name; t=0; x=1;
-	cb=0; cc=0; u=0; V=0;
+	cb=0; cc=0; cf=0; cb_old=0; cc_old=0; cf_old=0;
+	u=0; V=0;
 	bG = 0; g=NULL;
 	n = new Node*[b];
 	p = new Pore*[b];
@@ -15,7 +16,8 @@ Node::Node (int bb, float name)	{
 
 Node::Node  (int name, int b_tmp, int t_tmp, Point point){
 	b=b_tmp; a=name; tmp=name; t=t_tmp; x=1;
-	cb=0; cc=0; u=0; V=0;
+	cb=0; cc=0; cf=0; cb_old=0; cc_old=0; cf_old=0;
+	u=0; V=0;
 	bG = 0; g=NULL;
 	xy = point;
 	n = new Node*[b];
@@ -41,17 +43,23 @@ double Node::total_abs_flow(){
 *  @date 08.07.2020
 */
 
-void Node::calculate_initial_volume(Network *S){
+void Node::calculate_volume(Network *S){
+
+	//cerr<<"Calculating node volume..."<<endl;
 
 	double V_max  = 0;
-	double V_real = 0;
+	double V_g    = 0;
+	double V_p    = 0;
 
 	for(int i=0;i<bG;i++){
-		V_real += g[i]->total_volume()/g[i]->bN;
+		V_g    += g[i]->total_volume()/g[i]->bN;
 		V_max  += g[i]->calculate_maximal_volume(S)/g[i]->bN;
 	}
+	for(int i=0;i<b;i++) V_p += p[i]->volume()/2.;
 
-	V = V_max - V_real;
+	V = V_max - V_g - V_p;
+
+	if(V<=0) V=0.1;
 }
 
 
@@ -325,7 +333,7 @@ ostream & operator << (ostream & stream, Node &n){
 
 ofstream_txt & operator << (ofstream_txt & stream, Node &n){
 
-	stream <<setw(12)<<n.a<<setw(12)<<setw(6)<<n.t<<n.u<<setw(12)<<n.cb<<setw(12)<<n.cc<<endl;
+	stream <<setw(12)<<n.a<<setw(12)<<setw(6)<<n.t<<n.u<<setw(12)<<n.cb<<setw(12)<<n.cc<<setw(12)<<n.cf<<endl;
 	return stream;
 }	
 

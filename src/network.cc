@@ -45,15 +45,16 @@ Network::Network (string input_file_name) {
 	l_min = l0*1e-10;//minimal possible pore length (must be >0 for numerical reasons)
 
 
-
 	//physical parameters -> should be set after choosing dimenssionless one
 	
 	k1	= 10e-8;		//reaction rate for dissolution
 	k2	= 1;			//reaction rate for precipitation
 	D1	= 0;			//diffusion coefficient for dissolution
 	D2	= 1;			//diffusion coefficient for precipitation
+	D3  = 1;
 	DD1 =-1;			//transversal diffusion coefficient for dissolution
 	DD2 = 1;			//transversal diffusion coefficient for precipitation
+	DD3 = 1;
 	Sh  = 4;			//Sherwood number for pipe
 	gamma_1	= 1;		//capacity number for dissolution   (c_sol = 1 by default)
 	gamma_2 = 1;		//capacity number for precipitation (c_sol = 1 by default)
@@ -61,6 +62,13 @@ Network::Network (string input_file_name) {
 	Cc_0	= 0;		//precipitating species inlet concentration
 	mu_0    = M_PI*pow(d0,4)/(128*l0);		//viscosity  always set to M_PI*pow(d0,4)/(128*l0)
 	dt_unit = 2*k1 * gamma_1/d0;            //(in dimensionless units [2 k1 * gamma_1/d0])
+
+
+	//option for zeolite model
+	R1_threshold   = 0;     //threshold for reaction R1
+	R2_threshold   = 0.1;   //threshold for reaction R2 (condition for agregation)
+	R2_n_threshold = 0.3;   //threshold for reaction R2 (condition for nucleation)
+
 
 	//evolution parameters
 	T_max       = 10;     	  //maximal number of time steps
@@ -118,6 +126,7 @@ Network::Network (string input_file_name) {
 	if_dynamical_length				     = true;		 //if true length of pore is changing according to dissolution and precipitation
 	if_streamtube_mixing                 = false;        //if true the stream-tube mixing is perform while calculation the concentration (works only for dissolution now)
 	if_time_concentration                = false;        //if true concentration is not stationary in time
+	if_flow                              = true;         //if false there is no flow through the system (for diffusion only)
 
 	//output
 	if_save_ps            = true;     //if true ps pictures are created
@@ -154,16 +163,20 @@ Network::Network (string input_file_name) {
 	cluster_size_out       .open("cluster_size.out"       ,ios_base::out | ios_base::trunc );
 
 	if (if_save_table){
-		diameters_out     .open("d.out",	      ios_base::out | ios_base::trunc );
-		flow_out          .open("q.out",	      ios_base::out | ios_base::trunc );
-		pressure_out      .open("u.out",	      ios_base::out | ios_base::trunc );
-		concentration_out .open("c.out",	      ios_base::out | ios_base::trunc );
-		concentration2_out.open("c2.out",	      ios_base::out | ios_base::trunc );
-		VA_out			  .open("VA.out",	      ios_base::out | ios_base::trunc );
-		VE_out			  .open("VE.out",	      ios_base::out | ios_base::trunc );
-		VX_out			  .open("VX.out",	      ios_base::out | ios_base::trunc );
-		V_nod_out	      .open("V_nod.out",      ios_base::out | ios_base::trunc );
-		lengths_out		  .open("l.out",	      ios_base::out | ios_base::trunc );
+		diameters_out       .open("d.out",	      ios_base::out | ios_base::trunc );
+		flow_out            .open("q.out",	      ios_base::out | ios_base::trunc );
+		pressure_out        .open("u.out",	      ios_base::out | ios_base::trunc );
+		concentration_b_out .open("cc.out",	      ios_base::out | ios_base::trunc );
+		concentration_c_out .open("cb.out",	      ios_base::out | ios_base::trunc );
+		concentration_f_out .open("cf.out",	      ios_base::out | ios_base::trunc );
+		concentration_bp_out.open("cc_pore.out",  ios_base::out | ios_base::trunc );
+		concentration_cp_out.open("cb_pore.out",  ios_base::out | ios_base::trunc );
+		concentration_fp_out.open("cf_pore.out",  ios_base::out | ios_base::trunc );
+		VA_out			    .open("VA.out",	      ios_base::out | ios_base::trunc );
+		VE_out			    .open("VE.out",	      ios_base::out | ios_base::trunc );
+		VX_out			    .open("VX.out",	      ios_base::out | ios_base::trunc );
+		V_nod_out	        .open("V_nod.out",    ios_base::out | ios_base::trunc );
+		lengths_out		    .open("l.out",	      ios_base::out | ios_base::trunc );
 	}
 
 
@@ -220,12 +233,12 @@ Network::Network (string input_file_name) {
 		if(type_of_topology != "from_file") for(int i=0;i<NG;i++) g[i]->calculate_initial_volume(this);
 		calculate_initial_total_Va();
 		calculate_initial_total_Ve();
-		for(int i=0;i<NN;i++) n[i]->calculate_initial_volume(this);
 	}
-
 
 //updating pore lengths
 	if(if_dynamical_length && type_of_topology != "from_file") for(int i=0; i<NP;i++) p[i]->calculate_actual_length(this);
+//calculate node volume
+	if(if_track_grains) for(int i=0;i<NN;i++) n[i]->calculate_volume(this);
 
 //calculating physical parameters based on dimensionless one
 	calculate_initial_d0_and_l0 ();
@@ -293,16 +306,20 @@ Network:: ~Network (){
 	fork_distribution_out  .close();
 
 	if (if_save_table){
-		diameters_out      .close();
-		flow_out           .close();
-		pressure_out       .close();
-		concentration_out  .close();
-		concentration2_out .close();
-		VA_out			   .close();
-		VE_out 			   .close();
-		VX_out 			   .close();
-		V_nod_out          .close();
-		lengths_out		   .close();
+		diameters_out       .close();
+		flow_out            .close();
+		pressure_out        .close();
+		concentration_b_out .close();
+		concentration_c_out .close();
+		concentration_f_out .close();
+		VA_out			    .close();
+		VE_out 			    .close();
+		VX_out 			    .close();
+		V_nod_out           .close();
+		lengths_out		    .close();
+		concentration_bp_out.close();
+		concentration_cp_out.close();
+		concentration_fp_out.close();
 	}
 
 }

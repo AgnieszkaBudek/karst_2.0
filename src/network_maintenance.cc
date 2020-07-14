@@ -199,6 +199,8 @@ void Network::adapt_dt(){
 */
 void Network::check_if_dissolved(){
 
+	if(if_time_concentration) return;  //different condition should be implemented here
+
 	//condition for dissolution
 	check_diss_pattern(d_d_dis);
 	for(int i=0;i<N_wo;i++){

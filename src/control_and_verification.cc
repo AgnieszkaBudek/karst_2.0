@@ -65,7 +65,7 @@ void Network::check_acid_balance(){
 		for(int i=0;i<N_wi;i++){
 			for (int j=0; j<wi[i]->b;j++){
 				Pore * pp = wi[i]->p[j];
-				if(pp->d>0) VB_in+=fabs(pp->q)*pp->c_in*dt/dt_unit;
+				if(pp->d>0) VB_in+=fabs(pp->q)*pp->cb*dt/dt_unit;
 			}
 		}
 
@@ -73,7 +73,7 @@ void Network::check_acid_balance(){
 		for(int i=0;i<N_wo;i++){
 			for (int j=0; j<wo[i]->b;j++){
 				Pore * pp = wo[i]->p[j];
-				if(pp->d>0) VB_out+=fabs(pp->q)*pp->c_in*outlet_c_b(pp)*dt/dt_unit;
+				if(pp->d>0) VB_out+=fabs(pp->q)*pp->cb*outlet_c_b(pp)*dt/dt_unit;
 			}
 		}
 	}
@@ -387,7 +387,9 @@ void Network::print_network_for_debugging (string text, string type_n, string ty
 		if (type_p == "flow")                for(int i=0;i<NP;i++) p[i]->tmp = p[i]->q;
 		if (type_p == "length")              for(int i=0;i<NP;i++) p[i]->tmp = p[i]->l;
 		if (type_p == "diameter")            for(int i=0;i<NP;i++) p[i]->tmp = p[i]->d;
-		if (type_p == "concentration")       for(int i=0;i<NP;i++) p[i]->tmp = p[i]->c_in;
+		if (type_p == "concentration B")     for(int i=0;i<NP;i++) p[i]->tmp = p[i]->cb;
+		if (type_p == "concentration C")     for(int i=0;i<NP;i++) p[i]->tmp = p[i]->cc;
+		if (type_p == "concentration F")     for(int i=0;i<NP;i++) p[i]->tmp = p[i]->cc;
 
 		if (type_g == "name")                for(int i=0;i<NG;i++) g[i]->tmp = g[i]->a;
 		if (type_g == "volume A")            for(int i=0;i<NG;i++) g[i]->tmp = g[i]->Va;

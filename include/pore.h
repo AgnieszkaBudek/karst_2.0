@@ -46,7 +46,14 @@ class Pore{
 		double d;		///< pore diameter
 		double l;		///< pore length
 		double q;		///< flow through the pore
-		double c_in;	///< concentration at the pore inlet
+
+		double cb;	    ///< concentration of species b in a pore, used if_time_concentration (or concentration at the pore inlet for tube-mixing case only)
+		double cc;	    ///< concentration of species c in a pore, used if_time_concentration
+		double cf;	    ///< concentration of species f in a pore, used if_time_concentration
+		double cb_old;	///< concentration of species b in a pore in previous time step, used if_time_concentration (or concentration at the pore inlet for tube-mixing case only)
+		double cc_old;	///< concentration of species c in a pore in previous time step, used if_time_concentration
+		double cf_old;	///< concentration of species f in a pore in previous time step, used if_time_concentration
+
 		int    a;       ///< pore number (name)
 
 		int bG;		    ///< number of grains in vicinity
@@ -67,10 +74,13 @@ class Pore{
 
 		double perm(double mu_0){return M_PI*pow(d,4)/(128*mu_0*l);}	///< permeability of a particular pore
 		//void   diss (double Va, double Ve);							///< precipitation and dissolution of the material: calculate change of d and l
-		double calculate_inlet_cb();									///< calculate inlet concentration of the species B
+		double calculate_inlet_cb ();									///< calculate inlet concentration of the species B
 		double calculate_outlet_cb();									///< calculate outlet concentration of the species B
-		double calculate_inlet_cc();									///< calculate inlet concentration of the species C
+		double calculate_inlet_cc ();									///< calculate inlet concentration of the species C
 		double calculate_outlet_cc();									///< calculate outlet concentration of the species C
+		double R_1      (Network *S);								    ///<return reaction in z pore for time_cnicentration version
+		double R_2      (Network *S);								    ///<return reaction in z pore for time_cnicentration version
+		bool is_precipitatnt_in_neighbor (Network *S);                  ///<return true if neighbor pore is enough precipitant to start reaction
 
 		void   calculate_maximal_length(Network *S = NULL, double l_max=10, double l_0=1);	///< calculate maximal pore length
 		void   calculate_actual_length (Network *S = NULL, double l_max=10, double l_0=1);	///< calculate initial pore length
@@ -81,10 +91,12 @@ class Pore{
 		double local_Da_eff_2 (Network* S);      	///< precipitation parameter
 		double local_Pe_2     (Network* S); 		///< precipitation parameter
 		bool   is_Va_left();						///< return false if there is no Va material left
+		double volume();                            ///<return pore_volume;
+
 		double default_dd_plus   (Network*S);		///< change in diameter as a result of dissolution
 		double default_dd_minus  (Network*S);       ///< default change in diameter as a result of precipitation (no space condition is checked)
-		double default_dd_plus_d (Network*S);		///< change in diameter as a result of dissolution (model with diffusion)
-		double default_dd_minus_d(Network*S);       ///< default change in diameter as a result of precipitation (no space condition is checked)  (model with diffusion)
+		double default_dd_plus_T (Network*S);		///< change in diameter as a result of dissolution (model with time, zeolite)
+		double default_dd_minus_T(Network*S);       ///< default change in diameter as a result of precipitation (no space condition is checked)  (model with time, zeolite)
 
 
 
