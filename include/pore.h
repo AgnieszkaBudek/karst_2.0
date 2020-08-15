@@ -80,6 +80,7 @@ class Pore{
 		double calculate_outlet_cc();									///< calculate outlet concentration of the species C
 		double R_1      (Network *S);								    ///<return reaction in z pore for time_cnicentration version
 		double R_2      (Network *S);								    ///<return reaction in z pore for time_cnicentration version
+		double amount_of_precipitatnt();                                ///<return true if there is already a precipitant in a pore
 		bool is_precipitatnt_in_neighbor (Network *S);                  ///<return true if neighbor pore is enough precipitant to start reaction
 
 		void   calculate_maximal_length(Network *S = NULL, double l_max=10, double l_0=1);	///< calculate maximal pore length

@@ -51,7 +51,9 @@ ofstream_ps & print_grain_with_scaling (ofstream_ps & stream, Grain &g, Network 
 	Kolor color =  Kolor(0.33,0.33,0.33);
 	//fancy color for precipitation
 	double factor = 2;
-	if (S.if_precipitation)  color = Kolor( factor*g.Ve/(g.Va+factor*g.Ve),0,g.Va/(g.Va+factor*g.Ve));
+	if (S.if_precipitation)      color = Kolor( factor*g.Ve/(g.Va+factor*g.Ve),0,g.Va/(g.Va+factor*g.Ve));
+	factor = 1000;
+	if(S.if_time_concentration)  color = Kolor( factor*g.Ve/(g.Va+factor*g.Ve),0,g.Va/(g.Va+factor*g.Ve));
 
 	//if(g.bN==3)  stream<<Trojkacik(pp[0],pp[1],pp[2],g.tmp,color)<<endl<<flush;
 	stream<<Wielobok (g.bN, pp,g.tmp,color)<<endl<<flush;

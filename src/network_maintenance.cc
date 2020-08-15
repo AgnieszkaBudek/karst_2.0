@@ -37,7 +37,7 @@ void Network::recalculate_k1(){
 
 void Network::recalculate_D1(){
 
-	if (Pe == -1) D1  = 0; 		// diffusion limited case
+	if (Pe == -1) cerr<<"Pe = -1"<<endl; 		// diffusion limited case
 	else          D1  = 4*q_in_0*l0/(M_PI*d0*d0*Pe);
 	cerr<<"Transversal diffusion has been calculated: D1 = "<<D1<<endl;
 }

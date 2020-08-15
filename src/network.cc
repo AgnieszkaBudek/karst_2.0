@@ -65,9 +65,15 @@ Network::Network (string input_file_name) {
 
 
 	//option for zeolite model
-	R1_threshold   = 0;     //threshold for reaction R1
-	R2_threshold   = 0.1;   //threshold for reaction R2 (condition for agregation)
-	R2_n_threshold = 0.3;   //threshold for reaction R2 (condition for nucleation)
+	R1_threshold   = 0.1;   //threshold for reaction R1 (condition for aggregation)
+	R1_n_threshold = 0.2;   //threshold for reaction R1 (condition for nucleation)
+	R2_threshold   = 0;     //threshold for reaction R2 (condition for aggregation)
+	R2_n_threshold = 0;     //threshold for reaction R2 (condition for nucleation)
+	Cb_init        = 0;     //initial uniform concentration of species b in the system
+	Cc_init        = 0;     //initial uniform concentration of species c in the system
+	Cf_init        = 0;     //initial uniform concentration of species f in the system
+	VE_threshold   = 0;     //threshold for maximal amount of precipitant in a grain
+
 
 
 	//evolution parameters
@@ -166,11 +172,11 @@ Network::Network (string input_file_name) {
 		diameters_out       .open("d.out",	      ios_base::out | ios_base::trunc );
 		flow_out            .open("q.out",	      ios_base::out | ios_base::trunc );
 		pressure_out        .open("u.out",	      ios_base::out | ios_base::trunc );
-		concentration_b_out .open("cc.out",	      ios_base::out | ios_base::trunc );
-		concentration_c_out .open("cb.out",	      ios_base::out | ios_base::trunc );
+		concentration_b_out .open("cb.out",	      ios_base::out | ios_base::trunc );
+		concentration_c_out .open("cc.out",	      ios_base::out | ios_base::trunc );
 		concentration_f_out .open("cf.out",	      ios_base::out | ios_base::trunc );
-		concentration_bp_out.open("cc_pore.out",  ios_base::out | ios_base::trunc );
-		concentration_cp_out.open("cb_pore.out",  ios_base::out | ios_base::trunc );
+		concentration_bp_out.open("cb_pore.out",  ios_base::out | ios_base::trunc );
+		concentration_cp_out.open("cc_pore.out",  ios_base::out | ios_base::trunc );
 		concentration_fp_out.open("cf_pore.out",  ios_base::out | ios_base::trunc );
 		VA_out			    .open("VA.out",	      ios_base::out | ios_base::trunc );
 		VE_out			    .open("VE.out",	      ios_base::out | ios_base::trunc );

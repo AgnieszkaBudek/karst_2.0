@@ -206,13 +206,35 @@ void::Network::read_setup_file(ifstream& fp_setup){
 			R1_threshold = stod(value);
 			cerr<< "Setting R1_threshild = "<<R1_threshold<<endl;}
 
+		else if(name == "R1_n_threshold"){
+			R1_n_threshold = stod(value);
+			cerr<< "Setting R1_n_threshold = "<<R1_n_threshold<<endl;}
+
+
 		else if(name == "R2_threshold"){
 			R2_threshold = stod(value);
-			cerr<< "Setting R2_threshild = "<<R2_threshold<<endl;}
+			cerr<< "Setting R2_threshold = "<<R2_threshold<<endl;}
 
 		else if(name == "R2_n_threshold"){
 			R2_n_threshold = stod(value);
-			cerr<< "Setting R2_n_threshild = "<<R2_n_threshold<<endl;}
+			cerr<< "Setting R2_n_threshold = "<<R2_n_threshold<<endl;}
+
+		else if(name == "Cb_init"){
+			Cb_init = stod(value);
+			cerr<< "Setting Cb_init = "<<Cb_init<<endl;}
+
+		else if(name == "Cc_init"){
+			Cc_init = stod(value);
+			cerr<< "Setting Cc_init = "<<Cc_init<<endl;}
+
+		else if(name == "Cf_init"){
+			Cf_init = stod(value);
+			cerr<< "Setting Cf_init = "<<Cf_init<<endl;}
+
+		else if(name == "VE_threshold"){
+			VE_threshold = stod(value);
+			cerr<< "Setting VE_threshold = "<<VE_threshold<<endl;}
+
 
 		else if(name == "Vx_perc"){
 			Vx_perc = stod(value);

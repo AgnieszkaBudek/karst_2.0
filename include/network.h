@@ -121,10 +121,14 @@ class Network
 		double l_min;   ///< minimal pore length (for numerical reason)
 
 		//option for zeolite model
-		double R1_threshold;     ///< threshold for reaction R1
+		double R1_threshold;     ///< threshold for reaction R1 (condition for aggregation)
+		double R1_n_threshold;   ///< threshold for reaction R1 (condition for nucleation)
 		double R2_threshold;     ///< threshold for reaction R2 (condition for aggregation)
 		double R2_n_threshold;   ///< threshold for reaction R2 (condition for nucleation)
-
+		double Cb_init;          ///< initial uniform concentration of species b in the system
+		double Cc_init;          ///< initial uniform concentration of species c in the system
+		double Cf_init;          ///< initial uniform concentration of species f in the system
+		double VE_threshold;     ///< amount of precipitatnt that can contain one grain
 
 
 		// evolution parameters
@@ -248,7 +252,8 @@ class Network
 
 		void adapt_dt();												///< part of adapting the time step, for the dissolution to be not too slow not too fast
 		void recalculate_flows_to_keep_Q_tot(string type_of_nodes);     ///< when total flow through the system is kept the flow field must be rescaled in each time step
-		void set_adaptive_dt(double dd, double dV);                     ///< the time dt will be adapted in each time step according to the speed of dissolution and precipitation
+		void set_adaptive_dt(double dc, double dV);                     ///< the time dt will be adapted in each time step according to the speed of dissolution and precipitation
+		void set_adaptive_dt_for_cT(double dc);                         ///< the time dt will be adapted in each time step according to the speed of concentration changes (for concentration in time only)
 		void check_if_dissolved();										///< checks if the system is dissolved, if yes the simulation stops
 
 

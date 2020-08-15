@@ -79,14 +79,25 @@ double Pore::volume(){
 
 double Pore::R_1(Network *S) {
 
+
 	double r = 0;   //reaction rate in a pore
 
-	if(cc*cb < S->R1_threshold) return 0;
+	//no reaction if limit is exceeded
+    //if(d <= S->d_min)           return 0; //later I will add this behavior
+	double VE_tot=0;
+	for(int b=0;b<bG;b++) VE_tot+= g[b]->Ve;
+	//if(VE_tot>=bG*S->VE_threshold) return 0;
 
-	double c_eff = (cb + cc - sqrt(pow(cb + cc,2) - 4*(cc*cb - S->R1_threshold)))/2.;
-	r = c_eff*volume();
 
-	return r;
+	if(cc*cb >= S->R1_n_threshold || (cc*cb >= S->R1_threshold && is_precipitatnt_in_neighbor(S))){
+
+		double c_eff = (cb + cc - sqrt(pow(cb + cc,2) - 4*(cc*cb - S->R1_threshold)))/2.;
+		r = c_eff*volume();
+	}
+
+	if(r > 0) return r;
+	else      return 0;
+
 }
 
 
@@ -94,27 +105,54 @@ double Pore::R_2(Network *S) {
 
 	double r = 0;   //reaction rate in a pore
 
-
 	if(cf >= S->R2_n_threshold || (cf >= S->R2_threshold && is_precipitatnt_in_neighbor(S))){
 
-		double c_eff = cf - sqrt(S->R2_threshold);
+		double c_eff = cf - S->R2_threshold;
 		r = c_eff*volume();
 	}
 
-	return r;
+	if(r > 0) return r;
+	else      return 0;
 }
 
 
+
+double Pore::amount_of_precipitatnt(){
+
+	double VE_tot=0;
+	for(int b=0;b<bG;b++) VE_tot+=g[b]->Ve;
+
+	return VE_tot;
+
+}
+
 bool Pore::is_precipitatnt_in_neighbor (Network *S){
 
-	double d_threshold = (S->d_min + S->d0)/2;
 
-	for(int i=0;i<2;i++){
-		Node *nn = n[i];
-		for (int b=0; b<nn->b; b++) if(nn->p[b]->d<=d_threshold) return true;
-	}
+	// approach like Buki: only if the amount of precipitant exeeds a threshold in a neighbour
+	double VE_threshold=0;
+	for(int b=0;b<bG;b++) if(g[b]->Ve > S->VE_threshold) return true;
 
 	return false;
+
+	//first variant tracking diameter
+//	double VE_threshold = 0;//.001;
+//	for(int i=0;i<2;i++){
+//		Node *nn = n[i];
+//		double VE_mean=0;
+//		for(int b=0;b<nn->bG;b++) VE_mean+= nn->g[b]->Ve/nn->bG;
+//		if(VE_mean>VE_threshold && d>0){cerr<<"cos tam mi wyszlo!"<<endl; return true;}
+//		}
+//	return false;
+
+	//second variant tracking diameter
+//	double d_threshold = (S->d_min + S->d0)/2.;
+//	for(int i=0;i<2;i++){
+//		Node *nn = n[i];
+//		for (int b=0; b<nn->b; b++) if(nn->p[b]->d<=d_threshold && nn->p[b]->d>0) return true;
+//	}
+//
+//	return false;
 }
 
 /**
