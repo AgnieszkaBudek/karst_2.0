@@ -85,7 +85,7 @@ class Node{
 
 		double total_abs_flow();								///< returns total absolute flow through neighbor pores
 		double total_pores_d ();								///< returns total diameter of neighbor pores
-		void   calculate_volume(Network *S);            ///< calculate initial volume
+		void   calculate_volume(Network *S);                    ///< calculate initial volume
 
 		//pattern analysis
 		void check_diss_pattern(double treshold);   			///< set x=1 for pores that are connected to the dissolution pattern

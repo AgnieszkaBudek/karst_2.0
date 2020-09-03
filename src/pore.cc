@@ -86,7 +86,7 @@ double Pore::R_1(Network *S) {
     //if(d <= S->d_min)           return 0; //later I will add this behavior
 	double VE_tot=0;
 	for(int b=0;b<bG;b++) VE_tot+= g[b]->Ve;
-	//if(VE_tot>=bG*S->VE_threshold) return 0;
+    //if(VE_tot>=bG*S->VE_threshold) return 0;
 
 
 	if(cc*cb >= S->R1_n_threshold || (cc*cb >= S->R1_threshold && is_precipitatnt_in_neighbor(S))){
@@ -130,8 +130,7 @@ bool Pore::is_precipitatnt_in_neighbor (Network *S){
 
 
 	// approach like Buki: only if the amount of precipitant exeeds a threshold in a neighbour
-	double VE_threshold=0;
-	for(int b=0;b<bG;b++) if(g[b]->Ve > S->VE_threshold) return true;
+	for(int b=0;b<bG;b++) if(g[b]->Ve >= S->VE_threshold) return true;
 
 	return false;
 

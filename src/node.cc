@@ -60,6 +60,9 @@ void Node::calculate_volume(Network *S){
 	V = V_max - V_g - V_p;
 
 	if(V<=0) V=0.1;
+
+	//adding scaling factor, so node and pore volume are of the same order
+	V = V*S->d0;
 }
 
 

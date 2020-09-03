@@ -90,7 +90,7 @@ void Network::calculate_concentrations_c_diff_T(){
 
 		Node *nn = n[i];
 
-		if(nn->t==-1){     nn->cc = Cc_0;     continue;}
+		if(Cc_0>=0)       if(nn->t==-1){     nn->cc = Cc_0;     continue;}
 		if(tot_steps==0){ if(nn->xy.y >= 0.) nn->cc = Cc_init;  continue;}
 
 		double J_in   = 0;    //amount of species C flowing into the node due to convection
@@ -286,7 +286,7 @@ void Network::precipitate(){
 		double dd_minus = R_2_tmp/ (M_PI*p0->l*p0->d/2.);;
 
 		//update geometry
-		//p0->d += (dd_plus - dd_minus);
+		//p0->d += (dd_plus - dd_minus); //temporal comment: I don;t want temporally to change the geometry
 		if(p0->d<0) {Ve_tot+= M_PI*pow(p0->d,2) * p0->l; p0->d = 0;}
 
 
