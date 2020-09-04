@@ -44,7 +44,9 @@ void Network::calculate_concentrations_b_diff_T(){
 		}
 
 		nn->cb += dt * (J_in + J_diff - Q_out*nn->cb_old) / nn->V;
+
 		if(nn->cb<0)  nn->cb = 0;
+		if(nn->cb>0) set_adaptive_dt_for_cT(fabs((nn->cb - nn->cb_old)/nn->cb));
 
 	}
 
@@ -72,7 +74,9 @@ void Network::calculate_concentrations_b_diff_T(){
 		J_diff = (pp->n[0]->cb_old + pp->n[1]->cb_old - 2*pp->cb_old) * M_PI*pow(pp->d,2)/4.*D1/l_tmp;
 
 		pp->cb +=  dt*( J_in + J_diff - fabs(pp->q)*pp->cb_old) / pp->volume();
+
 		if(pp->cb<0)  pp->cb = 0;
+		if(pp->cb>0) set_adaptive_dt_for_cT(fabs((pp->cb - pp->cb_old)/pp->cb));
 	}
 
 	//additional printing for debugging
@@ -111,8 +115,9 @@ void Network::calculate_concentrations_c_diff_T(){
 		}
 
 		nn->cc += dt * (J_in + J_diff - Q_out*nn->cc_old) / nn->V;
-		if(nn->cc<0)  nn->cc = 0;
 
+		if(nn->cc<0)  nn->cc = 0;
+		if(nn->cc>0) set_adaptive_dt_for_cT(fabs((nn->cc - nn->cc_old)/nn->cc));
 	}
 
 
@@ -139,7 +144,9 @@ void Network::calculate_concentrations_c_diff_T(){
 
 
 		pp->cc += dt*(J_in + J_diff - fabs(pp->q)*pp->cc_old) / pp->volume();
+
 		if(pp->cc<0)  pp->cc = 0;
+		if(pp->cc>0) set_adaptive_dt_for_cT(fabs((pp->cc - pp->cc_old)/pp->cc));
 	}
 
 	//additional printing for debugging
@@ -178,7 +185,9 @@ void Network::calculate_concentrations_f_diff_T(){
 		}
 
 		nn->cf += dt * (J_in + J_diff - Q_out*nn->cf_old) / nn->V;
+
 		if(nn->cf<0)  nn->cf = 0;
+		if(nn->cf>0) set_adaptive_dt_for_cT(fabs((nn->cf - nn->cf_old)/nn->cf));
 
 	}
 
@@ -207,7 +216,9 @@ void Network::calculate_concentrations_f_diff_T(){
 
 
 		pp->cf += dt*(J_in + J_diff - fabs(pp->q)*pp->cf_old) / pp->volume();
+
 		if(pp->cf<0)  pp->cf = 0;
+		if(pp->cf>0) set_adaptive_dt_for_cT(fabs((pp->cf - pp->cf_old)/pp->cf));
 	}
 
 	//additional printing for debugging
@@ -225,39 +236,29 @@ void Network::precipitate(){
 
 	//for updating grains volume;
 	if(if_track_grains) for (int i=0;i<NG;i++) {g[i]->tmp=0; g[i]->tmp2=0; }
-
-	//avoid negative concentrations
-	for (int i=0; i<NN; i++) {
-		if(n[i]->cb<0) n[i]->cb=0;
-		if(n[i]->cc<0) n[i]->cc=0;
-		if(n[i]->cf<0) n[i]->cf=0;
-	}
-	//avoid negative concentrations
-	for (int i=0; i<NP; i++) {
-		if(p[i]->cb<0) p[i]->cb=0;
-		if(p[i]->cc<0) p[i]->cc=0;
-		if(p[i]->cf<0) p[i]->cf=0;
-	}
-
-
-	//checking dt
-	for (int i=0;i<NN;i++){
-		Node* nn = n[i];
-		if(nn->cb>0) set_adaptive_dt_for_cT(fabs((nn->cb - nn->cb_old)/nn->cb));
-		if(nn->cc>0) set_adaptive_dt_for_cT(fabs((nn->cc - nn->cc_old)/nn->cc));
-		if(nn->cf>0) set_adaptive_dt_for_cT(fabs((nn->cf - nn->cf_old)/nn->cf));
-	}
-
-	for (int i=0;i<NP;i++){
-		Pore* pp = p[i];
-		if(pp->cb>0) set_adaptive_dt_for_cT(fabs((pp->cb - pp->cb_old)/pp->cb));
-		if(pp->cc>0) set_adaptive_dt_for_cT(fabs((pp->cc - pp->cc_old)/pp->cc));
-		if(pp->cf>0) set_adaptive_dt_for_cT(fabs((pp->cf - pp->cf_old)/pp->cf));
-	}
+	//temporal variable to save onfo about precipitant from nodes
+	for(int i=0;i<NP;i++) p[i]->tmp =0;
 
 
 	//final reaction
 
+
+	for(int i=0;i<NN;i++){ //for each node
+		Node *nn = n[i];
+		double R_1_tmp = nn->R_1(this);
+		double C1_tmp  = R_1_tmp / nn->V;
+		nn->cb -=  C1_tmp;
+		nn->cc -=  C1_tmp;
+		nn->cf +=  C1_tmp;
+		double R_2_tmp =  nn->R_2(this);
+		nn->cf -=  R_2_tmp /nn->V;
+
+		//avoiding negative concentration
+		if(nn->cb<0) nn->cb=0;
+		if(nn->cc<0) nn->cc=0;
+		if(nn->cf<0) nn->cf=0;
+
+	}
 
 	for(int i=0;i<NP;i++){ //for each pore...
 
@@ -286,15 +287,15 @@ void Network::precipitate(){
 		double dd_minus = R_2_tmp/ (M_PI*p0->l*p0->d/2.);;
 
 		//update geometry
-		//p0->d += (dd_plus - dd_minus); //temporal comment: I don;t want temporally to change the geometry
+		//p0->d += (dd_plus - dd_minus); //temporal comment: I don't want temporally to change the geometry
 		if(p0->d<0) {Ve_tot+= M_PI*pow(p0->d,2) * p0->l; p0->d = 0;}
 
 
 
 		//updating Va and Ve volumes
 		int bG_tmp_A=0;
-		double d_V_A = (M_PI*(d_old)*(dd_plus *d0)/2*p0->l);
-		double d_V_E = (M_PI*(d_old)*(dd_minus*d0)/2*p0->l);
+		double d_V_A = (M_PI*(d_old)*(dd_plus )/2*p0->l);
+		double d_V_E = (M_PI*(d_old)*(dd_minus)/2*p0->l) + p0->tmp; //last one is the part from reaction in nodes
 		for(int s=0; s<p0->bG;s++) if(p0->g[s]->Va >0) bG_tmp_A++;
 		for(int s=0; s<p0->bG;s++) {
 			if(p0->g[s]->Va >0) p0->g[s]->tmp -=d_V_A/bG_tmp_A;

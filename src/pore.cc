@@ -73,7 +73,9 @@ bool Pore::is_Va_left(){
 
 
 double Pore::volume(){
+
 	return M_PI*d*d*l/4;
+
 }
 
 
@@ -83,10 +85,10 @@ double Pore::R_1(Network *S) {
 	double r = 0;   //reaction rate in a pore
 
 	//no reaction if limit is exceeded
-    //if(d <= S->d_min)           return 0; //later I will add this behavior
+    //if(d <= S->d_min)           return 0; //later this condition may depend on d_min as well
 	double VE_tot=0;
 	for(int b=0;b<bG;b++) VE_tot+= g[b]->Ve;
-    //if(VE_tot>=bG*S->VE_threshold) return 0;
+    if(VE_tot>=bG*S->VE_threshold) return 0;
 
 
 	if(cc*cb >= S->R1_n_threshold || (cc*cb >= S->R1_threshold && is_precipitatnt_in_neighbor(S))){

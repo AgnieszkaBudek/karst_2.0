@@ -314,6 +314,61 @@ void Node::add_new_Grain(Grain *g_tmp){
 	bG++;
 }
 
+
+bool Node::is_precipitatnt_in_neighbor (Network *S){
+
+
+	// approach like Buki: only if the amount of precipitant exeeds a threshold in a neighbour
+	for(int b=0;b<bG;b++) if(g[b]->Ve >= S->VE_threshold) return true;
+
+	return false;
+}
+
+double Node::R_1(Network *S) {
+
+
+	double r = 0;   //reaction in a pore
+
+	//no reaction if limit is exceeded
+    //if(d <= S->d_min)           return 0; //later this condition may depend on d_min as well
+	double VE_tot=0;
+	for(int b=0;b<bG;b++) VE_tot+= g[b]->Ve;
+    if(VE_tot>=bG*S->VE_threshold) return 0;
+
+
+	if(cc*cb >= S->R1_n_threshold || (cc*cb >= S->R1_threshold && is_precipitatnt_in_neighbor(S))){
+		double c_eff = (cb + cc - sqrt(pow(cb + cc,2) - 4*(cc*cb - S->R1_threshold)))/2.;
+		r = c_eff*V;
+	}
+
+	if(cc*cb >= S->R1_n_threshold) for(int i=0;i<b;i++) p[i]->tmp+=r/b;
+	else if(r > 0){
+		int n_active = 0;
+		for (int i=0;i<b;i++) if(p[i]->is_precipitatnt_in_neighbor(S)) n_active++;
+		for (int i=0;i<b;i++) if(p[i]->is_precipitatnt_in_neighbor(S)) p[i]->tmp+=r/n_active;
+	}
+
+	if(r > 0) return r;
+	else      return 0;
+
+}
+
+
+double Node::R_2(Network *S) {
+
+	double r = 0;   //reaction rate in a pore
+
+	if(cf >= S->R2_n_threshold || (cf >= S->R2_threshold && is_precipitatnt_in_neighbor(S))){
+
+		double c_eff = cf - S->R2_threshold;
+		r = c_eff*V;
+	}
+
+	if(r > 0) return r;
+	else      return 0;
+}
+
+
 ostream & operator << (ostream & stream, Node &n){
 
 	stream<<"Node("<<n.a<<"):b = "<<n.b<<" bG = "<<n.bG<<" n = (";

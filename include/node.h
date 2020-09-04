@@ -87,6 +87,11 @@ class Node{
 		double total_pores_d ();								///< returns total diameter of neighbor pores
 		void   calculate_volume(Network *S);                    ///< calculate initial volume
 
+		//reactions for zeolites
+		double R_1 (Network *S);
+		double R_2 (Network *S);
+		bool is_precipitatnt_in_neighbor (Network *S);
+
 		//pattern analysis
 		void check_diss_pattern(double treshold);   			///< set x=1 for pores that are connected to the dissolution pattern
 		void find_forks();                                      ///< decides if the nod is a for and what is the fork generation
