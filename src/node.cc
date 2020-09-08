@@ -61,8 +61,10 @@ void Node::calculate_volume(Network *S){
 
 	if(V<=0) V=0.1;
 
+	//Uwaga: do wywalienia później
 	//adding scaling factor, so node and pore volume are of the same order
 	V = V*S->d0;
+	V = 0.01;
 }
 
 
@@ -317,7 +319,6 @@ void Node::add_new_Grain(Grain *g_tmp){
 
 bool Node::is_precipitatnt_in_neighbor (Network *S){
 
-
 	// approach like Buki: only if the amount of precipitant exeeds a threshold in a neighbour
 	for(int b=0;b<bG;b++) if(g[b]->Ve >= S->VE_threshold) return true;
 
@@ -338,9 +339,9 @@ double Node::R_1(Network *S) {
 
 	if(cc*cb >= S->R1_n_threshold || (cc*cb >= S->R1_threshold && is_precipitatnt_in_neighbor(S))){
 		double c_eff = (cb + cc - sqrt(pow(cb + cc,2) - 4*(cc*cb - S->R1_threshold)))/2.;
-		r = c_eff*V;
+		r = c_eff*V;//*S->dt;
 	}
-
+	// info for surrounding pores
 	if(cc*cb >= S->R1_n_threshold) for(int i=0;i<b;i++) p[i]->tmp+=r/b;
 	else if(r > 0){
 		int n_active = 0;

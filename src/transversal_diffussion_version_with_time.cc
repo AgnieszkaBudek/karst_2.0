@@ -39,6 +39,7 @@ void Network::calculate_concentrations_b_diff_T(){
 			else             qq =  pp->q;
 			double l_tmp = point_distance(nn->xy,nn->n[s]->xy)/2.;
 
+
 			if(qq>0) { J_in += (qq * pp->cb_old); Q_out+=qq;}
 			J_diff += (nn->p[s]->cb_old - nn->cb_old) * M_PI*pow(pp->d,2)/4.*D1/l_tmp;
 		}
@@ -95,7 +96,8 @@ void Network::calculate_concentrations_c_diff_T(){
 		Node *nn = n[i];
 
 		if(Cc_0>=0)       if(nn->t==-1){     nn->cc = Cc_0;     continue;}
-		if(tot_steps==0){ if(nn->xy.y >= 0.) nn->cc = Cc_init;  continue;}
+		//if(int(nn->xy.y) == 0.){ nn->cc = Cc_init;  continue;}
+		if(tot_steps==0){ if(nn->xy.y >= 0.) nn->cc = Cc_init;   else nn->cc=0;  continue;}
 
 		double J_in   = 0;    //amount of species C flowing into the node due to convection
 		double J_diff = 0;    //amount of species C flowing in/out of the node due to diffusion
@@ -129,7 +131,7 @@ void Network::calculate_concentrations_c_diff_T(){
 
 		Pore *pp = p[i];
 		if (pp->d == 0 || pp->l<=l_min)     continue;    //no reaction in tiny grain or in pore with no flow
-		if(tot_steps==0){if(pp->n[0]->xy.y >= 0) pp->cc = Cc_init; continue;}
+		if(tot_steps==0) {if(pp->n[0]->xy.y >= 0) pp->cc = Cc_init; continue;}
 
 		double J_in   = 0;    //amount of species C flowing into the pore in one time step due to convection
 		double J_diff = 0;    //amount of species C flowing in/out of the pore due to diffusion
