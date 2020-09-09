@@ -95,9 +95,11 @@ void Network::calculate_concentrations_c_diff_T(){
 
 		Node *nn = n[i];
 
-		if(Cc_0>=0)       if(nn->t==-1){     nn->cc = Cc_0;     continue;}
-		//if(int(nn->xy.y) == 0.){ nn->cc = Cc_init;  continue;}
+		if(Cc_0>=0)       if(nn->t==1){     nn->cc = Cc_0;     continue;}
 		if(tot_steps==0){ if(nn->xy.y >= 0.) nn->cc = Cc_init;   else nn->cc=0;  continue;}
+
+		//temporal stuff to check sink
+		//if(int(nn->xy.y) == 200){ nn->cc = 0;  continue;}
 
 		double J_in   = 0;    //amount of species C flowing into the node due to convection
 		double J_diff = 0;    //amount of species C flowing in/out of the node due to diffusion

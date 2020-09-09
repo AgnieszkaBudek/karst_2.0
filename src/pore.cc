@@ -96,7 +96,7 @@ double Pore::R_1(Network *S) {
 	if(cc*cb >= S->R1_n_threshold || (cc*cb >= S->R1_threshold && is_precipitatnt_in_neighbor(S))){
 
 		double c_eff = (cb + cc - sqrt(pow(cb + cc,2) - 4*(cc*cb - S->R1_threshold)))/2.;
-		r = c_eff*volume();//*S->dt;
+		r = c_eff*volume()*S->dt;
 	}
 
 	if(r > 0) return r;
