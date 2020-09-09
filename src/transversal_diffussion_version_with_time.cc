@@ -95,7 +95,7 @@ void Network::calculate_concentrations_c_diff_T(){
 
 		Node *nn = n[i];
 
-		if(Cc_0>=0)       if(nn->t==1){     nn->cc = Cc_0;     continue;}
+		if(Cc_0>=0)       if(nn->t==1){      nn->cc = Cc_0;     continue;}
 		if(tot_steps==0){ if(nn->xy.y >= 0.) nn->cc = Cc_init;   else nn->cc=0;  continue;}
 
 		//temporal stuff to check sink
