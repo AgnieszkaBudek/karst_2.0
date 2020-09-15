@@ -204,7 +204,7 @@ void::Network::read_setup_file(ifstream& fp_setup){
 
 		else if(name == "R1_threshold"){
 			R1_threshold = stod(value);
-			cerr<< "Setting R1_threshild = "<<R1_threshold<<endl;}
+			cerr<< "Setting R1_threshold = "<<R1_threshold<<endl;}
 
 		else if(name == "R1_n_threshold"){
 			R1_n_threshold = stod(value);

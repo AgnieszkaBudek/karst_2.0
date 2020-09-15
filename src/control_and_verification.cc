@@ -378,7 +378,7 @@ void Network::print_network_for_debugging (string text, string type_n, string ty
 		if (type_n == "name")                for(int i=0;i<NN;i++) n[i]->tmp = n[i]->a;
 		if (type_n == "pressure")            for(int i=0;i<NN;i++) n[i]->tmp = n[i]->u;
 		if (type_n == "concentration")       for(int i=0;i<NN;i++) n[i]->tmp = n[i]->cb;
-		if (type_n == "acid concentration")  for(int i=0;i<NN;i++) n[i]->tmp = n[i]->cb;
+		if (type_n == "concentration B")     for(int i=0;i<NN;i++) n[i]->tmp = n[i]->cb;
 		if (type_n == "concentration C")     for(int i=0;i<NN;i++) n[i]->tmp = n[i]->cc;
 		if (type_n == "type") 	             for(int i=0;i<NN;i++) n[i]->tmp = n[i]->t;
 		if (type_n == "x")   	             for(int i=0;i<NN;i++) n[i]->tmp = n[i]->x;
@@ -393,6 +393,7 @@ void Network::print_network_for_debugging (string text, string type_n, string ty
 
 		if (type_g == "name")                for(int i=0;i<NG;i++) g[i]->tmp = g[i]->a;
 		if (type_g == "volume A")            for(int i=0;i<NG;i++) g[i]->tmp = g[i]->Va;
+		if (type_g == "volume E")            for(int i=0;i<NG;i++) g[i]->tmp = g[i]->Ve;
 
 		description_note = text + ": s = " + to_string(tot_steps);
 		net_ps<<*this;}

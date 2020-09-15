@@ -24,7 +24,7 @@ void Network::calculate_concentrations_b_diff_T(){
 		Node *nn = n[i];
 
 		if(nn->t==1){      nn->cb = Cb_0;    continue;}
-		if(tot_steps==0){if(nn->xy.y < 0) nn->cb = Cb_init; continue;}
+		if(tot_steps==0){if(nn->xy.y < N_y/2.) nn->cb = Cb_init; continue;}
 
 		double J_in   = 0;    //amount of species B flowing into the node due to convection
 		double J_diff = 0;    //amount of species B flowing in/out of the node due to diffusion
@@ -60,7 +60,7 @@ void Network::calculate_concentrations_b_diff_T(){
 
 		Pore *pp = p[i];
 		if (pp->d == 0 || pp->l<=l_min)     continue;    //no reaction in tiny grain or in pore with no flow
-		if(tot_steps==0){ if(pp->n[0]->xy.y < 0.) pp->cb = Cb_init; continue;}
+		if(tot_steps==0){ if(pp->n[0]->xy.y < N_y/2.) pp->cb = Cb_init; continue;}
 
 		double J_in   = 0;    //amount of species B flowing into the pore in one time step due to convection
 		double J_diff = 0;    //amount of species B flowing in/out of the pore due to diffusion
@@ -96,7 +96,7 @@ void Network::calculate_concentrations_c_diff_T(){
 		Node *nn = n[i];
 
 		if(Cc_0>=0)       if(nn->t==1){      nn->cc = Cc_0;     continue;}
-		if(tot_steps==0){ if(nn->xy.y >= 0.) nn->cc = Cc_init;   else nn->cc=0;  continue;}
+		if(tot_steps==0){ if(nn->xy.y >= N_y/2.) nn->cc = Cc_init;   else nn->cc=0;  continue;}
 
 		//temporal stuff to check sink
 		//if(int(nn->xy.y) == 200){ nn->cc = 0;  continue;}
@@ -133,7 +133,7 @@ void Network::calculate_concentrations_c_diff_T(){
 
 		Pore *pp = p[i];
 		if (pp->d == 0 || pp->l<=l_min)     continue;    //no reaction in tiny grain or in pore with no flow
-		if(tot_steps==0) {if(pp->n[0]->xy.y >= 0) pp->cc = Cc_init; continue;}
+		if(tot_steps==0) {if(pp->n[0]->xy.y >= N_y/2.) pp->cc = Cc_init; continue;}
 
 		double J_in   = 0;    //amount of species C flowing into the pore in one time step due to convection
 		double J_diff = 0;    //amount of species C flowing in/out of the pore due to diffusion
@@ -329,7 +329,7 @@ void Network::precipitate(){
 	if(if_track_grains)     for(int i=0; i<NN; i++) n[i]->calculate_volume(this);
 
 	//additional printing for debugging
-	print_network_for_debugging ("After dissolution and precipitation","pressure", "diameter","volume A");
+	print_network_for_debugging ("After dissolution and precipitation","concentration B", "concentration B","volume E");
 
 }
 
