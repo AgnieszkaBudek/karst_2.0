@@ -107,7 +107,7 @@ double Pore::R_1(Network *S) {
 
 double Pore::R_2(Network *S) {
 
-	double r = 0;   //reaction rate in a pore
+	double r = 0;   //reaction rate in a pore,
 
 	if(cf >= S->R2_n_threshold || (cf >= S->R2_threshold && is_precipitatnt_in_neighbor(S))){
 
