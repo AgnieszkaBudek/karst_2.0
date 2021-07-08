@@ -6,29 +6,42 @@
  *
  * \section DESCRIPTION
  *
- * This project is dedicated to simulation of porous material subjected to dissolution process.
- * Porous material is modeled here as a network of regulars tubes called pores represented by class Network.
- * Pressure drop applied to the network edges results in fluid flow through the system.
- * Reagents dissolved in the fluid are responsible for chemical reactions in the pores that can change their sizes.
- * Apart from simple dissolution reaction the additional reaction of precipitation can be tracked.
- * As a result pores can either grow due to dissolution or shrinker due to precipitation.
+ * This project is dedicated to simulate porous materials subjected to dissolution processes.
+ * Porous material is modeled as a network of tubes (pore throats) and is represented by the class Network.
+ * Pressure drop applied to the network edges results in fluid (water plus reactants) flow through the system.
+ * Pore sizes can change due to chemical reactions with reagents dissolved in the fluid.
+ * The main reaction here is a dissolution one. Apart form that he second type of reaction, precipitation one,
+ *  can be additionally tracked.
+ * The pore size can change in two ways - either grow due to dissolution or shrinker due to precipitation.
  *
  * \section A REPRESENTATION OF POROUS MATERIAL
  *
- * Porous material is represented here as a network of interconnected tubes called pores and represented by class Pore.
- * Each pore is spanned between two nodes of the network. Nodes are represented by class Node.
- * Additionally apart of pores  and nodes the simulation can also track the pieces of material
- *  that are subjected to the dissolution, so called grains, represented by class Grain.
+ * Porous material is modeled here as a network of interconnected tubes called pores.
+ * Pores are represented by the class Pore.
+ * Each pore is spanned between two nodes of the network. Nodes are represented by the class Node.
+ * Additionally, apart of pores  and nodes, the simulation can also track the pieces of material
+ *  that are subjected to the dissolution, so called grains, represented by the class Grain.
  *
  *
  * \section B EVOLUTION OF THE SYSTEM
  *
- * The simulation of dynamics of the system is the main purpose of this project.
- * The function Network::evolution will perform the T time steps consisted of
+ * The main purpose of this project is to simulate the dynamics of the system.
+ * The function Network::evolution will perform T time steps consisted of
  *
- * The simulation end either after T time steps or if other condition connected to the network properties is fulfilled.
- * The typical condition here is obtaining so call breakthrough in the system - the simulation ends when the dissolution pattern
- * (pattern consisted of pores broad enough) has reached the outlet of the system.
+ * - calculating pressure field in the nodes
+ *
+ * - calculating flow field in the pores
+ *
+ * - calculating concentration filed in the nodes and pores
+ *
+ * - updating pores and grains new shape
+ *
+ * - (additionally) changing topology of the network if some grains has vanished due to the dissolution
+ *
+ * The simulation ends either after T time steps (mostly debugging mode)
+ * or if other condition connected to the network properties is fulfilled.
+ * We typically use a condition for the breakthrough - the simulation ends when the dissolution pattern
+ * (pattern consisted of broad, dissolved pores) has reached the outlet of the system.
  *
  *
  */
