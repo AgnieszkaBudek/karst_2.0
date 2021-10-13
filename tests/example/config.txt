@@ -15,14 +15,16 @@ N_y = 150        #size of regular network
 l0    = 1        #initial characteristic pore length (should be always equal to one!!!!)
 d0    = 0.2      #initial characteristic pore diameter
 Da    = 1        #effective Damkohler number for dissolution
-G1    = 1        #DaPe for dissolution
+Pe    = -1       #Peclet number (diffusion along the pore), if Pe == -1 diffusion along th esystem is neglected
+G1    = 1        #DaPe for dissolution (conected with the transversal diffusion)
 gamma = 1        #parameters of precipitation: V_pre/V_diss
 theta = 1        #parametera of precipitation: G_pre / G_diss
 kappa = 1        #parameters of precipitation: Da_pre / Da_diss
+sigma = 1        #peclet ratio between diffusion and precipitation reactant
 
-d_min = 0.01     #minimal pore diameter
-l_min = 0.0001   #minimal pore length 
-
+d_min   = 0.01     #minimal pore diameter
+l_min   = 0.0001   #minimal pore length 
+Vx_perc = 0.0      #percentage of initial volume of species that does not react
 
 ##########################################################################
 # Dynamics
