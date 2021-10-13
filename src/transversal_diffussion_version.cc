@@ -92,7 +92,7 @@ void Network::calculate_concentrations_b_diff(){
 
 void Network::calculate_concentrations_c_diff(){
 
-	cerr<<"Has to be implemented!!!"<<endl;
+	cerr<<"Network::calculate_concentrations_c_diff(): Has to be implemented!!!"<<endl;
 	exit(123);
 
 }
