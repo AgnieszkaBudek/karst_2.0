@@ -83,9 +83,7 @@ class Pore{
 		bool   is_Va_left();						///< return false if there is no Va material left
 		double default_dd_plus   (Network*S);		///< change in diameter as a result of dissolution
 		double default_dd_minus  (Network*S);       ///< default change in diameter as a result of precipitation (no space condition is checked)
-		double default_dd_plus_d (Network*S);		///< change in diameter as a result of dissolution (model with diffusion)
-		double default_dd_minus_d(Network*S);       ///< default change in diameter as a result of precipitation (no space condition is checked)  (model with diffusion)
-
+		double effective_c_production(Network*S);       ///< total production of material c in the pore (for transversal diffusion only)
 
 
 		void   remove_info_from_attached_nodes(); 			///< remove this pore from the list of connected nodes

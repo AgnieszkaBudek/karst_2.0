@@ -271,6 +271,18 @@ double Pore::default_dd_plus(Network*S){
 
 
 /**
+ * This function returns effective amount of material C produced per dx in a pore due to dissolution reaction
+ *
+ */
+
+double Pore::effective_c_production(Network*S){
+
+
+	return default_dd_plus(S)/2.;
+
+}
+
+/**
 * This function returns the change in diameter due to precipitation in one time step (no condition for left space is checked here).
 * @param S pointer to the network
 * @author Agnieszka Budek

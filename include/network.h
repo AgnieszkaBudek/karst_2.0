@@ -252,6 +252,7 @@ class Network
 		double outlet_c_b_0_d   (Pore* p,int);	///< returns the outlet concentration of species b (the free parameter)
 		double outlet_c_c_1_d   (Pore* p,int);  ///< returns the outlet concentration of species c in the pore p as a function of c0_c (version with diffusion)
 		double outlet_c_c_0_d   (Pore* p,int);	///< returns the outlet concentration of species c (the free parameter)
+		double outlet_c_c_2_d   (Pore* p,int);	///< returns the outlet concentration of species c (the free parameter)
 
 
 
