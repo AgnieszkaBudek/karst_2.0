@@ -209,7 +209,41 @@ void Network::calculate_V_total_diff(){
 				}
 }
 
-/**
+void Network::calculate_V_total_diff_for_C(){
+
+	cerr<<"ERROR: to be implemented"<<endl;
+
+//updating info about Vb_in_tot and Vb_out_tot (for checking the mass balance)
+	Vc_in_tot =0; Vc_out_tot =0;
+	double Vc_in_tot1 =0;
+	double Vc_in_tot0 =0;
+	//Vb_out_tot=0;
+	//calculate total input of acid
+	for(int i=0;i<N_wi;i++){
+		Node* n_tmp = wi[i];
+		for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0) {
+			Pore *pp=n_tmp->p[j];
+			Vc_in_tot1-=outlet_c_c_1_d(pp,-1)*pp->calculate_outlet_cc()*dt/dt_unit;
+			Vc_in_tot0-=outlet_c_c_0_d(pp,-1)*pp->calculate_inlet_cc() *dt/dt_unit;
+			Vc_in_tot-=\
+				(outlet_c_c_1_d(pp,-1)*pp->calculate_outlet_cc() +\
+				 outlet_c_c_0_d(pp,-1)*pp->calculate_inlet_cc ())*\
+				 dt/dt_unit;}
+			}
+
+	for(int i=0;i<N_wo;i++){
+			Node* n_tmp = wo[i];
+			for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0) {
+				Pore *pp=n_tmp->p[j];
+				Vc_out_tot+=\
+					(outlet_c_c_1_d(pp,1)*pp->calculate_inlet_cc  () +\
+					 outlet_c_c_0_d(pp,1)*pp->calculate_outlet_cc ())*\
+					 dt/dt_unit;}
+				}
+}
+
+
+/***
 * This function checks network connections consistency.
 * It is useful for debugging and merging.
 * @author Agnieszka Budek

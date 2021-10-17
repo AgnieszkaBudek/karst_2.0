@@ -56,7 +56,7 @@ void Network::calculate_concentrations_b_diff(){
 			if (n[i]->t==-1) {
 				//y[i]=0.5;                                        //for debugging
 				//B[r_no++] = qq*outlet_c_b(pp);  S_q += -qq;      //first attempt, but mass not conserved
-				B[r_no++] = outlet_c_b_1_d(pp,_sign(qq)); S_q += outlet_c_b_0_d(pp,_sign(qq))-qq;}
+				B[r_no++] = outlet_c_b_1_d(pp,_sign(qq)); S_q += outlet_c_b_0_d(pp,_sign(qq))-fabs(qq);}
 			else           {
 				B[r_no++] = outlet_c_b_1_d(pp,_sign(qq)); S_q += outlet_c_b_0_d(pp,_sign(qq));}
 			}
@@ -98,9 +98,7 @@ void Network::calculate_concentrations_c_diff(){
 	for(int i=0;i<NN;i++) n[i]->tmp=i;
 
 	int R_no = 0;
-	for(int i=0;i<NN;i++)
-		if(n[i]->t!=1) R_no+=n[i]->b+1;
-		else           R_no++;
+	for(int i=0;i<NN;i++)R_no+=n[i]->b+1;
 
 
 	int R_m  = NN;						    //rank of the matrix to be solved
@@ -117,33 +115,31 @@ void Network::calculate_concentrations_c_diff(){
 	for(int i=0;i<NN;i++){
 		double S_q=0;
 		double S_y=0;    //sum of y[i] ocmponents (rhs)
-		if(n[i]->t==1) 	S_y = Cc_0;   //WARNING: not a proper boundary condition here (probably)
-		else 			S_y = 0;
 
-		if(n[i]->t==1) S_q=1;					//if node is an inlet one
-		else for(int s=0; s<n[i]->b; s++){		//eqs for normal and outlet nodes
+		for(int s=0; s<n[i]->b; s++){		//eqs for normal and outlet nodes
 
-			Pore *pp = findPore(n[i],n[i]->n[s]);
+			Node *nn = n[i];
+			Pore *pp = findPore(nn,nn->n[s]);
 			double qq;
 			if(n[i]==pp->n[0]) qq = -pp->q;
 			else               qq =  pp->q;
 			//if(fabs(qq)<=1e-5)  continue;  //epsilon for numerical stability, one has to check the best value
 
 			ww_r[r_no] 	= i;
-			ww_c[r_no] 	= n[i]->n[s]->tmp;
-			if (n[i]->t==-1) {
+			ww_c[r_no] 	= nn->n[s]->tmp;
+			if (fabs(nn->t)==1) {       //for inlet and outlet pores
 				//y[i]=0.5;                                        //for debugging
 				//B[r_no++] = qq*outlet_c_b(pp);  S_q += -qq;      //first attempt, but mass not conserved
 				B[r_no++] = outlet_c_c_1_d(pp,_sign(qq));
-				S_q      += outlet_c_c_0_d(pp,_sign(qq))-qq;
+				S_q      += outlet_c_c_0_d(pp,_sign(qq))+_sign(nn->t)*fabs(qq); //or -qq, think it overs
 				S_y      += outlet_c_c_2_d(pp,_sign(qq));}
-			else           {
+			else           {            ///for normal pores
 				B[r_no++] = outlet_c_c_1_d(pp,_sign(qq));
 				S_q      += outlet_c_c_0_d(pp,_sign(qq));
 				S_y      += outlet_c_c_2_d(pp,_sign(qq));}
 			}
 
-		y[i]            = S_y;
+		y[i]            = -S_y;
 		ww_r[r_no] 		= i;
 		ww_c[r_no] 		= i;
 		B[r_no]			= S_q;
@@ -163,7 +159,7 @@ void Network::calculate_concentrations_c_diff(){
 	//additional printing for debugging
 	print_network_for_debugging ("After calculating concentration B field ","acid concentration", "flow");
 
-	calculate_V_total_diff();
+	calculate_V_total_diff_for_C();
 
 	delete[] ww_r;
 	delete[] ww_c;
@@ -246,7 +242,7 @@ double Network::outlet_c_c_1_d   (Pore* p, int s) {
 		double b = s*pe/2.;
 		if(p->d <= d_min) a=pe; //no reaction due to the lack of space
 
-		return -s*fabs(p->q)*exp(p->l*b)*a/(sinh(p->l*a/2.)*4.*b);
+		return s*fabs(p->q)*exp(p->l*b)*a/(sinh(p->l*a/2.)*4.*b); //may be minus in form of the formula
 	}
 
 	else{  //no flow through the pore

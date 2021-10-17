@@ -329,6 +329,7 @@ class Network
 		void check_GMash_connections();		///< FOr checking GMash only
 		void print_network_for_debugging (string text = "Network",string type_n = "name", string type_p="name", string type_g = "name"); ///< Print all information about network in large pdf (WARNING: not to be used for large networks and large no of time steps)
 		void calculate_V_total_diff();
+		void calculate_V_total_diff_for_C();
 
 // results analysis
 		void analyze_diss_pattern(bool if_anal_pattern = false);
