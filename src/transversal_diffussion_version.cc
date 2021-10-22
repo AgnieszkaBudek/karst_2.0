@@ -121,23 +121,28 @@ void Network::calculate_concentrations_c_diff(){
 			Node *nn = n[i];
 			Pore *pp = findPore(nn,nn->n[s]);
 			double qq;
-			if(n[i]==pp->n[0]) qq = -pp->q;
+			if(nn==pp->n[0])   qq = -pp->q;
 			else               qq =  pp->q;
 			//if(fabs(qq)<=1e-5)  continue;  //epsilon for numerical stability, one has to check the best value
 
 			ww_r[r_no] 	= i;
 			ww_c[r_no] 	= nn->n[s]->tmp;
-			if (fabs(nn->t)==1) {       //for inlet and outlet pores
-				//y[i]=0.5;                                        //for debugging
-				//B[r_no++] = qq*outlet_c_b(pp);  S_q += -qq;      //first attempt, but mass not conserved
+			if (nn->t==-1) {       //for  outlet pores
 				B[r_no++] = outlet_c_c_1_d(pp,_sign(qq));
-				S_q      += outlet_c_c_0_d(pp,_sign(qq))+_sign(nn->t)*fabs(qq); //or -qq, think it overs
-				S_y      += outlet_c_c_2_d(pp,_sign(qq));}
+				S_q      += outlet_c_c_0_d(pp,_sign(qq)) - fabs(qq); //or -qq, think it overs
+				S_y      += outlet_c_c_2_d(pp,_sign(qq));
+			}
+			else if(nn->t ==1)           {            ///for inlet pores
+				B[r_no++] = outlet_c_c_1_d(pp,_sign(qq));
+				S_q      += outlet_c_c_0_d(pp,_sign(qq));
+				S_y      += outlet_c_c_2_d(pp,_sign(qq)) - qq*Cc_0;
+			}
 			else           {            ///for normal pores
 				B[r_no++] = outlet_c_c_1_d(pp,_sign(qq));
 				S_q      += outlet_c_c_0_d(pp,_sign(qq));
-				S_y      += outlet_c_c_2_d(pp,_sign(qq));}
+				S_y      += outlet_c_c_2_d(pp,_sign(qq));
 			}
+		}
 
 		y[i]            = -S_y;
 		ww_r[r_no] 		= i;
@@ -242,7 +247,7 @@ double Network::outlet_c_c_1_d   (Pore* p, int s) {
 		double b = s*pe/2.;
 		if(p->d <= d_min) a=pe; //no reaction due to the lack of space
 
-		return s*fabs(p->q)*exp(p->l*b)*a/(sinh(p->l*a/2.)*4.*b); //may be minus in form of the formula
+		return s*fabs(p->q)*exp(b)*a/(sinh(a/2.)*4.*b); //may be minus in form of the formula
 	}
 
 	else{  //no flow through the pore
@@ -259,14 +264,14 @@ double Network::outlet_c_c_0_d   (Pore* p,int s) {
 	if(p->d==0) return 0;
 
 	if(fabs(p->q)>1e-5 && Pe > 0.001 && Da!=-1){  //normal flow through the pore
-		double pe = p->local_Pe    (this);
-		double da = p->local_Da_eff(this);
+		double pe = p->local_Pe_2    (this);
+		double da = p->local_Da_eff_2(this);
 
 		double a = sqrt(pe*(4*da+pe));
 		double b = s*pe/2.;
 		if(p->d <= d_min) a=pe; //no reaction due to the lack of space
 
-		return  s*fabs(p->q)*(0.5 - a/(tanh(a*p->l/2.)*4.*b));
+		return s*fabs(p->q)*(0.5 - a/(tanh(a/2.)*4.*b));
 	}
 
 	else{  //no flow through the pore
@@ -282,16 +287,17 @@ double Network::outlet_c_c_2_d   (Pore* p,int s) {
 	if(p->d==0) return 0;
 
 	if(fabs(p->q)>1e-5 && Pe > 0.001 && Da!=-1){  //normal flow through the pore
-		double pe = p->local_Pe    (this);
-		double da = p->local_Da_eff(this);
-		double R  = p->effective_c_production(this);
-		double l  = p->l;
+		double pe = p->local_Pe_2      (this);
+		double da = p->local_Da_eff_2  (this);
+		double g  = p->local_G(this);
+		//double R  = p->effective_c_production(this)/(da*p->q/p->l);
+		double R  = p->default_dd_plus(this)*(1+g*theta)/dt/kappa; //simplified version
 
 		double a = sqrt(pe*(4*da+pe));
 		double b = s*pe/2.;
 		if(p->d <= d_min) a=pe; //no reaction due to the lack of space
 
-		return  s*fabs(p->q)*R*(0.5 + (a*(-exp(b*l) + cosh((a*l)/2.))/sinh(a*l/2.))/(4.*b)); //may be minus
+		return  s*fabs(p->q)*R*(0.5 + a*(-exp(b)/sinh(a/2.) + 1./tanh(a/2.))/(4.*b)); //may be minus
 	}
 
 	else{  //no flow through the pore

@@ -277,8 +277,8 @@ double Pore::default_dd_plus(Network*S){
 
 double Pore::effective_c_production(Network*S){
 
-
-	return default_dd_plus(S)/2.;
+	return default_dd_plus(S)*S->d0*M_PI*S->d0/2./(S->dt/S->dt_unit);
+	return default_dd_plus(S)*S->d0*M_PI*d/2./(S->dt/S->dt_unit); //chyba ta wersja...
 
 }
 
@@ -303,18 +303,38 @@ double Pore::default_dd_minus(Network*S){
 
 
 	//precipitation parameters
-	double f2       = local_Da_eff_2(S);
-	double c0_c     = calculate_inlet_cc();
+	double da       = local_Da_eff_2(S);
+	double cc0      = calculate_inlet_cc();
 	double dd_minus = 0; 		//diameter change
 
 
-	//finding precipitation contribution
-	if      (f2==0)         dd_minus = 0;
-	else if (f1==f2 && is_Va_left())        dd_minus = S->gamma*S->dt/(1+g)/f1*((c0_c + c0)*(1-exp(-f1)) -c0*exp(-f1)*f1);
-	else if (!is_Va_left()) 				dd_minus = S->gamma*S->dt/(1+g)/f1*  c0_c*      (1-exp(-f2));
-	else                    				dd_minus = S->gamma*S->dt/(1+g)/f1*(\
-								       	   	   	   c0  * (f1*(1-exp(-f2)) - f2*(1-exp(-f1)))/(f1-f2)+\
-												   c0_c*  (1-exp(-f2)) );
+	if(S->Pe==-1){
+		//finding precipitation contribution
+		if      (da==0)         dd_minus = 0;
+		else if (f1==da && is_Va_left())        dd_minus = S->gamma*S->dt/(1+g)/f1*((cc0 + c0)*(1-exp(-f1)) -c0*exp(-f1)*f1);
+		else if (!is_Va_left()) 				dd_minus = S->gamma*S->dt/(1+g)/f1*  cc0*      (1-exp(-da));
+		else                    				dd_minus = S->gamma*S->dt/(1+g)/f1*(\
+								       	   	   	   c0  * (f1*(1-exp(-da)) - da*(1-exp(-f1)))/(f1-da)+\
+												   cc0*  (1-exp(-da)) );
+	}
+	else if(fabs(q)>1e-5 && S->Pe > 0.001 && S->Da!=-1){
+
+		double pe   = local_Pe_2(S);
+		double cc1  = calculate_outlet_cc();
+		double a    = sqrt(pe*(4*da+pe));
+		double b    = pe/2;
+		//double R    = effective_c_production(S)/(da*q/l);
+		double R = default_dd_plus(S)*(1+g*S->theta)/S->dt/S->kappa; //simplified version
+
+		dd_minus = S->dt*S->gamma*S->kappa/(1+g*S->theta)*\
+				(R + (a*((cc0 + cc1 - 2*R)*(1./tanh(a/2.) - cosh(b)/sinh(a/2.)) +\
+	            (cc0 - cc1)*((2*b)/a - sinh(b)/sinh(a/2))))/(4.*b*da));
+
+	}
+	else{ //for q=0 and transversal diffusion; to be implemented
+
+		dd_minus = 0;
+	}
 
 	return dd_minus;
 }

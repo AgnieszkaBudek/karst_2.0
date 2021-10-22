@@ -141,7 +141,8 @@ void Network::check_precipitating_balance(){
 	//calculate total input of precipitatin species
 	for(int i=0;i<N_wi;i++){
 		Node* n_tmp = wi[i];
-		for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0) VC_in+=fabs(n_tmp->p[j]->q)*n_tmp->cc*dt/dt_unit;
+		for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0)
+			VC_in+=fabs(n_tmp->p[j]->q)*n_tmp->cc*dt/dt_unit + fabs(n_tmp->p[j]->q)*Cc_0;
 	}
 
 	//calculate total output of acid
@@ -182,16 +183,13 @@ void Network::calculate_V_total_diff(){
 
 //updating info about Vb_in_tot and Vb_out_tot (for checking the mass balance)
 	Vb_in_tot =0; Vb_out_tot =0;
-	double Vb_in_tot1 =0;
-	double Vb_in_tot0 =0;
+
 	//Vb_out_tot=0;
 	//calculate total input of acid
 	for(int i=0;i<N_wi;i++){
 		Node* n_tmp = wi[i];
 		for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0) {
 			Pore *pp=n_tmp->p[j];
-			Vb_in_tot1-=outlet_c_b_1_d(pp,-1)*pp->calculate_outlet_cb()*dt/dt_unit;
-			Vb_in_tot0-=outlet_c_b_0_d(pp,-1)*pp->calculate_inlet_cb() *dt/dt_unit;
 			Vb_in_tot-=\
 				(outlet_c_b_1_d(pp,-1)*pp->calculate_outlet_cb() +\
 				 outlet_c_b_0_d(pp,-1)*pp->calculate_inlet_cb ())*\
@@ -211,24 +209,21 @@ void Network::calculate_V_total_diff(){
 
 void Network::calculate_V_total_diff_for_C(){
 
-	cerr<<"ERROR: to be implemented"<<endl;
 
-//updating info about Vb_in_tot and Vb_out_tot (for checking the mass balance)
+//updating info about Vc_in_tot and Vc_out_tot (for checking the mass balance)
 	Vc_in_tot =0; Vc_out_tot =0;
-	double Vc_in_tot1 =0;
-	double Vc_in_tot0 =0;
+
 	//Vb_out_tot=0;
 	//calculate total input of acid
 	for(int i=0;i<N_wi;i++){
 		Node* n_tmp = wi[i];
 		for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0) {
 			Pore *pp=n_tmp->p[j];
-			Vc_in_tot1-=outlet_c_c_1_d(pp,-1)*pp->calculate_outlet_cc()*dt/dt_unit;
-			Vc_in_tot0-=outlet_c_c_0_d(pp,-1)*pp->calculate_inlet_cc() *dt/dt_unit;
 			Vc_in_tot-=\
 				(outlet_c_c_1_d(pp,-1)*pp->calculate_outlet_cc() +\
-				 outlet_c_c_0_d(pp,-1)*pp->calculate_inlet_cc ())*\
-				 dt/dt_unit;}
+				 outlet_c_c_0_d(pp,-1)*pp->calculate_inlet_cc () +\
+				 Cc_0*pp->q) *\
+				 dt/dt_unit;}   //or minus here, to be checked later, if Cc_0 = 0, don't bother
 			}
 
 	for(int i=0;i<N_wo;i++){

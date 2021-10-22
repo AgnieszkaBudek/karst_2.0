@@ -18,7 +18,7 @@ Da    = 1        #effective Damkohler number for dissolution
 Pe    = -1       #Peclet number (diffusion along the pore), if Pe == -1 diffusion along th esystem is neglected
 G1    = 1        #DaPe for dissolution (conected with the transversal diffusion)
 gamma = 1        #parameters of precipitation: V_pre/V_diss
-theta = 1        #parametera of precipitation: G_pre / G_diss
+theta = 1        #parametera of precipitation: G_pre / G_diss, should always be 1 !!!!!
 kappa = 1        #parameters of precipitation: Da_pre / Da_diss
 sigma = 1        #peclet ratio between diffusion and precipitation reactant
 
