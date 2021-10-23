@@ -2,6 +2,7 @@
 #include "network.h"
 #include "printing.h"
 #include "grain.h"
+#include "constants.h"
 
 Pore::Pore (double dd, double ll, float name, int bb){
 	d = dd; l = ll; a=name; tmp=name; q=0; x=1; bG=bb; c_in=0;
@@ -54,6 +55,34 @@ double Pore::calculate_outlet_cc(){
 	if (q>0) return n[1]->cc;
 	else     return n[0]->cc;
 }
+
+
+/**
+* This function returns the stream of cc coming out of the given node
+*
+*
+*/
+double Pore::calculate_outlet_stream_cc(Network *S, char ni){
+
+	if (ni!= 0 && ni != 1){
+		cerr<<"ERROR: In function calculate_outlet_stream_cc(Network *S, char ni) invalid parameter ni."<<endl;
+		return 0;
+	}
+
+
+
+	double c0, c1, qq;
+	if(ni==0){   qq = -q; c0 = n[0]->cc; c1 = n[1]->cc;}
+	else     {   qq =  q; c0 = n[1]->cc; c1 = n[0]->cc;}
+
+	int s = _sign(qq);
+
+	double J = c0*S->outlet_c_c_0_d(this, s) + c1*S->outlet_c_c_1_d(this, s)+S->outlet_c_c_2_d(this, s);
+
+
+	retuen J
+}
+
 
 
 /**

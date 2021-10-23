@@ -148,7 +148,8 @@ void Network::check_precipitating_balance(){
 	//calculate total output of acid
 	for(int i=0;i<N_wo;i++){
 		Node* n_tmp = wo[i];
-		for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0) VC_out+=(1.*gamma)*fabs(n_tmp->p[j]->q)*n_tmp->cc*dt/dt_unit; //UWAGA: to ewentualnie pomnozym przez gamma i kappa trzeba lub nie
+		for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0)
+			VC_out+=(1.*gamma)*fabs(n_tmp->p[j]->q)*n_tmp->cc*dt/dt_unit; //UWAGA: to ewentualnie pomnozym przez gamma i kappa trzeba lub nie
 		}
 
 	//calculate consumption of C
@@ -156,15 +157,6 @@ void Network::check_precipitating_balance(){
 	for(int i=0;i<NG;i++) Ve_tot_tmp+= g[i]->Ve;
 
 	double Ve_delta =  Ve_tot_tmp - Ve_tot;
-
-	//tymczasowe smieci
-	double d_min = 1;
-	for(int i=0;i<NP;i++)   if (p[i]->d<d_min && p[i]->d>0) d_min = p[i]->d;
-//	cerr<<"d_min = "    << d_min<<endl;
-//	cerr<<"VC_in = "    << VC_in<<endl;
-//	cerr<<"VC_out = "   << VC_out<<endl;
-//	cerr<<"Ve_stare = " << Ve_tot<<endl;
-//	cerr<<"Ve_nowe =  " << Ve_tot_tmp<<endl;
 
 
 

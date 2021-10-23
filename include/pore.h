@@ -71,6 +71,7 @@ class Pore{
 		double calculate_outlet_cb();									///< calculate outlet concentration of the species B
 		double calculate_inlet_cc();									///< calculate inlet concentration of the species C
 		double calculate_outlet_cc();									///< calculate outlet concentration of the species C
+		double calculate_outlet_stream_cc(Network *, char);           ///< returns the stream of cc coming out of the pore (from node nn)
 
 		void   calculate_maximal_length(Network *S = NULL, double l_max=10, double l_0=1);	///< calculate maximal pore length
 		void   calculate_actual_length (Network *S = NULL, double l_max=10, double l_0=1);	///< calculate initial pore length
