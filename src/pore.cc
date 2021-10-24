@@ -79,8 +79,11 @@ double Pore::calculate_outlet_stream_cc(Network *S, char ni){
 
 	double J = c0*S->outlet_c_c_0_d(this, s) + c1*S->outlet_c_c_1_d(this, s)+S->outlet_c_c_2_d(this, s);
 
+	if (n[ni]->t ==-1) J-= fabs(qq);
+	if (n[ni]->t == 1) J-=- qq*c0;
 
-	retuen J
+
+	return J;
 }
 
 
