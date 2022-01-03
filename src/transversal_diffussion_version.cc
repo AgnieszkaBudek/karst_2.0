@@ -185,7 +185,7 @@ void Network::calculate_concentrations_c_diff() {
 		n[i]->cc = y[i];     //filling the solution
 
 	//additional printing for debugging
-	print_network_for_debugging("After calculating concentration C field ",
+	print_network_for_debugging("After calculating concentration C  field ",
 			"acid concentration", "flow");
 
 	calculate_V_total_diff_for_C();
