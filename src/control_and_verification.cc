@@ -102,11 +102,6 @@ void Network::check_acid_balance(){
 		VB_in  = Vb_in_tot ;
 		VB_out = Vb_out_tot;
 	}
-//
-//	cerr<<"VB_in  = "<<VB_in <<endl;
-//	cerr<<"VB_in  = "<<VB_in <<endl;
-//	cerr<<"VB_out = "<<VB_out<<endl;
-//	cerr<<"VB_out = "<<VB_out<<endl;
 
 
 	//calculate consumption of acid
@@ -117,13 +112,16 @@ void Network::check_acid_balance(){
 	double Vb_delta = VB_in  - VB_out;
 
 	if(fabs(Vb_delta - Va_delta)/fabs(Vb_delta + Va_delta) > eps)
-		{cerr<<"WARNING: Mass is not conserved: Vb_delta = "<<setprecision(10)<<Vb_delta <<" Va_delta = "<<Va_delta<<setprecision(10)<<"."<<endl;}
+		{cerr<<"WARNING: Mass is not conserved: Vb_delta = "<<setprecision(10)<<Vb_delta <<" Va_delta = "<<Va_delta<<setprecision(10)<<"."<<endl;
+		 cerr << "If it is a first time step, don't worry..."<<endl;
+		}
 	else
-		cerr<<"Mass is conserved: Vb_delta = "<<Vb_delta <<" Va_delta = "<<Va_delta<<"."<<endl;
+		cerr<<"Mass is conserved in dissolution: Vb_delta = "<<Vb_delta <<" Va_delta = "<<Va_delta<<"."<<endl;
 	if(!if_precipitation) Va_tot=Va_tot_tmp;
 
 }
 
+//
 
 void Network::check_precipitating_balance(){
 
@@ -131,36 +129,56 @@ void Network::check_precipitating_balance(){
 	double eps = 10e-3;
 	double VC_in=0, VC_out =0;
 
+
+	if(Pe==-1){
+
+		//calculate total input of acid
+		for(int i=0;i<N_wi;i++){
+			Node* n_tmp = wi[i];
+			for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0) {
+				Pore *pp=n_tmp->p[j];
+				VC_in+=fabs(n_tmp->p[j]->q)*n_tmp->cc*dt/dt_unit + fabs(n_tmp->p[j]->q)*Cc_0*dt/dt_unit;
+			}
+		}
+		//calculate total output of acid
+		for(int i=0;i<N_wo;i++){
+			Node* n_tmp = wo[i];
+			for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0){
+				Pore *pp=n_tmp->p[j];
+				VC_out+=(1.)*fabs(n_tmp->p[j]->q)*n_tmp->cc*dt/dt_unit; //UWAGA: to ewentualnie pomnozym przez gamma i kappa trzeba lub nie
+			}
+		}
+	}
+
+	else{
+		VC_in  = Vc_in_tot ;
+		VC_out = Vc_out_tot;
+	}
+
+
 	//calculate total production of C
 	double Va_tot_tmp = 0;
 	for(int i=0;i<NG;i++) Va_tot_tmp+= g[i]->Va;
 
+	cerr<<"VC_in_dyfuzja = "<<VC_in<<endl;
+
 	double Va_delta = Va_tot - Va_tot_tmp;
-	VC_in = Va_delta*gamma; //cerr<<"VC_in = "<<VC_in<<endl;
+	VC_in += Va_delta;
 
-	//calculate total input of precipitatin species
-	for(int i=0;i<N_wi;i++){
-		Node* n_tmp = wi[i];
-		for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0)
-			VC_in+=fabs(n_tmp->p[j]->q)*n_tmp->cc*dt/dt_unit + fabs(n_tmp->p[j]->q)*Cc_0;
-	}
+	cerr<<"VC_in_produkcja = "<<Va_delta<<endl;
+	cerr<<"VC_in = "<<VC_in<<endl;
+	cerr<<"VC_out = "<<VC_out<<endl;
 
-	//calculate total output of acid
-	for(int i=0;i<N_wo;i++){
-		Node* n_tmp = wo[i];
-		for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0)
-			VC_out+=(1.*gamma)*fabs(n_tmp->p[j]->q)*n_tmp->cc*dt/dt_unit; //UWAGA: to ewentualnie pomnozym przez gamma i kappa trzeba lub nie
-		}
 
 	//calculate consumption of C
 	double Ve_tot_tmp = 0;
 	for(int i=0;i<NG;i++) Ve_tot_tmp+= g[i]->Ve;
 
-	double Ve_delta =  Ve_tot_tmp - Ve_tot;
 
-
-
+	double Ve_delta =  (Ve_tot_tmp - Ve_tot)/gamma;
 	double Vc_delta =  VC_in - VC_out;
+
+
 	if(fabs(Vc_delta - Ve_delta)/fabs(Vc_delta + Ve_delta) > eps)
 		{cerr<<"WARNING: Mass is not conserved in precipitation: Vc_delta = "<<setprecision(10)<<Vc_delta <<" Ve_delta = "<<Ve_delta<<setprecision(10)<<"."<<endl;}
 	else
@@ -170,7 +188,7 @@ void Network::check_precipitating_balance(){
 
 }
 
-
+//unused (probably)
 void Network::calculate_V_total_diff(){
 
 //updating info about Vb_in_tot and Vb_out_tot (for checking the mass balance)
@@ -197,8 +215,11 @@ void Network::calculate_V_total_diff(){
 					 outlet_c_b_0_d(pp,1)*pp->calculate_outlet_cb ())*\
 					 dt/dt_unit;}
 				}
+
+	cerr<<"Vb_in_tot = "<<Vb_in_tot<<"   Vb_out_tot = "<<Vb_out_tot<<endl<<endl;
 }
 
+//unused (probably)
 void Network::calculate_V_total_diff_for_C(){
 
 
@@ -211,22 +232,25 @@ void Network::calculate_V_total_diff_for_C(){
 		Node* n_tmp = wi[i];
 		for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0) {
 			Pore *pp=n_tmp->p[j];
-			Vc_in_tot-=\
-				(outlet_c_c_1_d(pp,-1)*pp->calculate_outlet_cc() +\
-				 outlet_c_c_0_d(pp,-1)*pp->calculate_inlet_cc () +\
-				 Cc_0*pp->q) *\
-				 dt/dt_unit;}   //or minus here, to be checked later, if Cc_0 = 0, don't bother
-			}
+			Vc_in_tot+= n_tmp->p[j]->calculate_outlet_stream_cc(this,n_tmp)*dt/dt_unit;
+			//cerr<<"W flow control: p = "<<n_tmp->p[j]->a<<Vc_in_tot<<endl;
+		}
+
+	}
+
 
 	for(int i=0;i<N_wo;i++){
-			Node* n_tmp = wo[i];
-			for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0) {
-				Pore *pp=n_tmp->p[j];
-				Vc_out_tot+=\
-					(outlet_c_c_1_d(pp,1)*pp->calculate_inlet_cc  () +\
-					 outlet_c_c_0_d(pp,1)*pp->calculate_outlet_cc ())*\
-					 dt/dt_unit;}
-				}
+		Node* n_tmp = wo[i];
+		for (int j=0; j<n_tmp->b;j++) if(n_tmp->p[j]->d>0) {
+			Pore *pp=n_tmp->p[j];
+			Vc_out_tot+= n_tmp->p[j]->calculate_outlet_stream_cc(this,n_tmp)*dt/dt_unit;
+		}
+
+	}
+
+
+cerr<<"Vc_in_tot = "<<Vc_in_tot<<"   Vc_out_tot = "<<Vc_out_tot<<endl<<endl;
+
 }
 
 

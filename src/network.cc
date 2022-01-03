@@ -17,6 +17,7 @@ Network::Network (string input_file_name) {
 	Q_tot  = 2*N_x;   //total flow through the system (if == 0 the constant pressure is kept)
 	Va_tot = 0;       //total volume of dissolving species
 	Ve_tot = 0;       //total volume of precipitating species
+	Ve_tmp_tmp = 0;   ///< additional checking for dd_min calculations
 	Vx_tot = 0;       //total amount of non reacting species
 	Vx_perc= 0;       // percentage of non reacting species in the system
 	Vb_in_tot =0;     //total volume of species b flowing into the system in one time step

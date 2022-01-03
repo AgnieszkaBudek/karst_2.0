@@ -231,7 +231,6 @@ void Network::createHexagonalNetwork(int N, int M){
 
 
 	cerr<<"Hexagonal network has been created."<<endl;
-
 }
 
 /**

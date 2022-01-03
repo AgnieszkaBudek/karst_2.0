@@ -31,6 +31,7 @@ void Network::recalculate_k1(){
 	else        k1  = (Da*q_in_0 + Da*G1*q_in_0)/(d0*l0*M_PI);
 	cerr<<"Reaction rate has been calculated: k1 = "<<k1<<endl;
 	if(G1>=0) {dt_unit = 2*k1*gamma_1/d0; cerr<<"Unit of time is set to: [2*k1 * gamma_1/d0] = "<<dt_unit<<endl;}
+
 }
 
 

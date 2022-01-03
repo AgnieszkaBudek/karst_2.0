@@ -62,26 +62,22 @@ double Pore::calculate_outlet_cc(){
 *
 *
 */
-double Pore::calculate_outlet_stream_cc(Network *S, char ni){
-
-	if (ni!= 0 && ni != 1){
-		cerr<<"ERROR: In function calculate_outlet_stream_cc(Network *S, char ni) invalid parameter ni."<<endl;
-		return 0;
-	}
+double Pore::calculate_outlet_stream_cc(Network *S,Node* nn){
 
 
+	double c0, c1;
+	int s;
+	if(n[0]==nn){   s = _sign(-q);  c1 = n[0]->cc;  c0 = n[1]->cc;}  //UWAGA, tu c1 i c0 teoretycznie powinno byc n aodwrot!!! Ale teraz dziala lepiej...
+	else        {   s = _sign(q) ;  c1 = n[1]->cc;  c0 = n[0]->cc;}
 
-	double c0, c1, qq;
-	if(ni==0){   qq = -q; c0 = n[0]->cc; c1 = n[1]->cc;}
-	else     {   qq =  q; c0 = n[1]->cc; c1 = n[0]->cc;}
+	double J0 = c0*S->outlet_c_c_0_d(this, s);
+	double J1 = c1*S->outlet_c_c_1_d(this, s);
+	double J2 = S->outlet_c_c_2_d(this, s);
 
-	int s = _sign(qq);
 
-	double J = c0*S->outlet_c_c_0_d(this, s) + c1*S->outlet_c_c_1_d(this, s)+S->outlet_c_c_2_d(this, s);
 
-	if (n[ni]->t ==-1) J-= fabs(qq);
-	if (n[ni]->t == 1) J-=- qq*c0;
 
+	double J = J0+J1+J2;
 
 	return J;
 }
@@ -286,7 +282,7 @@ double Pore::default_dd_plus(Network*S){
 			double a  = sqrt(pe*(4*da+pe));
 			double b  = pe/2;
 
-			dd_plus  = S->dt*(2*b*(c0 - c1) + a*(c0 + c1)/tanh(a/2.) - a*(c1 + c0*exp(2*b))/sinh(a/2.)/exp(b))/(4.*b*da)/(1+g);
+			dd_plus  = S->dt*(2*b*(c0 - c1) + a*(c0 + c1)/tanh(a/2.) - a*(c1 + c0*exp(2*b))/sinh(a/2.)/exp(b))/(4.*b*da)/(1+g);//a co ze znakiem b?, bo tu nie ma s?
 			dd_plus  = fabs(dd_plus);
 		}
 		else{  //no flow in the pore - different formula
@@ -351,22 +347,18 @@ double Pore::default_dd_minus(Network*S){
 	}
 	else if(fabs(q)>1e-5 && S->Pe > 0.001 && S->Da!=-1){
 
-		double pe   = local_Pe_2(S);
-		double cc1  = calculate_outlet_cc();
-		double a    = sqrt(pe*(4*da+pe));
-		double b    = pe/2;
-		//double R    = effective_c_production(S)/(da*q/l);
-		double R = default_dd_plus(S)*(1+g*S->theta)/S->dt/S->kappa; //simplified version
 
-		dd_minus = S->dt*S->gamma*S->kappa/(1+g*S->theta)*\
-				(R + (a*((cc0 + cc1 - 2*R)*(1./tanh(a/2.) - cosh(b)/sinh(a/2.)) +\
-	            (cc0 - cc1)*((2*b)/a - sinh(b)/sinh(a/2))))/(4.*b*da));
+		dd_minus =  - calculate_outlet_stream_cc(S,n[0]) - calculate_outlet_stream_cc(S,n[1]);
+		dd_minus *= 2./(M_PI*d*l) * S->gamma * S->dt/S->d0/S->dt_unit;
+		dd_minus += default_dd_plus(S)*S->gamma;
+
 
 	}
 	else{ //for q=0 and transversal diffusion; to be implemented
 
 		dd_minus = 0;
 	}
+
 
 	return dd_minus;
 }

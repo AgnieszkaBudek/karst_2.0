@@ -76,6 +76,7 @@ class Network
 		double Q_tot;		///< total flow through the system
 		double Va_tot;		///< total amount of volume of dissolving species
 		double Ve_tot;		///< total amount of volume of precipitating species
+		double Ve_tmp_tmp;  ///< additional checking for dd_min calculations
 		double Vx_tot;      ///< total amount of non reacting
 		double Vx_perc;     ///< percentage of non reacting species
 		double Vb_in_tot;   ///< total volume of species b flowing into the system in one time step
