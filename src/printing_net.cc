@@ -70,15 +70,18 @@ ofstream_ps & operator << (ofstream_ps & stream, Node &n){
 	return stream;}
 
 ofstream_ps & operator << (ofstream_ps & stream, Pore &p){
+
 	Kolor kkk(0.5,0.5,0.5);
+
 	if(p.x==1) kkk=Kolor(0.2,0.8,0.2);
 	if(p.x==2) kkk=Kolor(0.8,0.2,0.2);
 
 	bool if_debug=true;
 	if(p.n[0]->xy - p.n[1]->xy < max_distance && p.d<300&& p.n[0]->xy.z == z_to_print && p.n[1]->xy.z == z_to_print){
 		if (if_debug && p.x==2) stream<<Porek(p.n[0]->xy,p.n[1]->xy,p.d/10,p.tmp,kkk);
-		//else                    stream<<Porek(p.n[0]->xy,p.n[1]->xy,p.d/4 ,p.tmp,kkk);
+		else                    stream<<Porek(p.n[0]->xy,p.n[1]->xy,p.d/4 ,p.tmp,kkk);
 		}
+
 	return stream;}
 
 
@@ -86,11 +89,16 @@ ofstream_ps & operator << (ofstream_ps & stream, Pore &p){
 ofstream_ps & operator << (ofstream_ps & stream, Network &S){
 
 
-	if      (S.printing_mode == "debugging")   Print_network_in_debugging_style   (stream,S);
-	else if (S.printing_mode == "dissolution") Print_network_in_dissolution_style (stream,S);
-	else if (S.printing_mode == "grains")      Print_network_in_grain_style       (stream,S);
+	if      (S.printing_mode == "debugging")   		Print_network_in_debugging_style   (stream,S);
+	else if (S.printing_mode == "dissolution") 		Print_network_in_dissolution_style (stream,S);
+	else if (S.printing_mode == "grains")      		Print_network_in_grain_style       (stream,S);
+	else if (S.printing_mode == "grains_and_diss"){
+		Print_network_in_grain_style       (stream,S);
+		Print_network_in_dissolution_style (stream,S);
+	}
 
-	else cerr<<"WARNING: Incorrect type of printing mode."<<endl;
+	else
+		cerr << "WARNING: Incorrect type of printing mode."<<endl;
 	return stream;
 }
 
@@ -175,8 +183,25 @@ void Print_network_in_dissolution_style (ofstream_ps & stream, Network &S){
 	stream<<"0 0 ("<<S.description_note<<") ashow stroke"<<endl<<endl;
 
 
-	if( S.print_diss_factor)  for(int i=0;i<S.NP;i++) if(S.p[i]->x==1) {S.p[i]->tmp=666; stream<<*S.p[i];}
-	if(!S.print_diss_factor)  for(int i=0;i<S.NP;i++)                  {S.p[i]->tmp=666; stream<<*S.p[i];}
+	if(S.if_precipitation)         for(int i=0;i<S.NP;i++)                  {
+		Kolor kkk(0.5,0.5,0.5);
+		Pore &p = *S.p[i];
+		double r=0.5, g=0.5, b=0.5;
+		if (p.d<S.d0 and p.d!=0){
+			r = 1;
+			g = (log(p.d) - log(S.d_min))/(log(S.d0) - log(S.d_min));
+			b = 0;
+			kkk=Kolor(r,g,b);}
+		if(p.x==1) kkk=Kolor(0.0,0.0,0.0);
+
+		p.tmp=666;  // no printing names
+		if(p.n[0]->xy - p.n[1]->xy < max_distance && p.d<300&& p.n[0]->xy.z == z_to_print && p.n[1]->xy.z == z_to_print){
+			if (p.x == 1)           stream<<Porek(p.n[0]->xy,p.n[1]->xy,p.d ,p.tmp,kkk);
+			else                    stream<<Porek(p.n[0]->xy,p.n[1]->xy,p.d ,p.tmp,kkk);
+			}
+	}
+	else if( S.print_diss_factor)  for(int i=0;i<S.NP;i++) if(S.p[i]->x==1) {S.p[i]->tmp=666; stream<<*S.p[i];}
+	else if(!S.print_diss_factor)  for(int i=0;i<S.NP;i++)                  {S.p[i]->tmp=666; stream<<*S.p[i];}
 
 	stream << "showpage "<<endl<<flush;
 }

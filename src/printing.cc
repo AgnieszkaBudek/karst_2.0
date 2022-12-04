@@ -20,7 +20,7 @@ ostream & operator<< (ostream &os, Porek l){
 	os<<setprecision(4)<<l.k;
 	os<<l.w<<" setlinewidth"<<endl;
 	os<<l.a<<" moveto "<<l.b<<"lineto stroke"<<endl;
-	os<<"/Times-Bold findfont "<<(l.b-l.a)/7.<<" scalefont setfont "<<Kolor(0,0,1)<<endl;
+	if(if_print_labels) os<<"/Times-Bold findfont "<<(l.b-l.a)/7.<<" scalefont setfont "<<Kolor(0,0,1)<<endl;
 	os<<Point((l.b.x+l.a.x)/2, (l.b.y+l.a.y)/2)<<"moveto"<<endl;
 	if(if_print_labels){
 		if (l.podpis != 666) os <<"0 0 ("<<setprecision(3)<< l.podpis<<") ashow stroke"<<endl;
@@ -110,7 +110,7 @@ ostream & operator<< (ostream &os, Wielobok w) {
 	os<<"closepath fill stroke"<<endl;
 	os<<Kolor(0,0,0);//os<<Kolor(0.5,0.5,0.5);
 	//os<<"/Times-Bold findfont "<<(tr.n1-tr.n2)/5.<<" scalefont setfont"<<endl;
-	os<<"/Times-Bold findfont "<<0.1<<" scalefont setfont"<<endl;
+	//os<<"/Times-Bold findfont "<<0.1<<" scalefont setfont"<<endl; FIXME:edit 28.11.2022
 	Point sr = Point();
 	for (int i=0;i<w.b;i++) sr = sr +w.p[i];
 	os<<Point(sr.x/w.b,sr.y/w.b)<<"moveto"<<endl;
