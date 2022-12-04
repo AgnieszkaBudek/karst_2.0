@@ -189,7 +189,7 @@ void Print_network_in_dissolution_style (ofstream_ps & stream, Network &S){
 		double r=0.5, g=0.5, b=0.5;
 		if (p.d<S.d0 and p.d!=0){
 			r = 1;
-			g = (log(p.d) - log(S.d_min))/(log(S.d0) - log(S.d_min));
+			g = ((p.d) - (S.d_min))/((S.d0) - (S.d_min));
 			b = 0;
 			kkk=Kolor(r,g,b);}
 		if(p.x==1) kkk=Kolor(0.0,0.0,0.0);
