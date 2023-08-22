@@ -8,9 +8,11 @@ ifeq ($(UNAME), Linux)
 	MDIR	=  ~/.nix-profile/opt/mumps
 	FLIBS	= -L ~/.nix-profile/lib -lgfortran -lquadmath -lblas
 else 
-	CC		= /usr/local/Cellar/gcc/9.3.0/bin/gcc-9        
+#	CC		= /usr/local/Cellar/gcc/9.3.0/bin/gcc-9        
+	CC      = /opt/homebrew/bin/gcc-12
 	CXX 	= g++                                            
-	FL		= /usr/local/Cellar/gcc/9.3.0/bin/gfortran-9 
+	FL      = /opt/homebrew/bin/gfortran
+#	FL		= /usr/local/Cellar/gcc/9.3.0/bin/gfortran-9 
 	MDIR	= ~/Desktop/STUDIA/KRAS/MUMPS_4.7.3
 	FLIBS	= -lblas -L/usr/local/gfortran/lib 
 endif
