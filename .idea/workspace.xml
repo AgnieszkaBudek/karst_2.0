@@ -15,7 +15,281 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7ddfd7cc-cff9-402f-a6cd-47f461b6daab" name="Changes" comment="stan na 05_06_2023." />
+    <list default="true" id="7ddfd7cc-cff9-402f-a6cd-47f461b6daab" name="Changes" comment="zmiana gitignore">
+      <change afterPath="$PROJECT_DIR$/.tmp_old_output.swp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/notes/plan" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/Conditions_of_Use" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/MATLAB/INSTALL/Makefile.INTEL" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/MATLAB/INSTALL/Makefile.PGF90" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/MATLAB/INSTALL/Makefile.SGI32" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/MATLAB/INSTALL/Makefile.SUN" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/MATLAB/INSTALL/Makefile.g95" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/MATLAB/Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/MATLAB/README" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/MATLAB/dmumps.m" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/MATLAB/dmumpsmex.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/MATLAB/initmumps.m" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/MATLAB/lhr01.mat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/MATLAB/make.inc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/MATLAB/multiplerhs_example.m" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/MATLAB/mumps_help.m" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/MATLAB/printmumpsstat.m" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/MATLAB/schur_example.m" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/MATLAB/simple_example.m" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/MATLAB/sparserhs_example.m" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/MATLAB/zmumps.m" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/MATLAB/zmumpsmex.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/MATLAB/zsimple_example.m" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/Make.inc/Makefile.ALPHA_linux.PAR" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/Make.inc/Makefile.ALPHA_linux.SEQ" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/Make.inc/Makefile.ALPHA_true64.PAR" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/Make.inc/Makefile.ALPHA_true64.SEQ" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/Make.inc/Makefile.G95.PAR" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/Make.inc/Makefile.G95.SEQ" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/Make.inc/Makefile.INTEL.PAR" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/Make.inc/Makefile.INTEL.SEQ" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/Make.inc/Makefile.NEC.PAR" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/Make.inc/Makefile.NEC.SEQ" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/Make.inc/Makefile.PC.PAR" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/Make.inc/Makefile.PC.SEQ" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/Make.inc/Makefile.SGI.PAR" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/Make.inc/Makefile.SGI.SEQ" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/Make.inc/Makefile.SP.PAR" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/Make.inc/Makefile.SP.SEQ" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/Make.inc/Makefile.SP64.PAR" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/Make.inc/Makefile.SP64.SEQ" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/Make.inc/Makefile.SUN.PAR" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/Make.inc/Makefile.SUN.SEQ" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/Make.inc/Makefile.gfortran.PAR" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/Make.inc/Makefile.gfortran.SEQ" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/Make.inc/Makefile.inc.generic" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/Make.inc/Makefile.inc.generic.SEQ" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/Makefile.inc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/PORD/README" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/PORD/include/const.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/PORD/include/eval.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/PORD/include/macros.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/PORD/include/params.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/PORD/include/protos.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/PORD/include/space.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/PORD/include/types.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/PORD/lib/Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/PORD/lib/bucket.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/PORD/lib/ddbisect.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/PORD/lib/ddcreate.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/PORD/lib/gbipart.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/PORD/lib/gbisect.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/PORD/lib/gelim.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/PORD/lib/graph.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/PORD/lib/interface.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/PORD/lib/minpriority.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/PORD/lib/multisector.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/PORD/lib/nestdiss.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/PORD/lib/sort.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/PORD/lib/symbfac.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/PORD/lib/tree.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/README" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/SCILAB/Help/help_dmumps.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/SCILAB/Help/help_dmumps.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/SCILAB/Help/help_initmumps.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/SCILAB/Help/help_initmumps.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/SCILAB/Help/help_zmumps.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/SCILAB/Help/help_zmumps.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/SCILAB/Help/manrev.dtd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/SCILAB/Help/whatis.htm" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/SCILAB/README" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/SCILAB/builder.sce" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/SCILAB/dmumps.sci" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/SCILAB/examples/TREE" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/SCILAB/examples/cmplx_example.sce" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/SCILAB/examples/double_example.sce" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/SCILAB/examples/ex.sci" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/SCILAB/examples/ex_rhs.sci" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/SCILAB/examples/schur_example.sce" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/SCILAB/examples/sparseRHS_example.sce" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/SCILAB/initmumps.sci" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/SCILAB/intdmumpsc.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/SCILAB/intzmumpsc.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/SCILAB/loader.sce" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/SCILAB/zmumps.sci" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/VERSION" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/doc/userguide_4.7.3.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/doc/userguide_4.7.3.ps" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/include/cmumps_c.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/include/cmumps_prec.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/include/cmumps_root.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/include/cmumps_struc.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/include/dmumps_c.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/include/dmumps_prec.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/include/dmumps_root.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/include/dmumps_struc.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/include/smumps_c.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/include/smumps_prec.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/include/smumps_root.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/include/smumps_struc.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/include/zmumps_c.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/include/zmumps_prec.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/include/zmumps_root.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/include/zmumps_struc.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/libseq/Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/libseq/elapse.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/libseq/elapse.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/libseq/mpi.f" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/libseq/mpi.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/libseq/mpic.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/libseq/mpif.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src.rar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/cmumps_bloc2.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/cmumps_buffer.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/cmumps_c.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/cmumps_compat.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/cmumps_cv.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/cmumps_cv_load.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/cmumps_io.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/cmumps_io.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/cmumps_io_basic.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/cmumps_io_basic.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/cmumps_io_basic_extern.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/cmumps_io_basic_var.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/cmumps_io_err.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/cmumps_io_err.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/cmumps_io_err_extern.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/cmumps_io_err_var.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/cmumps_io_thread.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/cmumps_io_thread.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/cmumps_io_thread_extern.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/cmumps_io_thread_var.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/cmumps_ooc.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/cmumps_orderings.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/cmumps_orderings.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/cmumps_part1.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/cmumps_part2.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/cmumps_part3.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/cmumps_part4.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/cmumps_part5.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/cmumps_part6.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/cmumps_part7.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/cmumps_part8.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/cmumps_part9.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/cmumps_struc_def.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/dmumps_bloc2.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/dmumps_buffer.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/dmumps_c.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/dmumps_compat.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/dmumps_cv.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/dmumps_cv_load.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/dmumps_io.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/dmumps_io.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/dmumps_io_basic.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/dmumps_io_basic.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/dmumps_io_basic_extern.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/dmumps_io_basic_var.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/dmumps_io_err.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/dmumps_io_err.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/dmumps_io_err_extern.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/dmumps_io_err_var.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/dmumps_io_thread.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/dmumps_io_thread.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/dmumps_io_thread_extern.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/dmumps_io_thread_var.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/dmumps_ooc.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/dmumps_orderings.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/dmumps_orderings.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/dmumps_part1.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/dmumps_part2.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/dmumps_part3.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/dmumps_part4.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/dmumps_part5.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/dmumps_part6.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/dmumps_part7.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/dmumps_part8.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/dmumps_part9.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/dmumps_struc_def.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/mumps_headers.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/mumps_tags.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/smumps_bloc2.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/smumps_buffer.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/smumps_c.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/smumps_compat.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/smumps_cv.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/smumps_cv_load.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/smumps_io.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/smumps_io.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/smumps_io_basic.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/smumps_io_basic.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/smumps_io_basic_extern.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/smumps_io_basic_var.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/smumps_io_err.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/smumps_io_err.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/smumps_io_err_extern.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/smumps_io_err_var.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/smumps_io_thread.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/smumps_io_thread.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/smumps_io_thread_extern.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/smumps_io_thread_var.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/smumps_ooc.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/smumps_orderings.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/smumps_orderings.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/smumps_part1.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/smumps_part2.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/smumps_part3.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/smumps_part4.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/smumps_part5.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/smumps_part6.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/smumps_part7.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/smumps_part8.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/smumps_part9.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/smumps_struc_def.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/zmumps_bloc2.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/zmumps_buffer.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/zmumps_c.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/zmumps_compat.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/zmumps_cv.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/zmumps_cv_load.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/zmumps_io.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/zmumps_io.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/zmumps_io_basic.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/zmumps_io_basic.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/zmumps_io_basic_extern.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/zmumps_io_basic_var.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/zmumps_io_err.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/zmumps_io_err.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/zmumps_io_err_extern.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/zmumps_io_err_var.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/zmumps_io_thread.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/zmumps_io_thread.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/zmumps_io_thread_extern.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/zmumps_io_thread_var.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/zmumps_ooc.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/zmumps_orderings.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/zmumps_orderings.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/zmumps_part1.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/zmumps_part2.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/zmumps_part3.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/zmumps_part4.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/zmumps_part5.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/zmumps_part6.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/zmumps_part7.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/zmumps_part8.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/zmumps_part9.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/src/zmumps_struc_def.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/test/Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/test/README_simpletest" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/test/c_example.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/test/csimpletest.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/test/dsimpletest.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/test/input_simpletest_cmplx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/test/input_simpletest_real" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/test/ssimpletest.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/MUMPS_4.7.3/test/zsimpletest.F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithms/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/algorithms/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/grain.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/grain.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/dissolution.cc" beforeDir="false" afterPath="$PROJECT_DIR$/src/dissolution.cc" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -32,32 +306,25 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="pracka_2023" />
+        <entry key="$PROJECT_DIR$" value="stan_2022" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="MakefileLocalSettings">
-    <option name="availableProjects">
-      <map>
-        <entry>
-          <key>
-            <ExternalProjectPojo>
-              <option name="name" value="karst_2.0" />
-              <option name="path" value="$PROJECT_DIR$" />
-            </ExternalProjectPojo>
-          </key>
-          <value>
-            <list>
-              <ExternalProjectPojo>
-                <option name="name" value="karst_2.0" />
-                <option name="path" value="$PROJECT_DIR$" />
-              </ExternalProjectPojo>
-            </list>
-          </value>
-        </entry>
-      </map>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings">
+    <option name="selectedUrlAndAccountId">
+      <UrlAndAccount>
+        <option name="accountId" value="04d8ff3e-c623-4af2-ae51-7fbd0d3778b9" />
+        <option name="url" value="https://github.com/AgnieszkaBudek/karst_2.0.git" />
+      </UrlAndAccount>
     </option>
+  </component>
+  <component name="MakefileLocalSettings">
     <option name="projectSyncType">
       <map>
         <entry key="$PROJECT_DIR$" value="RE_IMPORT" />

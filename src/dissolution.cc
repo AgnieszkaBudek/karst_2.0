@@ -9,6 +9,7 @@
 * First linear equation for pressure in each node are created and
 * then there are solved using function Network::solve_matrix().
 *
+*
 * @author Agnieszka Budek
 * @date 25/09/2019
 */

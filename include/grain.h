@@ -1,9 +1,11 @@
 /**
-* @file grain.h
-* @brief This file contains class grains.
-* @author Agnieszka Budek
-* @date 25/09/2019
-*/
+ * @file grain.h
+ * @brief This file contains class grains.
+ * @author Agnieszka Budek
+ *
+ * @date 25/09/2019
+ */
+
 
 #ifndef GRAIN_H
 #define GRAIN_H 
