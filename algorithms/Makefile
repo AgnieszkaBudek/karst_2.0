@@ -8,14 +8,12 @@ ifeq ($(UNAME), Linux)
 	MDIR	=  ~/.nix-profile/opt/mumps
 	FLIBS	= -L ~/.nix-profile/lib -lgfortran -lquadmath -lblas
 else 
-#	CC
 	CC      = /opt/homebrew/bin/gcc-12
-	CXX 	= g++                                            
+	CXX 	= /opt/homebrew/bin/g++-12
 	FL      = /opt/homebrew/bin/gfortran
-#	FL		= /usr/local/Cellar/gcc/9.3.0/bin/gfortran-9 
-	MDIR	= ~/Desktop/STUDIA/KRAS/MUMPS_4.7.3
-	FLIBS	= -lblas -L/usr/local/gfortran/lib 
-endif
+	MDIR	= ~/Desktop/KARST/MUMPS_5.6.0
+	FLIBS	= -L/opt/homebrew/lib -L/opt/homebrew/Cellar/gcc/12.2.0/lib/gcc/12 -lblas -llapack -lesmumps -lscotch -lscotcherr -lmumps_common -lmetis -lgomp -lgfortran
+endif  
 
 AR      = ar vr 
 
@@ -31,7 +29,7 @@ INC	= algorithms.h
 
 
 LINKOPTS = $(COPTS)
-MLIBS	= -lm -ldmumps -lmpiseq -lpthread -lpord -lstdc++  -lgfortran $(FLIBS)
+MLIBS	= -lm -ldmumps -lmpiseq -lpthread -lpord -lstdc++  $(FLIBS)
 MFLAGS	= $(LINKOPTS) $(MLIBS) -L $(MDIR)/lib -L $(MDIR)/libseq
 CXXFLAGS= -std=c++11 -Weffc++ -Wall -Wextra -Wfatal-errors -Wunused -pedantic -w -Winline 
 TMP     = -fno-rtti -ggdb -D_GLIBCXX_DEBUG -lsfml-graphics -lsfml-window -lsfml-system
@@ -46,7 +44,7 @@ TMP     = -fno-rtti -ggdb -D_GLIBCXX_DEBUG -lsfml-graphics -lsfml-window -lsfml-
 
 algorithms: $(OBJ)	
 #	$(FL) -o ../bin/algorithms $^ $(MFLAGS)
-	$(AR) libalgorithms.a matrix_solvers.o triangularization.o 
+	$(AR) -v libalgorithms.a matrix_solvers.o triangularization.o
 	$(CXX) -v -o ../bin/algorithms $^ $(MFLAGS)  $(CXXFLAGS)
 
 
