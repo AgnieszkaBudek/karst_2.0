@@ -24,6 +24,6 @@ echo Da    = $Da    >>config.txt
 echo d0    = $d0    >>config.txt 
 echo d_min = $d_min >>config.txt 
 
-../karst config.txt #>wyjscie.out 2>bledy.out &
+../../karst config.txt #>wyjscie.out 2>bledy.out &
 
 cd ..
