@@ -1,8 +1,7 @@
-# karst_2.0
 
- \mainpage Network model of dissolving porous material
+ # Network model of dissolving porous material
 
- \section DESCRIPTION
+ ## DESCRIPTION
 
  This project is dedicated to simulate porous materials subjected to dissolution processes.
  Porous material is modeled as a network of tubes (pore throats) and is represented by the class Network.
@@ -12,7 +11,7 @@
   can be additionally tracked.
  The pore size can change in two ways - either grow due to dissolution or shrinker due to precipitation.
 
- \section A REPRESENTATION OF POROUS MATERIAL
+ A REPRESENTATION OF POROUS MATERIAL
 
  Porous material is modeled here as a network of interconnected tubes called pores.
  Pores are represented by the class Pore.
@@ -21,7 +20,7 @@
   that are subjected to the dissolution, so called grains, represented by the class Grain.
 
 
- \section B EVOLUTION OF THE SYSTEM
+ B EVOLUTION OF THE SYSTEM
 
  The main purpose of this project is to simulate the dynamics of the system.
  The function Network::evolution will perform T time steps consisted of
@@ -42,7 +41,6 @@
  (pattern consisted of broad, dissolved pores) has reached the outlet of the system.
 
 
-/
 
 Other remarks:
 

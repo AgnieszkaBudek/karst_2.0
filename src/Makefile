@@ -43,14 +43,14 @@ LFLAGS    = $(LINKOPTS) $(LIBS) $(MFLAGS)
 .DEFAULT:
     @echo "No target specified. To build a program, use: make <program_name>"
 
-.c.o: 
+.c.o:
 	$(CC) $(CFLAGS) -c $< 
 
 .cc.o: $(INC)
 	$(CXX) $(CXXFLAGS) $(CINCLUDES) -c $<
    	 
 
-karst: $(OBJ) 	
+karst: $(OBJ)
 	$(CXX)  -o ../bin/karst $^ $(LFLAGS) $(CXXFLAGS)
 
 algorithms:
@@ -62,7 +62,7 @@ clean:
 clean_alg:
 	rm -f ../algorithms/*.o ../algorithms/*.a
 
-all: 
+all:
 	mkdir -p ../bin
 	make algorithms
 	make karst

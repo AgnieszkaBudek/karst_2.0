@@ -2,7 +2,6 @@
 srcdir	=	./src
 
 all: src_all
-
 	bash -c "cp ./bin/karst ./tests"
 
 #ifneq ("$(wildcard /Users/agnieszka/Desktop/KARST/symulacja/test)","")
@@ -15,7 +14,7 @@ all: src_all
 
 # Default target
 .DEFAULT:
-    @echo "No target specified. To build a program, use: make <program_name>"
+    #@echo "No target specified. To build a program, use: make <program_name>"
 
 
 src_all:
