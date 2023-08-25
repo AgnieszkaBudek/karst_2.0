@@ -11,7 +11,7 @@
   can be additionally tracked.
  The pore size can change in two ways - either grow due to dissolution or shrinker due to precipitation.
 
- A REPRESENTATION OF POROUS MATERIAL
+ ### REPRESENTATION OF POROUS MATERIAL
 
  Porous material is modeled here as a network of interconnected tubes called pores.
  Pores are represented by the class Pore.
@@ -20,7 +20,7 @@
   that are subjected to the dissolution, so called grains, represented by the class Grain.
 
 
- B EVOLUTION OF THE SYSTEM
+ ### EVOLUTION OF THE SYSTEM
 
  The main purpose of this project is to simulate the dynamics of the system.
  The function Network::evolution will perform T time steps consisted of
@@ -42,7 +42,7 @@
 
 
 
-Other remarks:
+## Other remarks:
 
 1. Branches:
 
