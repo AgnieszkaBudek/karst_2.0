@@ -1,5 +1,7 @@
 #Folders
 /bin
+/.idea
+.idea
 
 # Prerequisites
 *.d
