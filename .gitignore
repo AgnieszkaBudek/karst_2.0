@@ -39,3 +39,6 @@
 *.ps
 *.pdf
 *.out
+/.idea/.gitignore
+/.idea/misc.xml
+/.idea/vcs.xml
