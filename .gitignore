@@ -1,7 +1,7 @@
 #Folders
 /bin
 /.idea
-.idea/*
+
 
 # Prerequisites
 *.d
@@ -37,7 +37,7 @@
 *.exe
 *.app
 
-# Data files:
+# Data files
 *.ps
 *.pdf
 *.out
