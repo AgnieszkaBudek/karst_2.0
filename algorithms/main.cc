@@ -39,13 +39,11 @@ void test_matrix_solving(){
 
 	solve_matrix(10, 100,  w_k,  w_i, B,  y);
 
-	//for(int i=0;i<100;i++) cerr<<"y[i] = "<<y[i]<<endl; 
-	//cerr<<"Kocham jasia "<<solve_matrix(10, 10,  w_k,  w_i, B,  y)<<endl;
+	//for(int i=0;i<100;i++) cerr<<"y[i] = "<<y[i]<<endl;
 	for(int i=0;i<100;i++) cerr<<"y[i] = "<<y[i]<<" B[i] = "<<B[i]<<endl; 
 
 	return;
 }
-
 
 
 /**

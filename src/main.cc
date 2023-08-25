@@ -2,7 +2,7 @@
  * @author  Agnieszka Budek
  * @date 25/09/2019
  *
-/**
+**/
 
 
 #include "network.h"
