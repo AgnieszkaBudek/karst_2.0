@@ -1,8 +1,7 @@
 
-srcdir      = ./src
+srcdir	=	./src
 
 all: src_all
-
 
 	bash -c "cp ./bin/karst ./tests"
 
@@ -14,8 +13,13 @@ all: src_all
 #	bash -c "echo "Warning: Directory ..../KARST/symulacja/test does not exists.""
 #endif
 
+# Default target
+.DEFAULT:
+    @echo "No target specified. To build a program, use: make <program_name>"
+
+
 src_all:
 	$(MAKE) all -C $(srcdir)
-	
+
 clean:
 	$(MAKE) clean  -C $(srcdir)

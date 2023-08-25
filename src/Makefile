@@ -38,6 +38,11 @@ LIBS      = -lm -L ../algorithms -lalgorithms
 MFLAGS    = $(MLIBS) -L $(MDIR)/lib -L $(MDIR)/libseq
 LFLAGS    = $(LINKOPTS) $(LIBS) $(MFLAGS) 
 
+
+# Default target
+.DEFAULT:
+    @echo "No target specified. To build a program, use: make <program_name>"
+
 .c.o: 
 	$(CC) $(CFLAGS) -c $< 
 
@@ -46,7 +51,7 @@ LFLAGS    = $(LINKOPTS) $(LIBS) $(MFLAGS)
    	 
 
 karst: $(OBJ) 	
-	$(CXX) -v -o ../bin/karst $^ $(LFLAGS) $(CXXFLAGS)
+	$(CXX)  -o ../bin/karst $^ $(LFLAGS) $(CXXFLAGS)
 
 algorithms:
 	$(MAKE) all -C $(ALGDIR)
@@ -61,4 +66,6 @@ all:
 	mkdir -p ../bin
 	make algorithms
 	make karst
+
+default: all
 

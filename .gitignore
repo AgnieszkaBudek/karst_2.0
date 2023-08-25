@@ -33,5 +33,9 @@
 
 # Executables
 *.exe
-*.out
 *.app
+
+# Data files:
+*.ps
+*.pdf
+*.out

@@ -88,7 +88,6 @@ ofstream_ps & operator << (ofstream_ps & stream, Pore &p){
 
 ofstream_ps & operator << (ofstream_ps & stream, Network &S){
 
-
 	if      (S.printing_mode == "debugging")   		Print_network_in_debugging_style   (stream,S);
 	else if (S.printing_mode == "dissolution") 		Print_network_in_dissolution_style (stream,S);
 	else if (S.printing_mode == "grains")      		Print_network_in_grain_style       (stream,S);

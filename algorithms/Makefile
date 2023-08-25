@@ -35,6 +35,11 @@ CXXFLAGS= -std=c++11 -Weffc++ -Wall -Wextra -Wfatal-errors -Wunused -pedantic -w
 TMP     = -fno-rtti -ggdb -D_GLIBCXX_DEBUG -lsfml-graphics -lsfml-window -lsfml-system
 
 
+# Default target
+.DEFAULT:
+    @echo "No target specified. To build a program, use: make <program_name>"
+
+
 .cc.o: 
 	$(CXX) $(CXXFLAGS) -c $< 
 
@@ -44,8 +49,8 @@ TMP     = -fno-rtti -ggdb -D_GLIBCXX_DEBUG -lsfml-graphics -lsfml-window -lsfml-
 
 algorithms: $(OBJ)	
 #	$(FL) -o ../bin/algorithms $^ $(MFLAGS)
-	$(AR) -v libalgorithms.a matrix_solvers.o triangularization.o
-	$(CXX) -v -o ../bin/algorithms $^ $(MFLAGS)  $(CXXFLAGS)
+	$(AR) libalgorithms.a matrix_solvers.o triangularization.o
+	$(CXX) -o ../bin/algorithms $^ $(MFLAGS)  $(CXXFLAGS)
 
 
 clean:
