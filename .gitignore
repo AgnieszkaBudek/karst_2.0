@@ -1,7 +1,7 @@
 #Folders
 /bin
 /.idea
-.idea
+.idea/*
 
 # Prerequisites
 *.d
@@ -41,6 +41,4 @@
 *.ps
 *.pdf
 *.out
-/.idea/.gitignore
-/.idea/misc.xml
-/.idea/vcs.xml
+
