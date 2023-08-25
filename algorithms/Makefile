@@ -34,10 +34,10 @@ MFLAGS	= $(LINKOPTS) $(MLIBS) -L $(MDIR)/lib -L $(MDIR)/libseq
 CXXFLAGS= -std=c++11 -Weffc++ -Wall -Wextra -Wfatal-errors -Wunused -pedantic -w -Winline 
 TMP     = -fno-rtti -ggdb -D_GLIBCXX_DEBUG -lsfml-graphics -lsfml-window -lsfml-system
 
-
-# Default target
-.DEFAULT:
-    @echo "No target specified. To build a program, use: make <program_name>"
+#
+## Default target
+#.DEFAULT:
+#    @echo "No target specified. To build a program, use: make <program_name>"
 
 
 .cc.o: 

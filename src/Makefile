@@ -39,9 +39,9 @@ MFLAGS    = $(MLIBS) -L $(MDIR)/lib -L $(MDIR)/libseq
 LFLAGS    = $(LINKOPTS) $(LIBS) $(MFLAGS) 
 
 
-# Default target
-.DEFAULT:
-    @echo "No target specified. To build a program, use: make <program_name>"
+## Default target
+#.DEFAULT:
+#    @echo "No target specified. To build a program, use: make <program_name>"
 
 .c.o:
 	$(CC) $(CFLAGS) -c $< 
