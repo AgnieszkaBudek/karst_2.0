@@ -1,0 +1,71 @@
+Index: algorithms/Makefile
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>\nUNAME := $(shell uname)\n\nifeq ($(UNAME), Linux)\n\tCC\t\t= clang        \n\tCXX \t= clang++                                            \n\tFL\t\t= gfortran \n\tMDIR\t=  ~/.nix-profile/opt/mumps\n\tFLIBS\t= -L ~/.nix-profile/lib -lgfortran -lquadmath -lblas\nelse \n#\tCC\t\t= /usr/local/Cellar/gcc/9.3.0/bin/gcc-9        \n\tCC      = /opt/homebrew/bin/gcc-12\n\tCXX \t= g++                                            \n\tFL      = /opt/homebrew/bin/gfortran\n#\tFL\t\t= /usr/local/Cellar/gcc/9.3.0/bin/gfortran-9 \n\tMDIR\t= ~/Desktop/STUDIA/KRAS/MUMPS_4.7.3\n\tFLIBS\t= -lblas -L/usr/local/gfortran/lib \nendif\n\nAR      = ar vr \n\n\nCOPTS\t= -Wall -pedantic -O2 \nMINCLUDES\t= -I $(MDIR)/include -I $(MDIR)/libseq \n\nCFLAGS\t= $(COPTS) $(MINCLUDES) \n\n\nOBJ\t= matrix_solvers.o triangularization.o main.o\nINC\t= algorithms.h \n\n\nLINKOPTS = $(COPTS)\nMLIBS\t= -lm -ldmumps -lmpiseq -lpthread -lpord -lstdc++  -lgfortran $(FLIBS)\nMFLAGS\t= $(LINKOPTS) $(MLIBS) -L $(MDIR)/lib -L $(MDIR)/libseq\nCXXFLAGS= -std=c++11 -Weffc++ -Wall -Wextra -Wfatal-errors -Wunused -pedantic -w -Winline \nTMP     = -fno-rtti -ggdb -D_GLIBCXX_DEBUG -lsfml-graphics -lsfml-window -lsfml-system\n\n\n.cc.o: \n\t$(CXX) $(CXXFLAGS) -c $< \n\n.c.o: \n\t$(CC) $(CFLAGS) -c $< \n\n\nalgorithms: $(OBJ)\t\n#\t$(FL) -o ../bin/algorithms $^ $(MFLAGS)\n\t$(AR) libalgorithms.a matrix_solvers.o triangularization.o \n\t$(CXX) -v -o ../bin/algorithms $^ $(MFLAGS)  $(CXXFLAGS)\n\n\nclean:\n\trm -f *.o *.a\n\n\nall: \n\tmkdir -p ../bin\n\tmake algorithms\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/algorithms/Makefile b/algorithms/Makefile
+--- a/algorithms/Makefile	
++++ b/algorithms/Makefile	
+@@ -8,13 +8,12 @@
+ 	MDIR	=  ~/.nix-profile/opt/mumps
+ 	FLIBS	= -L ~/.nix-profile/lib -lgfortran -lquadmath -lblas
+ else 
+-#	CC		= /usr/local/Cellar/gcc/9.3.0/bin/gcc-9        
+-	CC      = /opt/homebrew/bin/gcc-12
+-	CXX 	= g++                                            
+-	FL      = /opt/homebrew/bin/gfortran
+-#	FL		= /usr/local/Cellar/gcc/9.3.0/bin/gfortran-9 
+-	MDIR	= ~/Desktop/STUDIA/KRAS/MUMPS_4.7.3
+-	FLIBS	= -lblas -L/usr/local/gfortran/lib 
++    BREW    =/opt/homebrew
++	CC      = $(BREW)/bin/gcc-12
++	CXX 	= $(BREW)/bin/g++-12
++	FL      = $(BREW)/bin/gfortran
++	MDIR	= ~/Desktop/KARST/MUMPS_5.6.0
++    FLIBS   	= -L$(BREW)/lib -lblas -llapack -lesmumps -lscotch -lscotcherr -lmumps_common -lmetis -lgomp    
+ endif
+ 
+ AR      = ar vr 
+Index: Makefile
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>\nsrcdir      = ./src\n\nall: src_all\n\n\nifneq (\"$(wildcard /Users/agnieszka/Desktop/STUDIA/KARST/symulacja/test)\",\"\") \n\tbash -c \"cp ./bin/karst /Users/agnieszka/Desktop/STUDIA/KARST/symulacja/test\"\nelse ifneq (\"$(wildcard ~/KARST/symulacja/test)\",\"\")\n\tbash -c \"cp ./bin/karst ~/KARST/symulacja/test\"\nelse  \n\tbash -c \"echo \"Warning: Directory ./KARST/symulacja/test does not exists.\"\"\nendif\t\t \n\nsrc_all:\n\t$(MAKE) all -C $(srcdir)\n\t\nclean:\n\t$(MAKE) clean  -C $(srcdir)\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Makefile b/Makefile
+--- a/Makefile	
++++ b/Makefile	
+@@ -4,8 +4,8 @@
+ all: src_all
+ 
+ 
+-ifneq ("$(wildcard /Users/agnieszka/Desktop/STUDIA/KARST/symulacja/test)","") 
+-	bash -c "cp ./bin/karst /Users/agnieszka/Desktop/STUDIA/KARST/symulacja/test"
++ifneq ("$(wildcard /Users/agnieszka/Desktop/KARST/symulacja/test)","") 
++	bash -c "cp ./bin/karst /Users/agnieszka/Desktop/KARST/symulacja/test"
+ else ifneq ("$(wildcard ~/KARST/symulacja/test)","")
+ 	bash -c "cp ./bin/karst ~/KARST/symulacja/test"
+ else  
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"ExternalStorageConfigurationManager\" enabled=\"true\" />\n  <component name=\"MakefileSettings\">\n    <option name=\"linkedExternalProjectsSettings\">\n      <MakefileProjectSettings>\n        <option name=\"externalProjectPath\" value=\"$PROJECT_DIR$\" />\n        <option name=\"version\" value=\"2\" />\n      </MakefileProjectSettings>\n    </option>\n  </component>\n  <component name=\"MakefileWorkspace\" PROJECT_DIR=\"$PROJECT_DIR$\" />\n</project>
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+--- a/.idea/misc.xml	
++++ b/.idea/misc.xml	
+@@ -5,6 +5,11 @@
+     <option name="linkedExternalProjectsSettings">
+       <MakefileProjectSettings>
+         <option name="externalProjectPath" value="$PROJECT_DIR$" />
++        <option name="modules">
++          <set>
++            <option value="$PROJECT_DIR$" />
++          </set>
++        </option>
+         <option name="version" value="2" />
+       </MakefileProjectSettings>
+     </option>
